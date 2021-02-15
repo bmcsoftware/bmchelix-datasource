@@ -20,16 +20,24 @@ BMC Helix v21.02+ license/subscription is required
 
 This datasource uses the Instana REST API to query the underlying data services.
 
-First of all you will need to generate an Access key & Secret key in BMC Helix portal and configure as shown below.
+First of all you will need to generate an Access key & Secret key in BMC Helix portal ([Keys](https://docs.bmc.com/docs/BMCHelixPortal/setting-up-api-users-for-programmatic-access-967330979.html))
+
+Configure Retrived values as shown below
+
+![datasource configuration](screenshots/configuration.png)
 
 ## Usage
 
-<WIP>
+- WIP
 
-### Query Types
+#### Query Types
 
-<WIP>
+- WIP
 
-### Query Editor
+#### Query Editor
 
-<WIP>
+- WIP
+
+### Sample Dashboards
+
+- WIP

@@ -1,0 +1,29 @@
+<query-editor-row can-collapse="true" query-ctrl="ctrl">
+  <div class="gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label query-keyword width-7">Query type</label>
+      <select class="gf-form-input width-10" ng-change="ctrl.onqueryTypeChange()" ng-model="ctrl.target.sourceType">
+        <option ng-repeat="option in ctrl.target.queryTypeOptions" ng-value="option.value">{{option.text}}</option>
+      </select>
+    </div>
+  </div>
+  <div ng-if="ctrl.target.sourceType == ctrl.constants.SOURCE_TYPE_EVENT">
+    <event-query-editor datasource="ctrl.datasource" queryctrl="ctrl" target="ctrl.target"></event-query-editor>
+  </div>
+
+  <div ng-if="ctrl.target.sourceType == ctrl.constants.SOURCE_TYPE_METRIC">
+    <metric-query target="ctrl.target" datasource="ctrl.datasource" queryctrl="ctrl"></metric-query>
+  </div>
+
+  <div ng-if="ctrl.target.sourceType == ctrl.constants.SOURCE_TYPE_LOG">
+    <log-query-editor datasource="ctrl.datasource" queryctrl="ctrl" target="ctrl.target"></log-query-editor>
+  </div>
+
+  <div ng-if="ctrl.target.sourceType == ctrl.constants.SOURCE_TYPE_CLOUD_SECURITY">
+    <cloudsecurity-query-editor datasource="ctrl.datasource" queryctrl="ctrl" target="ctrl.target">
+    </cloudsecurity-query-editor>
+  </div>
+  <div ng-if="ctrl.target.sourceType == ctrl.constants.SOURCE_TYPE_REMEDY">
+    <remedy-query-editor datasource="ctrl.datasource" queryctrl="ctrl" target="ctrl.target"></remedy-query-editor>
+  </div>
+</query-editor-row>

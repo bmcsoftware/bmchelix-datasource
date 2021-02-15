@@ -1,0 +1,19 @@
+<div class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-7">Query Type</label>
+    <select ng-change="ctrl.onqueryTypeSelection()" ng-model="ctrl.annotation.selectedType">
+      <option ng-repeat="option in ctrl.queryTypes" ng-value="option.value">{{option.text}}</option>
+    </select>
+  </div>
+</div>
+<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_EVENT">
+  <ng-include src="ctrl.constants.EVENT_ANNOTATION_EDITOR_URL"></ng-include>
+</div>
+
+<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_METRIC"">
+  <ng-include src="ctrl.constants.METRIC_ANNOTATION_EDITOR_URL"></ng-include>
+</div>
+
+<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_LOG">
+  <ng-include src="ctrl.constants.LOG_ANNOTATION_EDITOR_URL"></ng-include>
+</div>

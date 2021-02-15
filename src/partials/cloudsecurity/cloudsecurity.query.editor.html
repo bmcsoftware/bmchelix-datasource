@@ -1,0 +1,176 @@
+<div class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-7">Query</label>
+    <select ng-change="onCSQueryTypeChange()" ng-model="target.sourceQuery.csQueryType">
+      <option ng-repeat="option in csCtrl.CS_QUERY_OPTIONS" ng-value="option.value">{{option.label}}</option>
+    </select>
+  </div>
+</div>
+
+<!-- Asset Compliance -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.ASSET_COMPLIANCE" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <gf-form-switch
+      class="gf-form"
+      label="Compliant"
+      checked="target.sourceQuery.csQueryFor.compliant"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+
+    <gf-form-switch
+      class="gf-form"
+      label="Non-compliant"
+      checked="target.sourceQuery.csQueryFor.nonCompliant"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+
+    <gf-form-switch
+      class="gf-form"
+      label="Total assets"
+      checked="target.sourceQuery.csQueryFor.totalAssets"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+  </div>
+</div>
+
+<!-- Policy Compliance -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.POLICY_COMPLIANCE" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <gf-form-switch
+      class="gf-form"
+      label="Compliant rule"
+      checked="target.sourceQuery.csQueryFor.compliantRules"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+
+    <gf-form-switch
+      class="gf-form"
+      label="Non-compliant rule"
+      checked="target.sourceQuery.csQueryFor.nonCompliantRules"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+
+    <gf-form-switch
+      class="gf-form"
+      label="Indeterminate rule"
+      checked="target.sourceQuery.csQueryFor.indeterminateRules"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+
+    <gf-form-switch
+      class="gf-form"
+      label="Policy status"
+      checked="target.sourceQuery.csQueryFor.policyStatus"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+  </div>
+</div>
+
+<!-- Compliance Trend -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.COMPLIANCE_TREND" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-14">Compliance</label>
+    <input
+      type="radio"
+      name="complianceTrend"
+      class="gf-form-input"
+      ng-change="queryctrl.refresh()"
+      ng-model="target.sourceQuery.csQueryFor.trend"
+      value="Compliance"
+      checked="target.sourceQuery.csQueryFor.trend === 'Compliance'"
+    />
+
+    <label class="gf-form-label query-keyword width-14">Non-compliance</label>
+    <input
+      type="radio"
+      name="complianceTrend"
+      class="gf-form-input"
+      ng-change="queryctrl.refresh()"
+      ng-model="target.sourceQuery.csQueryFor.trend"
+      value="Non Compliance"
+      checked="target.sourceQuery.csQueryFor.trend === 'Non Compliance'"
+    />
+
+    <label class="gf-form-label query-keyword width-14">Remediation</label>
+    <input
+      type="radio"
+      name="complianceTrend"
+      class="gf-form-input"
+      ng-change="queryctrl.refresh()"
+      ng-model="target.sourceQuery.csQueryFor.trend"
+      value="Remediation"
+      checked="target.sourceQuery.csQueryFor.trend === 'Remediation'"
+    />
+  </div>
+</div>
+
+<!-- Risk Account -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.RISK_ACCOUNT" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <gf-form-switch
+      class="gf-form"
+      label="Risk account"
+      checked="target.sourceQuery.csQueryFor.riskAccount"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+  </div>
+</div>
+
+<!-- Operations -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.OPERATIONS" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <gf-form-switch
+      class="gf-form"
+      label="Operations"
+      checked="target.sourceQuery.csQueryFor.operations"
+      label-class="query-keyword width-10"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+  </div>
+</div>
+
+<!-- Resource Pools At Risk -->
+<div ng-if="target.sourceQuery.csQueryType == csCtrl.CSConstants.RESOURCE_POOL" class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <gf-form-switch
+      class="gf-form"
+      label="Resource pools at risk"
+      label-class="query-keyword width-10"
+      checked="target.sourceQuery.csQueryFor.resourcePoolAtRisk"
+      on-change="queryctrl.refresh()"
+    >
+    </gf-form-switch>
+  </div>
+</div>
+
+<!--  Filters  -->
+<!-- <div class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-7">Filter</label>
+    <input
+      class="gf-form-input"
+      ng-blur="queryctrl.refresh()"
+      ng-model="target.sourceQuery.filters"
+      placeholder="Cloud security filter"
+      spellcheck="false"
+      type="text"
+    />
+  </div> -->
+</div>

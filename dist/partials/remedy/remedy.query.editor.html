@@ -1,0 +1,135 @@
+<div class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-7">Type</label>
+      <select class="width-7" ng-change="onQueryTypeChange()" ng-model="target.sourceQuery.queryType">
+        <option ng-repeat="option in remedyctrl.queryType" ng-value="option.value" selectedValue={option.selectedValue}>
+          {{option.label}}
+        </option>
+      </select>
+    </div>
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword">Format As</label>
+      <select class="width-7" ng-change="queryUpdated()" ng-model="target.sourceQuery.formatAs">
+        <option ng-repeat="option in remedyctrl.formatAs" ng-value="option.value" selectedValue={option.label}>
+          {{option.label}}</option>
+      </select>
+    </div>
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label gf-form-label--grow">
+        <!---->
+      </label>
+    </div>
+  </div>
+</div>
+<div class="gf-form-inline" ng-if="target.sourceQuery.queryType !== remedyctrl.default.sourceQuery.queryType">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-7">SQL Editor</label>
+    <code-editor content="target.sourceQuery.rawQuery" datasource="ctrl.datasource" on-change="queryUpdated()"
+      data-mode="sql" data-show-gutter data-max-lines="50">
+    </code-editor>
+  </div>
+</div>
+
+<div ng-if="target.sourceQuery.queryType === remedyctrl.default.sourceQuery.queryType">
+  <div class="gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label query-keyword width-7">Option</label>
+      <div class="gf-form">
+        <gf-form-switch class="gf-form" label="Use Distinct" checked="target.sourceQuery.form.useDistinct"
+          label-class="query-keyword" on-change="onUseDistinctChange()">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form" ng-if="false">
+        <gf-form-switch class="gf-form" label="Use Alias" checked="target.sourceQuery.form.useAlias"
+          label-class="query-keyword">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form">
+        <label class="gf-form-label query-keyword">Fetch Entries</label>
+        <input type="text" class="gf-form-input max-width-5" ng-model='target.sourceQuery.form.maxEntries'
+          ng-blur="onMaxEntries()" placeholder="0-2000"></input>
+      </div>
+      <div class="gf-form">
+        <gf-form-switch class="gf-form" label="Sync SQL" checked="target.sourceQuery.form.meta.syncToSql"
+          label-class="query-keyword" on-change="queryUpdated()" tooltip="Enable Sync and move to edit generated SQL">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form">
+        <gf-form-switch class="gf-form" label="Show Query" checked="target.sourceQuery.form.meta.hideSql"
+          label-class="query-keyword" on-change="queryUpdated()" tooltip="Enable to view SQL">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form" ng-if="false">
+        <gf-form-switch class="gf-form" label="Show JSON" checked="target.sourceQuery.form.meta.hideJson"
+          label-class="query-keyword" on-change="queryUpdated()">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form">
+        <gf-form-switch class="gf-form" label="Show Help" checked="ctrl.showHelp" label-class="query-keyword"
+          on-change="queryUpdated()" tooltip="Show Help">
+        </gf-form-switch>
+      </div>
+      <div class="gf-form gf-form--grow">
+        <label class="gf-form-label gf-form-label--grow">
+          <!---->
+        </label>
+      </div>
+    </div>
+  </div>
+  <div ng-repeat="source in target.sourceQuery.form.sourceList">
+    <remedy-form-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery">
+    </remedy-form-query>
+  </div>
+  <div ng-repeat="selectionList in target.sourceQuery.form.selectionList">
+    <remedy-column-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery">
+    </remedy-column-query>
+  </div>
+  <div ng-repeat="qual in target.sourceQuery.form.qualification">
+    <remedy-where-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery"
+      qual="qual">
+    </remedy-where-query>
+  </div>
+  <div ng-repeat="groupByList in target.sourceQuery.form.groupByField">
+    <remedy-group-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery">
+    </remedy-group-query>
+  </div>
+  <div ng-repeat="qual in target.sourceQuery.form.havingQualification">
+    <remedy-having-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery">
+    </remedy-having-query>
+  </div>
+  <div ng-repeat="orderByList in target.sourceQuery.form.sortField">
+    <remedy-order-query index="$index" on-change="queryUpdated()" datasource="datasource" target="target.sourceQuery">
+    </remedy-order-query>
+  </div>
+  <div class="gf-form gf-form--grow" ng-if="target.sourceQuery.form.meta.hideSql">
+    <label class="gf-form-label query-keyword width-7">SQL Editor</label>
+    <code-editor content="target.sourceQuery.form.meta.rawSql" datasource="ctrl.datasource" on-change="queryUpdated()"
+      data-mode="sql" data-show-gutter data-max-lines="50">
+    </code-editor>
+  </div>
+  <div class="gf-form gf-form--grow" ng-if="target.sourceQuery.form.meta.hideJson">
+    <label class="gf-form-label query-keyword width-7">Output JSON</label>
+    <code-editor content="target.sourceQuery.form.meta.rawJson" datasource="ctrl.datasource" on-change="queryUpdated()"
+      data-mode="json" data-show-gutter data-max-lines="100">
+    </code-editor>
+  </div>
+
+  <div class="gf-form gf-form--grow" ng-if="ctrl.showHelp">
+    <label class="gf-form-label query-keyword width-7">Help</label>
+    <div class="gf-form">
+      <pre class="gf-form-pre alert alert-info">Time series:
+- One <i>__time__</i> is used to get time (UTC in milliseconds)
+- At least one column with numeric data type should be present
+Optional:
+  - Use <i>__metric__</i> to represent the series name
+  - If no column named metric is found the column name of the value column is used as series name
+  - If multiple <i>__value__</i> columns are returned the metric column is used as prefix
+  - All columns with prefix '__value__' are returned
+  - If no columns with prefix '___value__' exists then all numeric data type columns are returned
+Table:
+- return any set of columns
+    </pre>
+    </div>
+  </div>
+</div>

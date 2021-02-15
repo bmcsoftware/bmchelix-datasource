@@ -1,0 +1,58 @@
+<div class="gf-form-inline" ng-class="{'gf-form-disabled': remedyForm.hideColumn}">
+  <div class="gf-form">
+    <label class="gf-form-label query-keyword width-7">
+      Column
+      &nbsp;
+      <a bs-tooltip="'Click to toggle show / hide Column Clause'" ng-click="toggleShowColumnQuery()"
+        style="margin-top: 2px;" ng-if="false">
+        <icon name="'eye'" ng-hide="remedyForm.hideColumn" size="'sm'"></icon>
+        <icon name="'eye-slash'" ng-show="remedyForm.hideColumn" size="'sm'"></icon>
+      </a>
+    </label>
+  </div>
+
+  <div class="gf-form">
+    <div class="gf-form" ng-if="inputValue.selectionType">
+      <label class="dropdown" dropdown-typeahead2="inputAutoComplete.selectionType"
+        dropdown-typeahead-on-select="addColumnTypeMenu($item, $subItem)" button-template-class="gf-form-label">
+      </label>
+      <label class="gf-form-label query-keyword">
+        {{inputValue.selectionType}}
+      </label>
+    </div>
+    <metric-segment-model css-class="width-{inputValue.selectionColumnName.length}" custom="false"
+      on-change="onColumnNameChange()" options="inputAutoComplete.selectionColumnName" index="$index"
+      property="inputValue.selectionColumnName">
+    </metric-segment-model>
+    <div class="gf-form" ng-if="false">
+      <label class="gf-form-label query-keyword">
+        {{inputValue.selectionSrcAlias}}
+      </label>
+    </div>
+    <div class="gf-form" ng-if="inputValue.selectionAlias">
+      <label class="gf-form-label query-keyword">
+        Alias
+      </label>
+      <metric-segment-model css-class="width-{inputValue.selectionAlias.length}" custom="false"
+        on-change="onColumnAliasChange()" options="inputAutoComplete.selectionAlias" index="$index"
+        property="inputValue.selectionAlias"></metric-segment-model>
+    </div>
+  </div>
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label gf-form-label--grow">
+      <!---->
+    </label>
+  </div>
+  <div class="gf-form">
+    <label class="gf-form-label" ng-if="!isSingle">
+      <a class="pointer" ng-click="removeRemedyColumn()">
+        <icon name="'minus'"></icon>
+      </a>
+    </label>
+    <label class="gf-form-label" ng-if="isFirst">
+      <a class="pointer" ng-click="addRemedyColumn()">
+        <icon name="'plus'"></icon>
+      </a>
+    </label>
+  </div>
+</div>

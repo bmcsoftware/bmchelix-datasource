@@ -1,0 +1,55 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "commercial",
+  "signedByOrg": "bmchelix",
+  "signedByOrgName": "BMC Software",
+  "plugin": "bmchelix-ade-datasource",
+  "version": "1.0.0",
+  "time": 1613379811289,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "img/grafana_icon.svg": "e892b49dbbef13736ddd8eec6e020e7bd4ca4437923c7890ed6113d3cbe58b78",
+    "img/logo.svg": "387f3012fc0590e3c5c599b24d6ed0ebf169afda5e718cb7aed52b8216939d5a",
+    "LICENSE": "3876e8dd643c2a02b69f771ffb4a48fbe122552731814525a0d2361f66e2beb9",
+    "module.js": "a6e9ce98ef464e1c1306c953647f6fc510b2a5f7a0daa1f711ab605f605c4681",
+    "module.js.map": "de52fe27412ed6c35d4e5693639836206857cfc346e94506ff6a58cd60e6a3b6",
+    "partials/annotations.editor.html": "e693df23171b0ed5f2fad4fe6d44c57d2bba50f32c6b680d5453c29a292f884d",
+    "partials/cloudsecurity/cloudsecurity.query.editor.html": "ea1ae50c62b033878a9617b32c49aaa329a495c8e6d18e172c1f252afaa26666",
+    "partials/event/annotations.editor.html": "4df1e849c4dbb489b3101f44d13b3492aef6f5bfadabe862ffcb8a04f5edbf2e",
+    "partials/event/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
+    "partials/event/event.query.editor.html": "30d019af3028437f285e403cd181fa4e018eb4ef899f8248f78b7db5bb5edd00",
+    "partials/event/metric_agg.html": "9f54dd6fa8cbc9864754e866d59f352bd7379797efd2da7b56512ec281227e48",
+    "partials/event/pipeline_variables.html": "502583ecf8f3ba3aead9be32f996f758140dcac9f2e4ec524d20ba9cb169e2c8",
+    "partials/log/annotations.editor.html": "312a5a5254b4be8a17d1a0cb1f325e1240f1b6d0d8e9a68ae0a34e38c5a11740",
+    "partials/log/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
+    "partials/log/log.query.editor.html": "04b63f4108d5d699e2ade167e23f96787e750b1d903436eb011d0ba32414e26e",
+    "partials/log/metric_agg.html": "76a932c3cf382f3c98b8bdcc7e7e75ba167cc55603bc09162489c3629ddb027b",
+    "partials/log/pipeline_variables.html": "502583ecf8f3ba3aead9be32f996f758140dcac9f2e4ec524d20ba9cb169e2c8",
+    "partials/metric/annotations.editor.html": "d3aaa3eadfd486425b6420bf59a9e0a80802bc96485cf9668e00b8e39f5817b0",
+    "partials/query.editor.html": "6a00dba618fc8b7884f4c789a306c19f70e5e25fc2579ad7ec89b8f4325ed7be",
+    "partials/remedy/remedy.column.query.html": "a3071c6deccaca03bcd13c19848033efd31b68cfd6a7daea11353a9425e4fbae",
+    "partials/remedy/remedy.form.query.html": "451ffac8ad03cb0b252463eaf17ec5a86ff5ea82cd8d1c861ee8c49a2a0de53a",
+    "partials/remedy/remedy.group.query.html": "0eee82515dd0b47679e2eb8ea1a9444ae902df0f9cb5c9e82dcdf08c2a9a2515",
+    "partials/remedy/remedy.having.query.html": "08ff9ee231fa00a9183840dbc57085ad2e557356946ba8cb5653f32895b2909a",
+    "partials/remedy/remedy.order.query.html": "bd9d3d91ea0639d4424486e3e1e0e285041c87536d4963537604b1bdfa65f6d1",
+    "partials/remedy/remedy.qual.query.html": "368b1af0ee7fd6cb2578bb8c52b14ea8b832b02fb622ea1be3312c33eab477ef",
+    "partials/remedy/remedy.query.editor.html": "25b9cdf08481e85af7a7eac4365e255c2bb7fcbb4050bd9d839ca659b2f3de70",
+    "partials/remedy/remedy.where.query.html": "33c0be4d113ebfd562aac598e3f77960e3b237e5b2a904ef5b1fe640a3b28b55",
+    "plugin.json": "2f5303393e7fc84f49ee1c8a5757d1949e83b85cc990626253da0b17e52de6bd",
+    "README.md": "269bd6177c5f88b86c766cffc81dafd6b0e5a46899afe192fe75abe3c48190c5"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqIEARMKAAYFAmAqOOMACgkQfk0ManCIZuex5wIJAdtcpXIYGBznXC884cz4
+u32oEbZ/EPtILiGSXi8/siVWuMtTrSa780WBFA6Tw3Dh+x332Dm0gZWKcI5w
+kPJzEZ1rAgkBgS1kRG0lVCJesMVukaHxXs56plX71VEY3zjqJ1Wzu9nPIZU1
+1vyZdQuXSqINq9oAHoCleu97Q2r+zq+l/hf9TO0=
+=kEym
+-----END PGP SIGNATURE-----

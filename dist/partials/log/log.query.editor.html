@@ -1,0 +1,44 @@
+<div class="gf-form-inline">
+  <div class="gf-form gf-form--grow">
+    <label class="gf-form-label query-keyword width-7">Query</label>
+    <input
+      class="gf-form-input"
+      ng-blur="queryctrl.refresh()"
+      ng-model="target.sourceQuery.query"
+      placeholder="Lucene query"
+      spellcheck="false"
+      type="text"
+    />
+  </div>
+  <div class="gf-form max-width-15">
+    <label class="gf-form-label query-keyword">Alias</label>
+    <input
+      class="gf-form-input"
+      ng-blur="queryctrl.refresh()"
+      ng-model="target.sourceQuery.alias"
+      placeholder="alias patterns"
+      spellcheck="false"
+      type="text"
+    />
+  </div>
+</div>
+
+<div ng-repeat="agg in target.sourceQuery.metrics">
+  <log-metric-agg
+    get-fields="getFields($fieldType)"
+    index="$index"
+    on-change="queryUpdated()"
+    target="target.sourceQuery"
+  >
+  </log-metric-agg>
+</div>
+
+<div ng-repeat="agg in target.sourceQuery.bucketAggs">
+  <log-bucket-agg
+    get-fields="getFields($fieldType)"
+    index="$index"
+    on-change="queryUpdated()"
+    target="target.sourceQuery"
+  >
+  </log-bucket-agg>
+</div>

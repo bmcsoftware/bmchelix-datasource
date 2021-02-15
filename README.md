@@ -22,11 +22,14 @@ This datasource uses the Instana REST API to query the underlying data services.
 
 First of all you will need to generate an Access key & Secret key in BMC Helix portal and configure as shown below.
 
-
-![datasource configuration](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/blob/main/screenshots/configuration.png)
-
 ## Usage
+
+<WIP>
 
 ### Query Types
 
+<WIP>
+
 ### Query Editor
+
+<WIP>

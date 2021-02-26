@@ -27,17 +27,72 @@ Configure Retrived values as shown below
 ![datasource configuration](screenshots/configuration.png)
 
 ## Usage
+- - - -
+### Query Types
+The following query types are available:
+* CloudSecurity
 
-- WIP
+   Use this query type to fetch compliance data of the devices in your environment.
+* Events
 
-#### Query Types
+  Use this query type to fetch event data on the devices in your environment.
+* Metric
 
-- WIP
+  Use this query type to fetch the performance metrics data of the devices in your environment.
 
-#### Query Editor
+### Query Editor
 
-- WIP
+This section describes the each query editor.
 
-### Sample Dashboards
+### **Cloud Security**
 
-- WIP
+The following image displays the CloudSecurity query type:
+
+![query type](screenshots/cloudSecurity_query.png)
+
+This query type requires the following data:
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Query** | Use one of the following queries to build a panel. The options for each query type are different <br> <li><b>Asset Compliance<br><li><b>Policy Compliance<br><li><b>Compliance Trend<br><li><b>Risk Account<br><li><b>Operations<br><li><b>Resource Pool<br> |
+|
+
+<br>
+
+
+### **Events**
+
+The following image displays the Events query type:
+
+![query type](screenshots/events_query.png)
+
+This query type requires the following data:
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Query** | Use a Lucene query syntax here |
+| **Metric** | Click this field to select a metric for the query. For example, Average, Min, Max, and so on |
+| **Group by** | Select a clause to group your data in the panel. |
+|
+
+<br>
+
+### **Metrics**
+
+The following image displays the Metric query type:
+
+![query type](screenshots/metric_query.png)
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Metrics** | Add a metrics query to this field. <br> You can also select an available query form the list. Click the <b>Metrics</b> field to view a list of available queries. |
+| **Legend** |Add a legend to appear in the panel. <br> You can use a variable here. For example, the value of the {{hostname}} variable is replaced with the host name in the panel. |
+| **Min step** | Add a threshold for a lower limit of the Prometheus query. This setting is absolute, and cannot be changed by the value in the <b>Resolution</b> field.|
+| **Resolution** | Sets the parameter for each pixel to correspond to one data point of a Prometheus range query. Use lower resolutions for better performance.|
+| **Format** | Select one of the following formats for the panel: <br><li><b>Time Series <br><li><b>Table<br><li><b>Heatmap|
+| **Instant** | Use this radio button to return only the latest value for the requested time series. Instant queries return results faster than the normal range queries.|
+|
+<br>

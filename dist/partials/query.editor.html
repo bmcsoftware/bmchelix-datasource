@@ -1,8 +1,8 @@
 <query-editor-row can-collapse="true" query-ctrl="ctrl">
   <div class="gf-form-inline">
     <div class="gf-form gf-form--grow">
-      <label class="gf-form-label query-keyword width-7">Query Type</label>
-      <select ng-change="ctrl.onqueryTypeChange()" ng-model="ctrl.target.sourceType">
+      <label class="gf-form-label query-keyword width-7">Query type</label>
+      <select class="gf-form-input width-10" ng-change="ctrl.onqueryTypeChange()" ng-model="ctrl.target.sourceType">
         <option ng-repeat="option in ctrl.target.queryTypeOptions" ng-value="option.value">{{option.text}}</option>
       </select>
     </div>

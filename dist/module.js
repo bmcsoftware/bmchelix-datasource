@@ -18449,7 +18449,7 @@ function () {
 /*!**********************!*\
   !*** ./Constants.ts ***!
   \**********************/
-/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES */
+/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES, OPTIMIZE_SELECTION */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18470,6 +18470,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_GEN_URL", function() { return JWT_TOKEN_GEN_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_STORAGE_KEY", function() { return JWT_TOKEN_STORAGE_KEY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ENABLED_FEATURES", function() { return ENABLED_FEATURES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OPTIMIZE_SELECTION", function() { return OPTIMIZE_SELECTION; });
 // Please do not modify these below URLs.
 // This is base url for query editor html template.
 var QUERY_EDITOR_BASE_URL = 'partials/query.editor.html'; // This is base url for all other html templates which will be defined in directive or ng-include.
@@ -18490,6 +18491,7 @@ var JWT_TOKEN_REFRESH_URL = 'dashboards/ims/refresh-jwt';
 var JWT_TOKEN_GEN_URL = 'ims/api/v1/access_keys/login';
 var JWT_TOKEN_STORAGE_KEY = 'jwtTokenObj';
 var ENABLED_FEATURES = 'enabledFeatures';
+var OPTIMIZE_SELECTION = 'optimize-selection';
 
 /***/ }),
 
@@ -18566,7 +18568,7 @@ function (_super) {
         case _types__WEBPACK_IMPORTED_MODULE_8__["InstancePlatform"].ENTERPRISE:
           {
             BMCDataSource.authHelper = new _auth_EntAuthHelper__WEBPACK_IMPORTED_MODULE_7__["EntAuthHelper"]();
-            BMCDataSource.tokenObj = BMCDataSource.authHelper.initToken(this.instSet);
+            BMCDataSource.authHelper.initToken(this.instSet);
             break;
           }
       }
@@ -18575,52 +18577,23 @@ function (_super) {
 
   BMCDataSource.prototype.validateToken = function () {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var _a, token, token;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-        switch (_b.label) {
+      var token;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        switch (_a.label) {
           case 0:
-            _a = this.instPlatform;
-
-            switch (_a) {
-              case _types__WEBPACK_IMPORTED_MODULE_8__["InstancePlatform"].ADE:
-                return [3
-                /*break*/
-                , 1];
-
-              case _types__WEBPACK_IMPORTED_MODULE_8__["InstancePlatform"].ENTERPRISE:
-                return [3
-                /*break*/
-                , 2];
-            }
-
-            return [3
+            if (!(this.instPlatform === _types__WEBPACK_IMPORTED_MODULE_8__["InstancePlatform"].ENTERPRISE)) return [3
             /*break*/
-            , 4];
-
-          case 1:
-            {
-              token = BMCDataSource.authHelper.getToken(BMCDataSource.tokenObj);
-              BMCDataSource.tokenObj = token;
-              return [3
-              /*break*/
-              , 4];
-            }
-            _b.label = 2;
-
-          case 2:
+            , 2];
             return [4
             /*yield*/
             , BMCDataSource.authHelper.getToken(this.instSet)];
 
-          case 3:
-            token = _b.sent();
+          case 1:
+            token = _a.sent();
             BMCDataSource.tokenObj = token;
-            return [3
-            /*break*/
-            , 4];
+            _a.label = 2;
 
-          case 4:
+          case 2:
             return [2
             /*return*/
             ];
@@ -19035,16 +19008,7 @@ function (_super) {
   };
 
   ADEAuthHelper.prototype.initToken = function (backendSrv) {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var tokenObj;
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        tokenObj = this.getJWTTokenFromContext(backendSrv);
-        this.getToken(tokenObj);
-        return [2
-        /*return*/
-        ];
-      });
-    });
+    return this.getJWTTokenFromContext(backendSrv);
   };
 
   ADEAuthHelper.prototype.getToken = function (tokenObj) {
@@ -19052,7 +19016,7 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         return [2
         /*return*/
-        , tokenObj];
+        ];
       });
     });
   };
@@ -19197,10 +19161,9 @@ function (_super) {
   EntAuthHelper.prototype.initToken = function (instSettings) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        this.getToken(instSettings);
         return [2
         /*return*/
-        ];
+        , this.getToken(instSettings)];
       });
     });
   };
@@ -22169,8 +22132,7 @@ function () {
       queryHandlerInstance.queryBuilder.build(this.target.sourceQuery);
     };
 
-    $scope.queryUpdated();
-    $scope.queryctrl.refresh();
+    $scope.queryUpdated(); //$scope.queryctrl.refresh();
   }
 
   return EventQueryEditorCtrl;
@@ -25234,8 +25196,7 @@ function () {
       queryHandlerInstance.queryBuilder.build(this.target.sourceQuery);
     };
 
-    $scope.queryUpdated();
-    $scope.queryctrl.refresh();
+    $scope.queryUpdated(); //$scope.queryctrl.refresh();
   }
 
   return LogQueryEditorCtrl;
@@ -29698,6 +29659,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _MetricQueryField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MetricQueryField */ "./query-modules/metric/MetricQueryField.tsx");
+/* harmony import */ var QueryCtrl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! QueryCtrl */ "./QueryCtrl.ts");
+/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+
+
 
 
 
@@ -29749,11 +29714,12 @@ function (_super) {
       }, _this.onRunQuery);
     };
 
-    _this.onSourceChange = function (option) {
-      _this.query.sourceQuery.source = option.value;
+    _this.onSourceChange = function (e) {
+      var sourceOption = e.currentTarget.value;
+      _this.query.sourceQuery.source = e.currentTarget.value;
 
       _this.setState({
-        sourceOption: option
+        sourceOption: sourceOption
       }, _this.onRunQuery);
     };
 
@@ -29820,9 +29786,7 @@ function (_super) {
       formatOption: FORMAT_OPTIONS.find(function (option) {
         return option.value === query.format;
       }) || FORMAT_OPTIONS[0],
-      sourceOption: SOURCE_OPTIONS.find(function (option) {
-        return option.value === query.source;
-      }) || SOURCE_OPTIONS[0],
+      sourceOption: query.source,
       intervalFactorOption: INTERVAL_FACTOR_OPTIONS.find(function (option) {
         return option.value === query.intervalFactor;
       }) || INTERVAL_FACTOR_OPTIONS[0],
@@ -29842,17 +29806,23 @@ function (_super) {
         intervalFactorOption = _a.intervalFactorOption,
         legendFormat = _a.legendFormat,
         instant = _a.instant;
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, Object(QueryCtrl__WEBPACK_IMPORTED_MODULE_5__["getFeatureStatus"])(Constants__WEBPACK_IMPORTED_MODULE_6__["OPTIMIZE_SELECTION"]) ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "gf-form-label width-7 query-keyword"
-    }, "Source"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 16,
-      isSearchable: false,
-      options: SOURCE_OPTIONS,
+    }, "Source"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("select", {
+      className: "gf-form-input width-10",
+      required: true,
       onChange: this.onSourceChange,
       value: sourceOption
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MetricQueryField__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    }, SOURCE_OPTIONS.map(function (_a, i) {
+      var value = _a.value,
+          label = _a.label;
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+        key: i,
+        value: value
+      }, label);
+    }))) : null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MetricQueryField__WEBPACK_IMPORTED_MODULE_4__["default"], {
       datasource: datasource,
       query: query,
       onRunQuery: this.onRunQuery,
@@ -35657,7 +35627,7 @@ var SmartGraphConstants =
 function () {
   function SmartGraphConstants() {}
 
-  SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL = 'smart-graph-api/api/v1.2/data/search?format=object&query=search BusinessService show #id,name';
+  SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL = 'smart-graph-api/api/v1.2/data/search?format=object&query=search BusinessService show ' + encodeURIComponent('#id') + ',name';
   return SmartGraphConstants;
 }();
 
@@ -35683,6 +35653,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _SmartGraphConstants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SmartGraphConstants */ "./query-modules/smartgraph/SmartGraphConstants.ts");
+/* harmony import */ var DataSource__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! DataSource */ "./DataSource.ts");
+
 
 
 
@@ -35763,7 +35735,7 @@ function (_super) {
         Authorization: ''
       }
     };
-    var imsJWTToken = 'eyJraWQiOiIyYjNlYTgyYS0xZDEwLTQwMzItOTJiMC02OTUwZGNmNGE4YzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiIxNzk1MTc1NTQ3Ojo0NTEyMTU2NDIzNjc3OTAiLCJhdWQiOiJibWNfYWRlX2Nsb3VkX3NlcnZpY2VzIiwiYW1yIjpbImV5SjFjMlZ5WDJsa0lqb2lORFV4TWpFMU5qUXlNelkzTnprd0lpd2ljSEpwYm1OcGNHRnNYMmxrSWpvaVlXNWtlU0lzSW5WelpYSmZjM1JoZEhWeklqb2lSVTVCUWt4Rklpd2lkSGx3WlNJNklsQkZVbE5QVGlJc0luUmxibUZ1ZEY5cFpDSTZJakUzT1RVeE56VTFORGNpTENKeWIyeGxjeUk2V3lJeU1qWTJNVFF5TURBek1EZ3pPREVpTENJM05UTTJOak15T1RNek16a3dNREFpTENJek1UYzVOVEkxTkRBeU5qTTNPVFlpTENJeE1EZ3pNakF3TXpNNU1EWTRNekFpWFN3aVozSnZkWEJ6SWpwYklqazBNRFV5T1RnNU16azVOakF4TVNKZExDSndaWEp0YVhOemFXOXVjeUk2V3lJcUlsMTkiXSwiaXNzIjoiYm1jX2FkZV9jbG91ZF9zZXJ2aWNlc19pbXMiLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjoxNjA3NDI3MzI5LCJpYXQiOjE2MDc0MjY0MjksImp0aSI6IjQxZTZlMzcxLTU1ZGUtNDIzZS1hZjRjLWRhNTVjMTVhMWU5ZSJ9.FISlsO9omfkAug7l-Dxd03f71rmrpDFbuDoKQLuOrZXhqf6-n0KjxYsTXgs1R0m2qn_gqbV9MZ52AbQtZINMyXDBVo8S4PPXZIfyHxLWe6ZmE3ophUd5XGNk1QW1LXF8k908PZP8DYt9RfWaltGb95U_fa-oYQuI_jBu4FPDdsLENqqwRBCETXigzS_fpdKiC1e9WYMZ-B3smnRFZykXrEf4pOoZ_10we1Zn5d4mP3rsy5frw86pjcGGhnhPSqwGyaVX6EjHz6G4H2tX-AzY-GQotlCROBxgb3YaMCANpXvxxgm3AnoQoCOfzwR0tDQ1A3kpqnsNopg0kT5OdnPwyQ';
+    var imsJWTToken = DataSource__WEBPACK_IMPORTED_MODULE_5__["BMCDataSource"].tokenObj.adeJWTToken;
 
     if (imsJWTToken !== undefined) {
       options.headers['Authorization'] = 'Bearer ' + imsJWTToken;

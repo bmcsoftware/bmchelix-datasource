@@ -5,7 +5,7 @@ This is a Grafana datasource for fetching Metrics, Events & logs from Helix Moni
 
 ## Requirements
 
-Grafana 7.0.0+ is required.
+Grafana 7.3.1+ is required.
 
 BMC Helix v21.02+ license/subscription is required
 
@@ -20,13 +20,76 @@ BMC Helix v21.02+ license/subscription is required
 
 This datasource uses the Instana REST API to query the underlying data services.
 
-First of all you will need to generate an Access key & Secret key in BMC Helix portal and configure as shown below.
+First of all you will need to generate an Access key & Secret key in BMC Helix portal ([Keys](https://docs.bmc.com/docs/BMCHelixPortal/setting-up-api-users-for-programmatic-access-967330979.html))
 
+Configure Retrived values as shown below
 
-![datasource configuration](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/master/screenshots/v3.1.0/configuration.png)
+![datasource configuration](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/configuration.png)
 
 ## Usage
-
+- - - -
 ### Query Types
+The following query types are available:
+* CloudSecurity
+
+   Use this query type to fetch compliance data of the devices in your environment.
+* Events
+
+  Use this query type to fetch event data on the devices in your environment.
+* Metric
+
+  Use this query type to fetch the performance metrics data of the devices in your environment.
 
 ### Query Editor
+
+This section describes the each query editor.
+
+### **Cloud Security**
+
+The following image displays the CloudSecurity query type:
+
+![query type](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/cloudSecurity_query.png)
+
+This query type requires the following data:
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Query** | Use one of the following queries to build a panel. The options for each query type are different <br> <li><b>Asset Compliance<br><li><b>Policy Compliance<br><li><b>Compliance Trend<br><li><b>Risk Account<br><li><b>Operations<br><li><b>Resource Pool<br> |
+
+<br>
+
+
+### **Events**
+
+The following image displays the Events query type:
+
+![query type](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/events_query.png)
+
+This query type requires the following data:
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Query** | Use a Lucene query syntax here |
+| **Metric** | Click this field to select a metric for the query. For example, Average, Min, Max, and so on |
+| **Group by** | Select a clause to group your data in the panel. |
+
+<br>
+
+### **Metrics**
+
+The following image displays the Metric query type:
+
+![query type](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/metric_query.png)
+
+| Field | Description |
+|------|-------|
+| **Query Type** | Use this field to select the query type |
+| **Metrics** | Add a metrics query to this field. <br> You can also select an available query form the list. Click the <b>Metrics</b> field to view a list of available queries. |
+| **Legend** |Add a legend to appear in the panel. <br> You can use a variable here. For example, the value of the {{hostname}} variable is replaced with the host name in the panel. |
+| **Min step** | Add a threshold for a lower limit of the Prometheus query. This setting is absolute, and cannot be changed by the value in the <b>Resolution</b> field.|
+| **Resolution** | Sets the parameter for each pixel to correspond to one data point of a Prometheus range query. Use lower resolutions for better performance.|
+| **Format** | Select one of the following formats for the panel: <br><li><b>Time Series <br><li><b>Table<br><li><b>Heatmap|
+| **Instant** | Use this radio button to return only the latest value for the requested time series. Instant queries return results faster than the normal range queries.|
+<br>

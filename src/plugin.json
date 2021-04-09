@@ -4,6 +4,8 @@
   "id": "bmchelix-ade-datasource",
   "metrics": true,
   "annotations": true,
+  "backend": true,
+  "executable": "gpx_bmchelix-ade-datasource",
   "info": {
     "description": "This is the BMC ADE datasource plugin that is used to connect to BMC Helix Applications.",
     "author": {

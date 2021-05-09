@@ -3,9 +3,9 @@ import { getBackendSrv } from '@grafana/runtime';
 export class AuthHelper {
   constructor() {}
 
-  async post(url: any, restEndPoint: string, data: any) {
+  async post(url: any) {
     try {
-      const results = await this.request(url, 'POST', restEndPoint, data);
+      const results = await this.request(url, 'POST');
       return results;
     } catch (err) {
       if (err.data && err.data.error) {
@@ -19,12 +19,14 @@ export class AuthHelper {
     }
   }
 
-  private request(url: any, method: string, restEndPoint: string, data?: undefined) {
+
+
+  private request(url: any, method: string) {
     const options: any = {
-      url: url + '/' + restEndPoint,
-      method: method,
-      data: data,
+      url: url,
+      method: method
     };
     return getBackendSrv().datasourceRequest(options);
   }
+  
 }

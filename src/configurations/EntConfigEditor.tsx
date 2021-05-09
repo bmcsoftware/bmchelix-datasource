@@ -1,26 +1,28 @@
-import { DataSourcePluginOptionsEditorProps, onUpdateDatasourceJsonDataOption } from '@grafana/data';
+import {
+  DataSourcePluginOptionsEditorProps,
+  onUpdateDatasourceJsonDataOption,
+  onUpdateDatasourceSecureJsonDataOption,
+  updateDatasourcePluginResetOption,
+} from '@grafana/data';
 import { InlineFormLabel, LegacyForms } from '@grafana/ui';
-import React, { PureComponent } from 'react';
-import { BMCDataSourceOptions } from '../types';
+import React, { ChangeEvent, PureComponent } from 'react';
+import { BMCDataSourceOptions, HelixSecureJsonData } from '../types';
 const { Input, SecretFormField } = LegacyForms;
 
 interface Props extends DataSourcePluginOptionsEditorProps<BMCDataSourceOptions> {}
 
-interface State {
-  accessKeyConfigured: boolean;
-  secretKeyConfigured: boolean;
-}
+interface State {}
 
 export class EntConfigEditor extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      accessKeyConfigured: this.props.options?.jsonData?.accessKey?.length > 0,
-      secretKeyConfigured: this.props.options?.jsonData?.secretKey?.length > 0,
-    };
-  }
+  onResetAccessKey = () => {
+   updateDatasourcePluginResetOption(this.props, 'accessKey');
+  };
 
-  onUpdateURL = (e: React.SyntheticEvent<HTMLInputElement>) => {
+  onResetSecretKey = () => {
+    updateDatasourcePluginResetOption(this.props, 'secretKey');
+  };
+
+  onUpdateURL = (e: ChangeEvent<HTMLInputElement>) => {
     const { options, onOptionsChange } = this.props;
     onOptionsChange({
       ...options,
@@ -29,26 +31,11 @@ export class EntConfigEditor extends PureComponent<Props, State> {
     });
   };
 
-  onResetAccessKey = () => {
-    this.setState({
-      ...this.state,
-      accessKeyConfigured: false,
-    });
-    this.props.options.jsonData.accessKey = '';
-    onUpdateDatasourceJsonDataOption(this.props, 'accessKey');
-  };
-
-  onResetSecretKey = () => {
-    this.setState({
-      ...this.state,
-      secretKeyConfigured: false,
-    });
-    this.props.options.jsonData.secretKey = '';
-    onUpdateDatasourceJsonDataOption(this.props, 'secretKey');
-  };
-
   render() {
     const { options } = this.props;
+    const { secureJsonFields } = options;
+    const secureJsonData = (options.secureJsonData || {}) as HelixSecureJsonData;
+
     return (
       <div className="gf-form-group">
         <div className="gf-form-inline">
@@ -86,28 +73,28 @@ export class EntConfigEditor extends PureComponent<Props, State> {
         <div className="gf-form-inline">
           <div className="gf-form">
             <SecretFormField
-              isConfigured={this.state.accessKeyConfigured}
-              value={options.jsonData.accessKey || ''}
-              label="Access key"
+              isConfigured={(secureJsonFields && secureJsonFields.accessKey) as boolean}
+              value={secureJsonData.accessKey || ''}
+              label="Access Key"
               labelWidth={10}
               inputWidth={20}
               placeholder={'XXXXX-XXXXXXXXX-XXXXX'}
               onReset={this.onResetAccessKey}
-              onChange={onUpdateDatasourceJsonDataOption(this.props, 'accessKey')}
+              onChange={onUpdateDatasourceSecureJsonDataOption(this.props, 'accessKey')}
             />
           </div>
         </div>
         <div className="gf-form-inline">
           <div className="gf-form">
             <SecretFormField
-              isConfigured={this.state.secretKeyConfigured}
-              value={options.jsonData.secretKey || ''}
-              label="Secret key"
+              isConfigured={(secureJsonFields && secureJsonFields.secretKey) as boolean}
+              value={secureJsonData.secretKey || ''}
+              label="Secret Key"
               labelWidth={10}
               inputWidth={20}
               placeholder={'XXXXX-XXXXXXXXX-XXXXX'}
               onReset={this.onResetSecretKey}
-              onChange={onUpdateDatasourceJsonDataOption(this.props, 'secretKey')}
+              onChange={onUpdateDatasourceSecureJsonDataOption(this.props, 'secretKey')}
             />
           </div>
         </div>

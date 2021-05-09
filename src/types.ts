@@ -19,14 +19,17 @@ export enum InstancePlatform {
  * These are options configured for each DataSource instance
  */
 export interface BMCDataSourceOptions extends DataSourceJsonData {
-  timeField: string;
-  interval: string;
-  timeInterval: string;
-  platformURL: string;
-  tenantURL: string;
-  tenantId: string;
-  accessKey: string;
-  secretKey: string;
+  timeField?: string;
+  interval?: any;
+  timeInterval?: string;
+  platformURL?: string;
+  tenantURL?: string;
+  tenantId?: string;
+}
+
+export interface HelixSecureJsonData {
+  accessKey?: string;
+  secretKey?: string;
 }
 
 export const queryTypeOptions: any = [

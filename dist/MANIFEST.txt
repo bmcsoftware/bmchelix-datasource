@@ -9,47 +9,52 @@ Hash: SHA512
   "signedByOrgName": "BMC Software",
   "plugin": "bmchelix-ade-datasource",
   "version": "1.0.0",
-  "time": 1617035967846,
+  "time": 1620557723204,
   "keyId": "7e4d0c6a708866e7",
   "files": {
-    "img/grafana_icon.svg": "e892b49dbbef13736ddd8eec6e020e7bd4ca4437923c7890ed6113d3cbe58b78",
-    "img/logo.svg": "387f3012fc0590e3c5c599b24d6ed0ebf169afda5e718cb7aed52b8216939d5a",
+    "gpx_bmchelix-ade-datasource_linux_arm": "0fa07dd46e7cdd25a8848dadcd416c95ba4e1eb26c30c6ca7a64ca379e6bd2ba",
+    "module.js.map": "fe86f6dfdbbbf626a716c1427bb4e8f5a82603ef491c5dcbfd9f461a9eec55af",
     "LICENSE": "2e2fe007304853ac72ab4389a8c72bb86b9337e6f17f90b392b79ce2e5b480d4",
-    "module.js": "cd915b4d6f39e87b221d75d5b9f23c1fecf5abb09d4678d2e28cf768ae656ddb",
-    "module.js.map": "ae5c911ce2a3ec942d2aeac69f84eb93b219b7c21bbea86694c68e457207857b",
-    "partials/annotations.editor.html": "e693df23171b0ed5f2fad4fe6d44c57d2bba50f32c6b680d5453c29a292f884d",
-    "partials/cloudsecurity/cloudsecurity.query.editor.html": "ea1ae50c62b033878a9617b32c49aaa329a495c8e6d18e172c1f252afaa26666",
-    "partials/event/annotations.editor.html": "4df1e849c4dbb489b3101f44d13b3492aef6f5bfadabe862ffcb8a04f5edbf2e",
-    "partials/event/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
-    "partials/event/event.query.editor.html": "30d019af3028437f285e403cd181fa4e018eb4ef899f8248f78b7db5bb5edd00",
-    "partials/event/metric_agg.html": "9f54dd6fa8cbc9864754e866d59f352bd7379797efd2da7b56512ec281227e48",
-    "partials/event/pipeline_variables.html": "502583ecf8f3ba3aead9be32f996f758140dcac9f2e4ec524d20ba9cb169e2c8",
-    "partials/log/annotations.editor.html": "312a5a5254b4be8a17d1a0cb1f325e1240f1b6d0d8e9a68ae0a34e38c5a11740",
-    "partials/log/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
+    "gpx_bmchelix-ade-datasource_linux_arm64": "56d64dee3fcff1c917d9aaaee130aa3ba500e71aab4b4edf9c7cd8616b3eb524",
+    "module.js": "691b5bdc0473d07bd9c80ef593de305d19f326580078b366ff20b025dc8cac02",
+    "gpx_bmchelix-ade-datasource_windows_amd64.exe": "1b17ad8c07fb45c0bbe8b55ff7808925f04b7b55079fbff1e3d179bc016e0ee4",
+    "img/logo.svg": "387f3012fc0590e3c5c599b24d6ed0ebf169afda5e718cb7aed52b8216939d5a",
+    "img/grafana_icon.svg": "e892b49dbbef13736ddd8eec6e020e7bd4ca4437923c7890ed6113d3cbe58b78",
+    "gpx_bmchelix-ade-datasource_linux_amd64": "93bbd6a066d31483d35628e22dcb457c8348996f149c0bfdab4c9f4860047ebe",
+    "plugin.json": "d0425dee0ae7c10e483b963b23910dea47067f24037bb5c79437cd974c504477",
+    "gpx_bmchelix-ade-datasource_darwin_amd64": "b401cba438fe53589f3b454632996d090d0b3326dfe325abf900c5e6f56d9ee4",
+    "README.md": "bbcd35b4f1d438bb531c8d2494a7a606e484ee52ca8fca56371212d974a060ba",
+    "partials/query.editor.html": "f87995a97f795f802aa726317423b23f7c472d795bf0c2e4af3611edac80b29a",
+    "partials/metric/annotations.editor.html": "d3aaa3eadfd486425b6420bf59a9e0a80802bc96485cf9668e00b8e39f5817b0",
     "partials/log/log.query.editor.html": "04b63f4108d5d699e2ade167e23f96787e750b1d903436eb011d0ba32414e26e",
+    "partials/log/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
     "partials/log/metric_agg.html": "76a932c3cf382f3c98b8bdcc7e7e75ba167cc55603bc09162489c3629ddb027b",
     "partials/log/pipeline_variables.html": "502583ecf8f3ba3aead9be32f996f758140dcac9f2e4ec524d20ba9cb169e2c8",
-    "partials/metric/annotations.editor.html": "d3aaa3eadfd486425b6420bf59a9e0a80802bc96485cf9668e00b8e39f5817b0",
-    "partials/query.editor.html": "f87995a97f795f802aa726317423b23f7c472d795bf0c2e4af3611edac80b29a",
-    "partials/remedy/remedy.column.query.html": "a3071c6deccaca03bcd13c19848033efd31b68cfd6a7daea11353a9425e4fbae",
-    "partials/remedy/remedy.form.query.html": "451ffac8ad03cb0b252463eaf17ec5a86ff5ea82cd8d1c861ee8c49a2a0de53a",
+    "partials/log/annotations.editor.html": "312a5a5254b4be8a17d1a0cb1f325e1240f1b6d0d8e9a68ae0a34e38c5a11740",
+    "partials/annotations.editor.html": "e693df23171b0ed5f2fad4fe6d44c57d2bba50f32c6b680d5453c29a292f884d",
+    "partials/remedy/remedy.where.query.html": "33c0be4d113ebfd562aac598e3f77960e3b237e5b2a904ef5b1fe640a3b28b55",
     "partials/remedy/remedy.group.query.html": "0eee82515dd0b47679e2eb8ea1a9444ae902df0f9cb5c9e82dcdf08c2a9a2515",
     "partials/remedy/remedy.having.query.html": "08ff9ee231fa00a9183840dbc57085ad2e557356946ba8cb5653f32895b2909a",
-    "partials/remedy/remedy.order.query.html": "bd9d3d91ea0639d4424486e3e1e0e285041c87536d4963537604b1bdfa65f6d1",
-    "partials/remedy/remedy.qual.query.html": "368b1af0ee7fd6cb2578bb8c52b14ea8b832b02fb622ea1be3312c33eab477ef",
     "partials/remedy/remedy.query.editor.html": "25b9cdf08481e85af7a7eac4365e255c2bb7fcbb4050bd9d839ca659b2f3de70",
-    "partials/remedy/remedy.where.query.html": "33c0be4d113ebfd562aac598e3f77960e3b237e5b2a904ef5b1fe640a3b28b55",
-    "plugin.json": "44590499ecc0383d6260bec048a865cf1c814e9bccaf3b597e58cfb9ff5a1d02",
-    "README.md": "dd46c5808271c97c5ceb5ea7cb9f40a1ea37f9496ae469baa39fc5956278ec3a"
+    "partials/remedy/remedy.qual.query.html": "368b1af0ee7fd6cb2578bb8c52b14ea8b832b02fb622ea1be3312c33eab477ef",
+    "partials/remedy/remedy.order.query.html": "bd9d3d91ea0639d4424486e3e1e0e285041c87536d4963537604b1bdfa65f6d1",
+    "partials/remedy/remedy.form.query.html": "451ffac8ad03cb0b252463eaf17ec5a86ff5ea82cd8d1c861ee8c49a2a0de53a",
+    "partials/remedy/remedy.column.query.html": "a3071c6deccaca03bcd13c19848033efd31b68cfd6a7daea11353a9425e4fbae",
+    "partials/event/event.query.editor.html": "30d019af3028437f285e403cd181fa4e018eb4ef899f8248f78b7db5bb5edd00",
+    "partials/event/bucket_agg.html": "0072886205bbbb0ca83799d9f03b4f4d411e5a2546b3019523825e4f81cd9baa",
+    "partials/event/metric_agg.html": "9f54dd6fa8cbc9864754e866d59f352bd7379797efd2da7b56512ec281227e48",
+    "partials/event/pipeline_variables.html": "502583ecf8f3ba3aead9be32f996f758140dcac9f2e4ec524d20ba9cb169e2c8",
+    "partials/event/annotations.editor.html": "4df1e849c4dbb489b3101f44d13b3492aef6f5bfadabe862ffcb8a04f5edbf2e",
+    "partials/cloudsecurity/cloudsecurity.query.editor.html": "ea1ae50c62b033878a9617b32c49aaa329a495c8e6d18e172c1f252afaa26666"
   }
 }
 -----BEGIN PGP SIGNATURE-----
 Version: OpenPGP.js v4.10.1
 Comment: https://openpgpjs.org
 
-wqEEARMKAAYFAmBiAsAACgkQfk0ManCIZud2HgIJAfNz+VXrb4WS4ZsiZihK
-xXXYwF1+xXbJ+JhSBQWq073jehomKu4ItjvVIPMgrkjTAIEs4q+wwnF0v7Ub
-IuBaTYgCAgizxKj5biycw3CRr+2kTdCcmlb+wxGmhJ3RI6LuB0Wzimthoklb
-I8UTRqkF5QP4LzLkZQW+aDlzfULY9BMrwoyZNg==
-=fn2c
+wqAEARMKAAYFAmCXv5sACgkQfk0ManCIZuextAIHSBaYVG6kxp5gvG9mwDd4
+kbdZfbAS0O1T9KdYaGPwcIkoMR1aFBrTOYPEHIpNA6Sl8h1Flapaf/GR5IJ8
+2+KSM8MCB0HR9WQh9hU5GaLOWx+BpqFdjTp17EUBfU5KHbtqquhWPOdVlmT9
+PF6aq1TthyEWLos6va/A0jjEKy4NSsP11oEW
+=Qda2
 -----END PGP SIGNATURE-----

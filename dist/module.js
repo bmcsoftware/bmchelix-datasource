@@ -19063,7 +19063,7 @@ var AuthHelper =
 function () {
   function AuthHelper() {}
 
-  AuthHelper.prototype.post = function (url, restEndPoint, data) {
+  AuthHelper.prototype.post = function (url) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
       var results, err_1;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
@@ -19073,7 +19073,7 @@ function () {
 
             return [4
             /*yield*/
-            , this.request(url, 'POST', restEndPoint, data)];
+            , this.request(url, 'POST')];
 
           case 1:
             results = _a.sent();
@@ -19102,11 +19102,10 @@ function () {
     });
   };
 
-  AuthHelper.prototype.request = function (url, method, restEndPoint, data) {
+  AuthHelper.prototype.request = function (url, method) {
     var options = {
-      url: url + '/' + restEndPoint,
-      method: method,
-      data: data
+      url: url,
+      method: method
     };
     return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_1__["getBackendSrv"])().datasourceRequest(options);
   };
@@ -19134,7 +19133,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var TokenModel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! TokenModel */ "./TokenModel.ts");
 /* harmony import */ var _AuthHelper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AuthHelper */ "./auth/AuthHelper.ts");
-
 
 
 
@@ -19194,19 +19192,13 @@ function (_super) {
 
   EntAuthHelper.prototype.refreshToken = function (instSettings) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var payload, requestJson, tokenResponse;
+      var tokenResponse;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            payload = {
-              access_key: instSettings.jsonData.accessKey,
-              access_secret_key: instSettings.jsonData.secretKey,
-              tenant_id: instSettings.jsonData.tenantId
-            };
-            requestJson = JSON.stringify(payload);
             return [4
             /*yield*/
-            , this.getJWTToken(instSettings.url, requestJson).toPromise()];
+            , this.getJWTToken('/api/datasources/' + instSettings.id + '/resources/ims/api/v1/access_keys/login').toPromise()];
 
           case 1:
             tokenResponse = _a.sent();
@@ -19219,13 +19211,13 @@ function (_super) {
     });
   };
 
-  EntAuthHelper.prototype.getJWTToken = function (url, payload) {
+  EntAuthHelper.prototype.getJWTToken = function (url) {
     var _this = this;
 
     return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(new Promise(function (resolve) {
       var jwtToken = new TokenModel__WEBPACK_IMPORTED_MODULE_3__["JWTTokenResponse"]();
 
-      _this.post(url, _Constants__WEBPACK_IMPORTED_MODULE_1__["JWT_TOKEN_GEN_URL"], payload).then(function (response) {
+      _this.post(url).then(function (response) {
         jwtToken.status = response.status;
 
         if (response && response.status === 200) {
@@ -19404,10 +19396,16 @@ var EntConfigEditor =
 function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(EntConfigEditor, _super);
 
-  function EntConfigEditor(props) {
-    var _a, _b, _c, _d, _e, _f;
+  function EntConfigEditor() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
 
-    var _this = _super.call(this, props) || this;
+    _this.onResetAccessKey = function () {
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["updateDatasourcePluginResetOption"])(_this.props, 'accessKey');
+    };
+
+    _this.onResetSecretKey = function () {
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["updateDatasourcePluginResetOption"])(_this.props, 'secretKey');
+    };
 
     _this.onUpdateURL = function (e) {
       var _a = _this.props,
@@ -19419,33 +19417,13 @@ function (_super) {
       }));
     };
 
-    _this.onResetAccessKey = function () {
-      _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
-        accessKeyConfigured: false
-      }));
-
-      _this.props.options.jsonData.accessKey = '';
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'accessKey');
-    };
-
-    _this.onResetSecretKey = function () {
-      _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
-        secretKeyConfigured: false
-      }));
-
-      _this.props.options.jsonData.secretKey = '';
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'secretKey');
-    };
-
-    _this.state = {
-      accessKeyConfigured: ((_c = (_b = (_a = _this.props.options) === null || _a === void 0 ? void 0 : _a.jsonData) === null || _b === void 0 ? void 0 : _b.accessKey) === null || _c === void 0 ? void 0 : _c.length) > 0,
-      secretKeyConfigured: ((_f = (_e = (_d = _this.props.options) === null || _d === void 0 ? void 0 : _d.jsonData) === null || _e === void 0 ? void 0 : _e.secretKey) === null || _f === void 0 ? void 0 : _f.length) > 0
-    };
     return _this;
   }
 
   EntConfigEditor.prototype.render = function () {
     var options = this.props.options;
+    var secureJsonFields = options.secureJsonFields;
+    var secureJsonData = options.secureJsonData || {};
     return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-group"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
@@ -19489,27 +19467,27 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: this.state.accessKeyConfigured,
-      value: options.jsonData.accessKey || '',
-      label: "Access key",
+      isConfigured: secureJsonFields && secureJsonFields.accessKey,
+      value: secureJsonData.accessKey || '',
+      label: "Access Key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetAccessKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'accessKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'accessKey')
     }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-inline"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: this.state.secretKeyConfigured,
-      value: options.jsonData.secretKey || '',
-      label: "Secret key",
+      isConfigured: secureJsonFields && secureJsonFields.secretKey,
+      value: secureJsonData.secretKey || '',
+      label: "Secret Key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetSecretKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'secretKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'secretKey')
     }))));
   };
 
@@ -35812,7 +35790,7 @@ function (_super) {
 
           var name = 'name';
           var id = '#id';
-          var nameArray = Object(result[0])["results"];
+          var nameArray = Object(result[0])['results'];
           var i = 0;
 
           try {
@@ -35859,7 +35837,7 @@ function (_super) {
 
     var interpolated = this.templateSrv.replace(query, scopedVars, this.interpolateQueryExpr);
 
-    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf("servicename") > 0) {
+    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
       return this.getServiceID(interpolated);
     } else {
       return this.getServiceNames();
@@ -35873,7 +35851,7 @@ function (_super) {
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        servicename = interpolated.substring(interpolated.indexOf("servicename") + 13, interpolated.indexOf("}") - 1);
+        servicename = interpolated.substring(interpolated.indexOf('servicename') + 13, interpolated.indexOf('}') - 1);
         this.serviceDetailsArray.forEach(function (value) {
           if (value.name === servicename) {
             _this.serviceDetailsArray1[0] = new ServiceDetails(value.name, value.id);
@@ -35940,12 +35918,12 @@ function (_super) {
   };
 
   SmartGraphDatasource.prototype.prometheusRegularEscape = function (value) {
-    return typeof value === 'string' ? value : "";
+    return typeof value === 'string' ? value : '';
   }; //removed . in replace for fixing devicename having issues
 
 
   SmartGraphDatasource.prototype.prometheusSpecialRegexEscape = function (value) {
-    return typeof value === 'string' ? value : "";
+    return typeof value === 'string' ? value : '';
   };
 
   return SmartGraphDatasource;

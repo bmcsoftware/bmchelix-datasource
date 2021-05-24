@@ -9,7 +9,7 @@ Hash: SHA512
   "signedByOrgName": "BMC Software",
   "plugin": "bmchelix-ade-datasource",
   "version": "1.0.0",
-  "time": 1621620795694,
+  "time": 1620557723204,
   "keyId": "7e4d0c6a708866e7",
   "files": {
     "gpx_bmchelix-ade-datasource_linux_arm": "0fa07dd46e7cdd25a8848dadcd416c95ba4e1eb26c30c6ca7a64ca379e6bd2ba",
@@ -19,9 +19,9 @@ Hash: SHA512
     "module.js": "691b5bdc0473d07bd9c80ef593de305d19f326580078b366ff20b025dc8cac02",
     "gpx_bmchelix-ade-datasource_windows_amd64.exe": "1b17ad8c07fb45c0bbe8b55ff7808925f04b7b55079fbff1e3d179bc016e0ee4",
     "img/logo.svg": "387f3012fc0590e3c5c599b24d6ed0ebf169afda5e718cb7aed52b8216939d5a",
-    "img/grafana_icon.svg": "13161df07deab5663ee176d7282cd2ed627cfabc383695cf8fceeae92f16236a",
+    "img/grafana_icon.svg": "e892b49dbbef13736ddd8eec6e020e7bd4ca4437923c7890ed6113d3cbe58b78",
     "gpx_bmchelix-ade-datasource_linux_amd64": "93bbd6a066d31483d35628e22dcb457c8348996f149c0bfdab4c9f4860047ebe",
-    "plugin.json": "e52e5f29c355a6c0d1615311ba9d371bc64451a091c449ca970d196f902ec88f",
+    "plugin.json": "d0425dee0ae7c10e483b963b23910dea47067f24037bb5c79437cd974c504477",
     "gpx_bmchelix-ade-datasource_darwin_amd64": "b401cba438fe53589f3b454632996d090d0b3326dfe325abf900c5e6f56d9ee4",
     "README.md": "bbcd35b4f1d438bb531c8d2494a7a606e484ee52ca8fca56371212d974a060ba",
     "partials/query.editor.html": "f87995a97f795f802aa726317423b23f7c472d795bf0c2e4af3611edac80b29a",
@@ -52,9 +52,9 @@ Hash: SHA512
 Version: OpenPGP.js v4.10.1
 Comment: https://openpgpjs.org
 
-wqAEARMKAAYFAmCn+DsACgkQfk0ManCIZucfVwII/lc7f6HN/vsGOQHBbOi2
-6GcAzL77QPDzxBWzGGNW4NgzqGMWX589NMu3SoKCIGeSdigstuuGtVtxqpCk
-Mjo7VYMCAgL6CFdav5COXS/S2eCc7P7YRvZrXZeYmPhVt2A/8Zl76Bfcmdup
-EiMl4F9UG7k1jQr9nQdS1YOKmfZxPk7XNuQs
-=OZkw
+wqAEARMKAAYFAmCXv5sACgkQfk0ManCIZuextAIHSBaYVG6kxp5gvG9mwDd4
+kbdZfbAS0O1T9KdYaGPwcIkoMR1aFBrTOYPEHIpNA6Sl8h1Flapaf/GR5IJ8
+2+KSM8MCB0HR9WQh9hU5GaLOWx+BpqFdjTp17EUBfU5KHbtqquhWPOdVlmT9
+PF6aq1TthyEWLos6va/A0jjEKy4NSsP11oEW
+=Qda2
 -----END PGP SIGNATURE-----

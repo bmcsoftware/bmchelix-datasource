@@ -1,0 +1,1405 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_BMC_HELIX",
+      "label": "BMC Helix",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "bmchelix-ade-datasource",
+      "pluginName": "BMC Helix"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "datasource",
+      "id": "bmchelix-ade-datasource",
+      "name": "BMC Helix",
+      "version": "1.0.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.5"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": false,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
+        "name": "Annotations & Alerts",
+        "showIn": 0,
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Displays the number of open events according to their severity, and the number of closed events. Also displays the trend of open events in your system.",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1622092027869,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Event Analytics",
+      "tooltip": "Cross launch to BMC Helix Operations Management for event analytics",
+      "type": "link",
+      "url": "https://apple-adeintqa1-trial.qa.sps.secops.bmc.com/monitor/#/monitoring/analyze"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#f83200",
+                "value": null
+              },
+              {
+                "color": "#f83200",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Critical",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:CRITICAL AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Critical",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#f86e00",
+                "value": null
+              },
+              {
+                "color": "#f86e00",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Major",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:MAJOR AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Major",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#f1b521",
+                "value": null
+              },
+              {
+                "color": "#f1b521",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Minor",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:MINOR AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Minor",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#3cb6ce",
+                "value": null
+              },
+              {
+                "color": "#3cb6ce",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 9,
+        "y": 0
+      },
+      "id": 16,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Information",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:INFO AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Information",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#3cb6ce",
+                "value": null
+              },
+              {
+                "color": "#3cb6ce",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Open",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND !(incident_id.keyword:\"\") AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Number of ticketed events",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#f1b521",
+                "value": null
+              },
+              {
+                "color": "#f1b521",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Open",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Number of open events",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#89c341",
+                "value": null
+              },
+              {
+                "color": "#89c341",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.5",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Closed",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "status:CLOSED AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Number of closed events",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {
+        "Open Events": "blue",
+        "Open events": "light-blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_BMC_HELIX}",
+      "decimals": 0,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sideWidth": 100,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Open events",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Open Event Trend",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "Number of events",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "Time",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Critical": "#f83200",
+        "Critical Events": "#f83200",
+        "Info Events": "blue",
+        "Information": "#3cb6ce",
+        "Information Events": "#3cb6ce",
+        "Major": "#f86e00",
+        "Major Events": "#f86e00",
+        "Minor": "#f1b521",
+        "Minor Events": "#f1b521"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_BMC_HELIX}",
+      "decimals": 0,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 7,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sideWidth": null,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "alias": "Critical",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:CRITICAL AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        },
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "B",
+          "sourceQuery": {
+            "alias": "Major",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:MAJOR AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        },
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "C",
+          "sourceQuery": {
+            "alias": "Minor",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:MINOR AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        },
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "D",
+          "sourceQuery": {
+            "alias": "Information",
+            "bucketAggs": [
+              {
+                "field": "creation_time",
+                "id": "2",
+                "settings": {
+                  "interval": "auto",
+                  "min_doc_count": 0,
+                  "trimEdges": 0
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT) AND severity:INFO AND source_hostname.keyword:$deviceName",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Event Trend by Severity",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "Number of events",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "${DS_BMC_HELIX}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left",
+            "displayMode": "auto",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "attributes.source_hostname"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": null
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 13,
+      "maxPerRow": 2,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "source_hostname.keyword"
+          }
+        ]
+      },
+      "pluginVersion": "7.3.5",
+      "repeat": null,
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "queryTypeOptions": [
+            {
+              "sourceType": "event",
+              "text": "Events",
+              "value": "event"
+            },
+            {
+              "sourceType": "metric",
+              "text": "Metric",
+              "value": "metric"
+            },
+            {
+              "sourceType": "cloudsecurity",
+              "text": "CloudSecurity",
+              "value": "cloudsecurity"
+            }
+          ],
+          "refId": "A",
+          "sourceQuery": {
+            "bucketAggs": [
+              {
+                "field": "source_hostname.keyword",
+                "id": "2",
+                "settings": {
+                  "min_doc_count": 1,
+                  "order": "desc",
+                  "orderBy": "_count",
+                  "size": "5"
+                },
+                "type": "terms"
+              }
+            ],
+            "metrics": [
+              {
+                "field": "select field",
+                "id": "1",
+                "type": "count"
+              }
+            ],
+            "query": "(!status:CLOSED AND !status:BLACKOUT)",
+            "timeField": "creation_time"
+          },
+          "sourceType": "event"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Top 5 CI's",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Count": "Number of open events",
+              "attributes.source_hostname": "Name",
+              "source_hostname.keyword": "CI name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": "*",
+        "current": {},
+        "datasource": "${DS_BMC_HELIX}",
+        "definition": "event,{\"find\": \"terms\", \"field\": \"source_hostname.keyword\", \"size\":10000}",
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Device Name",
+        "multi": true,
+        "name": "deviceName",
+        "options": [],
+        "query": "event,{\"find\": \"terms\", \"field\": \"source_hostname.keyword\", \"size\":10000}",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Event Data",
+  "uid": "UID-EVENTDATA",
+  "version": 1
+}

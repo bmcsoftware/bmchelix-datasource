@@ -91,3 +91,9 @@ The following image displays the Metric query type:
 | **Format** | Select one of the following formats for the panel: **Time Series** , **Table** , **Heatmap**|
 | **Instant** | Use this radio button to return only the latest value for the requested time series. Instant queries return results faster than the normal range queries.|
 
+### **Sample Dashboards**
+### Events Dashboard
+![events_dashboard](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/events_dashboard.png)
+
+### Metrics Dashboard
+![metrics_dashboard](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/metrics_dashboard.png)

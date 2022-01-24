@@ -1,4 +1,5 @@
 import { JWT_TOKEN_STORAGE_KEY } from './../Constants';
+import * as Constants from 'Constants';
 import { from, Observable } from 'rxjs';
 import { JWTTokenResponse } from 'TokenModel';
 import { AuthHelper } from './AuthHelper';
@@ -34,17 +35,22 @@ export class EntAuthHelper extends AuthHelper {
   }
 
   private async refreshToken(instSettings: any) {
-    
-    const tokenResponse = await this.getJWTToken('/api/datasources/'+instSettings.id+'/resources/ims/api/v1/access_keys/login').toPromise();
+    let payload = {
+      access_key: instSettings.jsonData.accessKey,
+      access_secret_key: instSettings.jsonData.secretKey,
+      tenant_id: instSettings.jsonData.tenantId,
+    };
+    const requestJson = JSON.stringify(payload);
+    const tokenResponse = await this.getJWTToken(instSettings.url, requestJson).toPromise();
     localStorage.setItem(JWT_TOKEN_STORAGE_KEY, JSON.stringify(tokenResponse));
     return tokenResponse;
   }
 
-  private getJWTToken(url: any): Observable<JWTTokenResponse> {
+  private getJWTToken(url: any, payload: any): Observable<JWTTokenResponse> {
     return from(
       new Promise<JWTTokenResponse>(resolve => {
         const jwtToken = new JWTTokenResponse();
-        this.post(url).then(
+        this.post(url, Constants.JWT_TOKEN_GEN_URL, payload).then(
           (response: any) => {
             jwtToken.status = response.status;
             if (response && response.status === 200) {

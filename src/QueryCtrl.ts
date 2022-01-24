@@ -27,12 +27,6 @@ export class BMCDataSourceQueryCtrl extends QueryCtrl {
         this.target.queryTypeOptions.push(queryTypeOptionRemedy[0]);
       }
     }
-
-    if (getFeatureStatus(Constants.SOURCE_TYPE_LOG)) {
-      if (!this.target.queryTypeOptions.find((x: { sourceType: any }) => x.sourceType === Constants.SOURCE_TYPE_LOG)) {
-        this.target.queryTypeOptions.push({ sourceType: Constants.SOURCE_TYPE_LOG, text: 'Log', value: 'log' });
-      }
-    }
   }
   onqueryTypeChange() {
     console.log('Selected Query type: ' + this.target.sourceType);

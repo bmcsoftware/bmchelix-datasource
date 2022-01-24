@@ -18449,7 +18449,7 @@ function () {
 /*!**********************!*\
   !*** ./Constants.ts ***!
   \**********************/
-/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES, OPTIMIZE_SELECTION */
+/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, SOURCE_TYPE_ITSM_INSIGHTS, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES, OPTIMIZE_SELECTION */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18466,6 +18466,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_SMARTGRAPH", function() { return SOURCE_TYPE_SMARTGRAPH; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_REMEDY", function() { return SOURCE_TYPE_REMEDY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_LOG", function() { return SOURCE_TYPE_LOG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_ITSM_INSIGHTS", function() { return SOURCE_TYPE_ITSM_INSIGHTS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_REFRESH_URL", function() { return JWT_TOKEN_REFRESH_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_GEN_URL", function() { return JWT_TOKEN_GEN_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_STORAGE_KEY", function() { return JWT_TOKEN_STORAGE_KEY; });
@@ -18487,6 +18488,7 @@ var SOURCE_TYPE_CLOUD_SECURITY = 'cloudsecurity';
 var SOURCE_TYPE_SMARTGRAPH = 'smartgraph';
 var SOURCE_TYPE_REMEDY = 'remedy';
 var SOURCE_TYPE_LOG = 'log';
+var SOURCE_TYPE_ITSM_INSIGHTS = 'itsm-insights';
 var JWT_TOKEN_REFRESH_URL = 'dashboards/ims/refresh-jwt';
 var JWT_TOKEN_GEN_URL = 'ims/api/v1/access_keys/login';
 var JWT_TOKEN_STORAGE_KEY = 'jwtTokenObj';
@@ -18851,18 +18853,6 @@ function (_super) {
       }
     }
 
-    if (getFeatureStatus(Constants__WEBPACK_IMPORTED_MODULE_9__["SOURCE_TYPE_LOG"])) {
-      if (!_this.target.queryTypeOptions.find(function (x) {
-        return x.sourceType === Constants__WEBPACK_IMPORTED_MODULE_9__["SOURCE_TYPE_LOG"];
-      })) {
-        _this.target.queryTypeOptions.push({
-          sourceType: Constants__WEBPACK_IMPORTED_MODULE_9__["SOURCE_TYPE_LOG"],
-          text: 'Log',
-          value: 'log'
-        });
-      }
-    }
-
     return _this;
   }
 
@@ -19023,15 +19013,9 @@ function (_super) {
 
   ADEAuthHelper.prototype.getJWTTokenFromContext = function (backendSrv) {
     var imsJWTTokenObj = {
-      adeJWTToken: '',
-      expiry: null
+      adeJWTToken: ''
     };
-
-    if (backendSrv.dependencies && backendSrv.dependencies.contextSrv && backendSrv.dependencies.contextSrv.user && backendSrv.dependencies.contextSrv.user.adeJWTToken) {
-      imsJWTTokenObj.adeJWTToken = backendSrv.dependencies.contextSrv.user.adeJWTToken;
-      imsJWTTokenObj.expiry = backendSrv.dependencies.contextSrv.user.jwtTokenExpiry;
-    }
-
+    imsJWTTokenObj.adeJWTToken = "JWT PLACEHOLDER";
     return imsJWTTokenObj;
   };
 
@@ -19063,7 +19047,7 @@ var AuthHelper =
 function () {
   function AuthHelper() {}
 
-  AuthHelper.prototype.post = function (url) {
+  AuthHelper.prototype.post = function (url, restEndPoint, data) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
       var results, err_1;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
@@ -19073,7 +19057,7 @@ function () {
 
             return [4
             /*yield*/
-            , this.request(url, 'POST')];
+            , this.request(url, 'POST', restEndPoint, data)];
 
           case 1:
             results = _a.sent();
@@ -19102,10 +19086,11 @@ function () {
     });
   };
 
-  AuthHelper.prototype.request = function (url, method) {
+  AuthHelper.prototype.request = function (url, method, restEndPoint, data) {
     var options = {
-      url: url,
-      method: method
+      url: url + '/' + restEndPoint,
+      method: method,
+      data: data
     };
     return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_1__["getBackendSrv"])().datasourceRequest(options);
   };
@@ -19133,6 +19118,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var TokenModel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! TokenModel */ "./TokenModel.ts");
 /* harmony import */ var _AuthHelper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AuthHelper */ "./auth/AuthHelper.ts");
+
 
 
 
@@ -19192,13 +19178,19 @@ function (_super) {
 
   EntAuthHelper.prototype.refreshToken = function (instSettings) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var tokenResponse;
+      var payload, requestJson, tokenResponse;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
+            payload = {
+              access_key: instSettings.jsonData.accessKey,
+              access_secret_key: instSettings.jsonData.secretKey,
+              tenant_id: instSettings.jsonData.tenantId
+            };
+            requestJson = JSON.stringify(payload);
             return [4
             /*yield*/
-            , this.getJWTToken('/api/datasources/' + instSettings.id + '/resources/ims/api/v1/access_keys/login').toPromise()];
+            , this.getJWTToken(instSettings.url, requestJson).toPromise()];
 
           case 1:
             tokenResponse = _a.sent();
@@ -19211,13 +19203,13 @@ function (_super) {
     });
   };
 
-  EntAuthHelper.prototype.getJWTToken = function (url) {
+  EntAuthHelper.prototype.getJWTToken = function (url, payload) {
     var _this = this;
 
     return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(new Promise(function (resolve) {
       var jwtToken = new TokenModel__WEBPACK_IMPORTED_MODULE_3__["JWTTokenResponse"]();
 
-      _this.post(url).then(function (response) {
+      _this.post(url, _Constants__WEBPACK_IMPORTED_MODULE_1__["JWT_TOKEN_GEN_URL"], payload).then(function (response) {
         jwtToken.status = response.status;
 
         if (response && response.status === 200) {
@@ -19396,16 +19388,10 @@ var EntConfigEditor =
 function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(EntConfigEditor, _super);
 
-  function EntConfigEditor() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
+  function EntConfigEditor(props) {
+    var _a, _b, _c, _d, _e, _f;
 
-    _this.onResetAccessKey = function () {
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["updateDatasourcePluginResetOption"])(_this.props, 'accessKey');
-    };
-
-    _this.onResetSecretKey = function () {
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["updateDatasourcePluginResetOption"])(_this.props, 'secretKey');
-    };
+    var _this = _super.call(this, props) || this;
 
     _this.onUpdateURL = function (e) {
       var _a = _this.props,
@@ -19417,13 +19403,33 @@ function (_super) {
       }));
     };
 
+    _this.onResetAccessKey = function () {
+      _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
+        accessKeyConfigured: false
+      }));
+
+      _this.props.options.jsonData.accessKey = '';
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'accessKey');
+    };
+
+    _this.onResetSecretKey = function () {
+      _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
+        secretKeyConfigured: false
+      }));
+
+      _this.props.options.jsonData.secretKey = '';
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'secretKey');
+    };
+
+    _this.state = {
+      accessKeyConfigured: ((_c = (_b = (_a = _this.props.options) === null || _a === void 0 ? void 0 : _a.jsonData) === null || _b === void 0 ? void 0 : _b.accessKey) === null || _c === void 0 ? void 0 : _c.length) > 0,
+      secretKeyConfigured: ((_f = (_e = (_d = _this.props.options) === null || _d === void 0 ? void 0 : _d.jsonData) === null || _e === void 0 ? void 0 : _e.secretKey) === null || _f === void 0 ? void 0 : _f.length) > 0
+    };
     return _this;
   }
 
   EntConfigEditor.prototype.render = function () {
     var options = this.props.options;
-    var secureJsonFields = options.secureJsonFields;
-    var secureJsonData = options.secureJsonData || {};
     return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-group"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
@@ -19444,18 +19450,6 @@ function (_super) {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFormLabel"], {
       className: "width-10"
-    }, "Platform URL"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-      className: "width-20"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(Input, {
-      className: "width-20",
-      value: options.jsonData.platformURL || '',
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'platformURL')
-    })))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-      className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFormLabel"], {
-      className: "width-10"
     }, "Tenant ID"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "width-20"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(Input, {
@@ -19467,27 +19461,27 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: secureJsonFields && secureJsonFields.accessKey,
-      value: secureJsonData.accessKey || '',
-      label: "Access Key",
+      isConfigured: this.state.accessKeyConfigured,
+      value: options.jsonData.accessKey || '',
+      label: "Access key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetAccessKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'accessKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'accessKey')
     }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-inline"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: secureJsonFields && secureJsonFields.secretKey,
-      value: secureJsonData.secretKey || '',
-      label: "Secret Key",
+      isConfigured: this.state.secretKeyConfigured,
+      value: options.jsonData.secretKey || '',
+      label: "Secret key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetSecretKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'secretKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'secretKey')
     }))));
   };
 
@@ -19495,6 +19489,50 @@ function (_super) {
 }(react__WEBPACK_IMPORTED_MODULE_3__["PureComponent"]);
 
 
+
+/***/ }),
+
+/***/ "./flatten.ts":
+/*!********************!*\
+  !*** ./flatten.ts ***!
+  \********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return flatten; });
+function flatten(target, opts) {
+  opts = opts || {};
+  var delimiter = opts.delimiter || '.';
+  var maxDepth = opts.maxDepth || 3;
+  var currentDepth = 1;
+  var output = {};
+
+  function step(object, prev) {
+    Object.keys(object).forEach(function (key) {
+      var value = object[key];
+      var isarray = (opts === null || opts === void 0 ? void 0 : opts.safe) && Array.isArray(value);
+      var type = Object.prototype.toString.call(value);
+      var isobject = type === '[object Object]';
+      var newKey = prev ? prev + delimiter + key : key;
+
+      if (!(opts === null || opts === void 0 ? void 0 : opts.maxDepth)) {
+        maxDepth = currentDepth + 1;
+      }
+
+      if (!isarray && isobject && Object.keys(value).length && currentDepth < maxDepth) {
+        ++currentDepth;
+        return step(value, newKey);
+      }
+
+      output[newKey] = value;
+    });
+  }
+
+  step(target, null);
+  return output;
+}
 
 /***/ }),
 
@@ -21343,7 +21381,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
 
-
 var EventDatasource =
 /** @class */
 function (_super) {
@@ -21625,7 +21662,7 @@ function (_super) {
 
   EventDatasource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var payload, targets, sentTargets, adhocFilters, targets_1, targets_1_1, target, queryString, queryObj, esQuery, url;
+      var payload, queryString, targets, sentTargets, adhocFilters, targets_1, targets_1_1, target, queryObj, esQuery, url;
 
       var e_1, _a;
 
@@ -21643,7 +21680,10 @@ function (_super) {
               continue;
             }
 
-            queryString = this.templateSrv.replace(target.sourceQuery.query, options.scopedVars, 'lucene'); // Elasticsearch queryString should always be '*' if empty string
+            if (target.sourceQuery && target.sourceQuery.query) {
+              queryString = this.templateSrv.replace(target.sourceQuery.query, options.scopedVars, 'lucene');
+            } // Elasticsearch queryString should always be '*' if empty string
+
 
             if (!queryString || queryString === '') {
               queryString = '*';
@@ -21651,7 +21691,7 @@ function (_super) {
 
             queryObj = void 0;
 
-            if (target.sourceQuery.alias) {
+            if (target.sourceQuery && target.sourceQuery.alias) {
               target.sourceQuery.alias = this.templateSrv.replace(target.sourceQuery.alias, options.scopedVars, 'lucene');
             }
 
@@ -22006,6 +22046,8 @@ function () {
 
   /** @ngInject */
   function EventQueryEditorCtrl($scope, $rootScope, uiSegmentSrv) {
+    var _this = this;
+
     $scope.target.sourceQuery = $scope.target.sourceQuery || {};
     $scope.target.sourceQuery.metrics = $scope.target.sourceQuery.metrics || [_event_query_def__WEBPACK_IMPORTED_MODULE_0__["defaultMetricAgg"]()];
     $scope.target.sourceQuery.bucketAggs = $scope.target.sourceQuery.bucketAggs || [_event_query_def__WEBPACK_IMPORTED_MODULE_0__["defaultBucketAgg"]()];
@@ -22014,7 +22056,7 @@ function () {
     if ($scope.target.sourceQuery.bucketAggs.length === 0) {
       var metric = $scope.target.sourceQuery.metrics[0];
 
-      if (!metric || metric.type !== 'raw_document') {
+      if (!metric || !(metric.type === 'raw_document' || metric.type === 'raw_data')) {
         $scope.target.sourceQuery.bucketAggs = [_event_query_def__WEBPACK_IMPORTED_MODULE_0__["defaultBucketAgg"]()];
       }
 
@@ -22035,13 +22077,19 @@ function () {
     };
 
     $scope.queryUpdated = function () {
+      // As Raw Data and Raw Document have the same request, we need to run refresh if they are updated
+      var isPossiblyRawDataSwitch = $scope.target.sourceQuery.metrics.some(function (metric) {
+        return metric.type === 'raw_data' || metric.type === 'raw_document';
+      });
       var newJson = angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson($scope.buildQueryBuilder(), true);
 
-      if (this.rawQueryOld && newJson !== this.rawQueryOld) {
+      if (_this.rawQueryOld && newJson !== _this.rawQueryOld) {
+        $scope.queryctrl.refresh();
+      } else if (isPossiblyRawDataSwitch) {
         $scope.queryctrl.refresh();
       }
 
-      this.rawQueryOld = newJson;
+      _this.rawQueryOld = newJson;
       $rootScope.appEvent('elastic-query-updated');
     };
 
@@ -22107,7 +22155,7 @@ function () {
     };
 
     $scope.buildQueryBuilder = function () {
-      queryHandlerInstance.queryBuilder.build(this.target.sourceQuery);
+      return queryHandlerInstance.queryBuilder.build(this.target.sourceQuery);
     };
 
     $scope.queryUpdated(); //$scope.queryctrl.refresh();
@@ -22633,170 +22681,178 @@ function () {
   };
 
   EventQueryBuilder.prototype.build = function (target, adhocFilters, queryString) {
-    // make sure query has defaults;
-    target.metrics = target.metrics || [_event_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultMetricAgg"]()];
-    target.bucketAggs = target.bucketAggs || [_event_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultBucketAgg"]()];
-    target.timeField = this.timeField;
-    var i, j, pv, nestedAggs, metric;
-    var query = {
-      size: 0,
-      query: {
-        bool: {
-          filter: [{
-            range: this.getRangeFilter()
-          }, {
-            query_string: {
-              analyze_wildcard: true,
-              query: queryString
-            }
-          }]
+    var _a, _b, _c, _d; // make sure query has defaults;
+
+
+    if (target) {
+      target.metrics = target.metrics || [_event_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultMetricAgg"]()];
+      target.bucketAggs = target.bucketAggs.length ? target.bucketAggs : [_event_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultBucketAgg"]()];
+      target.timeField = this.timeField;
+      var i = void 0,
+          j = void 0,
+          pv = void 0,
+          nestedAggs = void 0,
+          metric = void 0;
+      var query = {
+        size: 0,
+        query: {
+          bool: {
+            filter: [{
+              range: this.getRangeFilter()
+            }, {
+              query_string: {
+                analyze_wildcard: true,
+                query: queryString
+              }
+            }]
+          }
+        }
+      };
+      this.addAdhocFilters(query, adhocFilters); // If target doesn't have bucketAggs and type is not raw_document, it is invalid query.
+
+      if (target.bucketAggs.length === 0) {
+        metric = target.metrics[0];
+
+        if (!metric || !(metric.type === 'raw_document' || metric.type === 'raw_data')) {
+          throw {
+            message: 'Invalid query'
+          };
         }
       }
-    };
-    this.addAdhocFilters(query, adhocFilters); // If target doesn't have bucketAggs and type is not raw_document, it is invalid query.
-
-    if (target.bucketAggs.length === 0) {
-      metric = target.metrics[0];
-
-      if (!metric || metric.type !== 'raw_document') {
-        throw {
-          message: 'Invalid query'
-        };
-      }
-    }
-    /* Handle document query:
-     * Check if metric type is raw_document. If metric doesn't have size (or size is 0), update size to 500.
-     * Otherwise it will not be a valid query and error will be thrown.
-     */
+      /* Handle document query:
+       * Check if metric type is raw_document. If metric doesn't have size (or size is 0), update size to 500.
+       * Otherwise it will not be a valid query and error will be thrown.
+       */
 
 
-    if (target.metrics[0].type === 'raw_document') {
-      metric = target.metrics[0];
-      var size = metric.settings && metric.settings.size !== 0 && metric.settings.size || 500;
-      return this.documentQuery(query, size);
-    }
-
-    nestedAggs = query;
-
-    for (i = 0; i < target.bucketAggs.length; i++) {
-      var aggDef = target.bucketAggs[i];
-      var esAgg = {};
-
-      switch (aggDef.type) {
-        case 'date_histogram':
-          {
-            esAgg['date_histogram'] = this.getDateHistogramAgg(aggDef);
-            break;
-          }
-
-        case 'histogram':
-          {
-            esAgg['histogram'] = this.getHistogramAgg(aggDef);
-            break;
-          }
-
-        case 'filters':
-          {
-            esAgg['filters'] = {
-              filters: this.getFiltersAgg(aggDef)
-            };
-            break;
-          }
-
-        case 'terms':
-          {
-            this.buildTermsAgg(aggDef, esAgg, target);
-            break;
-          }
-
-        case 'geohash_grid':
-          {
-            esAgg['geohash_grid'] = {
-              field: aggDef.field,
-              precision: aggDef.settings.precision
-            };
-            break;
-          }
+      if (((_b = (_a = target.metrics) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.type) === 'raw_document' || ((_d = (_c = target.metrics) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.type) === 'raw_data') {
+        metric = target.metrics[0];
+        var size = metric.settings && metric.settings.size !== 0 && metric.settings.size || 500;
+        return this.documentQuery(query, size);
       }
 
-      nestedAggs.aggs = nestedAggs.aggs || {};
-      nestedAggs.aggs[aggDef.id] = esAgg;
-      nestedAggs = esAgg;
-    }
+      nestedAggs = query;
 
-    nestedAggs.aggs = {};
+      for (i = 0; i < target.bucketAggs.length; i++) {
+        var aggDef = target.bucketAggs[i];
+        var esAgg = {};
 
-    for (i = 0; i < target.metrics.length; i++) {
-      metric = target.metrics[i];
+        switch (aggDef.type) {
+          case 'date_histogram':
+            {
+              esAgg['date_histogram'] = this.getDateHistogramAgg(aggDef);
+              break;
+            }
 
-      if (metric.type === 'count') {
-        continue;
+          case 'histogram':
+            {
+              esAgg['histogram'] = this.getHistogramAgg(aggDef);
+              break;
+            }
+
+          case 'filters':
+            {
+              esAgg['filters'] = {
+                filters: this.getFiltersAgg(aggDef)
+              };
+              break;
+            }
+
+          case 'terms':
+            {
+              this.buildTermsAgg(aggDef, esAgg, target);
+              break;
+            }
+
+          case 'geohash_grid':
+            {
+              esAgg['geohash_grid'] = {
+                field: aggDef.field,
+                precision: aggDef.settings.precision
+              };
+              break;
+            }
+        }
+
+        nestedAggs.aggs = nestedAggs.aggs || {};
+        nestedAggs.aggs[aggDef.id] = esAgg;
+        nestedAggs = esAgg;
       }
 
-      var aggField = {};
-      var metricAgg = null;
+      nestedAggs.aggs = {};
 
-      if (_event_query_def__WEBPACK_IMPORTED_MODULE_1__["isPipelineAgg"](metric.type)) {
-        if (_event_query_def__WEBPACK_IMPORTED_MODULE_1__["isPipelineAggWithMultipleBucketPaths"](metric.type)) {
-          if (metric.pipelineVariables) {
-            metricAgg = {
-              buckets_path: {}
-            };
+      for (i = 0; i < target.metrics.length; i++) {
+        metric = target.metrics[i];
 
-            for (j = 0; j < metric.pipelineVariables.length; j++) {
-              pv = metric.pipelineVariables[j];
+        if (metric.type === 'count') {
+          continue;
+        }
 
-              if (pv.name && pv.pipelineAgg && /^\d*$/.test(pv.pipelineAgg)) {
-                var appliedAgg = _event_query_def__WEBPACK_IMPORTED_MODULE_1__["findMetricById"](target.metrics, pv.pipelineAgg);
+        var aggField = {};
+        var metricAgg = null;
 
-                if (appliedAgg) {
-                  if (appliedAgg.type === 'count') {
-                    metricAgg.buckets_path[pv.name] = '_count';
-                  } else {
-                    metricAgg.buckets_path[pv.name] = pv.pipelineAgg;
+        if (_event_query_def__WEBPACK_IMPORTED_MODULE_1__["isPipelineAgg"](metric.type)) {
+          if (_event_query_def__WEBPACK_IMPORTED_MODULE_1__["isPipelineAggWithMultipleBucketPaths"](metric.type)) {
+            if (metric.pipelineVariables) {
+              metricAgg = {
+                buckets_path: {}
+              };
+
+              for (j = 0; j < metric.pipelineVariables.length; j++) {
+                pv = metric.pipelineVariables[j];
+
+                if (pv.name && pv.pipelineAgg && /^\d*$/.test(pv.pipelineAgg)) {
+                  var appliedAgg = _event_query_def__WEBPACK_IMPORTED_MODULE_1__["findMetricById"](target.metrics, pv.pipelineAgg);
+
+                  if (appliedAgg) {
+                    if (appliedAgg.type === 'count') {
+                      metricAgg.buckets_path[pv.name] = '_count';
+                    } else {
+                      metricAgg.buckets_path[pv.name] = pv.pipelineAgg;
+                    }
                   }
                 }
               }
+            } else {
+              continue;
             }
           } else {
-            continue;
+            if (metric.pipelineAgg && /^\d*$/.test(metric.pipelineAgg)) {
+              var appliedAgg = _event_query_def__WEBPACK_IMPORTED_MODULE_1__["findMetricById"](target.metrics, metric.pipelineAgg);
+
+              if (appliedAgg) {
+                if (appliedAgg.type === 'count') {
+                  metricAgg = {
+                    buckets_path: '_count'
+                  };
+                } else {
+                  metricAgg = {
+                    buckets_path: metric.pipelineAgg
+                  };
+                }
+              }
+            } else {
+              continue;
+            }
           }
         } else {
-          if (metric.pipelineAgg && /^\d*$/.test(metric.pipelineAgg)) {
-            var appliedAgg = _event_query_def__WEBPACK_IMPORTED_MODULE_1__["findMetricById"](target.metrics, metric.pipelineAgg);
+          metricAgg = {
+            field: metric.field
+          };
+        }
 
-            if (appliedAgg) {
-              if (appliedAgg.type === 'count') {
-                metricAgg = {
-                  buckets_path: '_count'
-                };
-              } else {
-                metricAgg = {
-                  buckets_path: metric.pipelineAgg
-                };
-              }
-            }
-          } else {
-            continue;
+        for (var prop in metric.settings) {
+          if (metric.settings.hasOwnProperty(prop) && metric.settings[prop] !== null) {
+            metricAgg[prop] = metric.settings[prop];
           }
         }
-      } else {
-        metricAgg = {
-          field: metric.field
-        };
+
+        aggField[metric.type] = metricAgg;
+        nestedAggs.aggs[metric.id] = aggField;
       }
 
-      for (var prop in metric.settings) {
-        if (metric.settings.hasOwnProperty(prop) && metric.settings[prop] !== null) {
-          metricAgg[prop] = metric.settings[prop];
-        }
-      }
-
-      aggField[metric.type] = metricAgg;
-      nestedAggs.aggs[metric.id] = aggField;
+      return query;
     }
-
-    return query;
   };
 
   EventQueryBuilder.prototype.getTermsQuery = function (queryDef) {
@@ -22908,7 +22964,7 @@ function () {
 /*!************************************************!*\
   !*** ./query-modules/event/event_query_def.ts ***!
   \************************************************/
-/*! exports provided: metricAggTypes, bucketAggTypes, orderByOptions, orderOptions, sizeOptions, extendedStats, intervalOptions, movingAvgModelOptions, pipelineOptions, movingAvgModelSettings, getMetricAggTypes, getPipelineOptions, isPipelineAgg, isPipelineAggWithMultipleBucketPaths, getPipelineAggOptions, getMovingAvgSettings, getOrderByOptions, describeOrder, describeMetric, describeOrderBy, defaultMetricAgg, defaultBucketAgg, findMetricById, hasMetricOfType */
+/*! exports provided: metricAggTypes, bucketAggTypes, orderByOptions, orderOptions, sizeOptions, extendedStats, intervalOptions, movingAvgModelOptions, pipelineOptions, movingAvgModelSettings, highlightTags, getMetricAggTypes, getPipelineOptions, isPipelineAgg, isPipelineAggWithMultipleBucketPaths, getPipelineAggOptions, getMovingAvgSettings, getOrderByOptions, describeOrder, describeMetric, describeOrderBy, defaultMetricAgg, defaultBucketAgg, findMetricById, hasMetricOfType */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22923,6 +22979,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movingAvgModelOptions", function() { return movingAvgModelOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pipelineOptions", function() { return pipelineOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movingAvgModelSettings", function() { return movingAvgModelSettings; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "highlightTags", function() { return highlightTags; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMetricAggTypes", function() { return getMetricAggTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPipelineOptions", function() { return getPipelineOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPipelineAgg", function() { return isPipelineAgg; });
@@ -23005,8 +23062,12 @@ var metricAggTypes = [{
   supportsMultipleBucketPaths: true,
   minVersion: 2
 }, {
-  text: 'Raw Document',
+  text: 'Raw Document (legacy)',
   value: 'raw_document',
+  requiresField: false
+}, {
+  text: 'Raw Data',
+  value: 'raw_data',
   requiresField: false
 }];
 var bucketAggTypes = [{
@@ -23194,6 +23255,10 @@ var movingAvgModelSettings = {
     isCheckbox: true
   }]
 };
+var highlightTags = {
+  pre: '@HIGHLIGHT@',
+  post: '@/HIGHLIGHT@'
+};
 function getMetricAggTypes() {
   return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(metricAggTypes, function (f) {
     return true;
@@ -23345,19 +23410,72 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _event_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event_query_def */ "./query-modules/event/event_query_def.ts");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! grafana/app/core/table_model */ "grafana/app/core/table_model");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _flatten__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../flatten */ "./flatten.ts");
+/* harmony import */ var _metric_table_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../metric/table_model */ "./query-modules/metric/table_model.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
 
 
+
+
+
+var HIGHLIGHT_TAGS_EXP = _event_query_def__WEBPACK_IMPORTED_MODULE_2__["highlightTags"].pre + "([^@]+)" + _event_query_def__WEBPACK_IMPORTED_MODULE_2__["highlightTags"].post;
 
 var EventResponse =
 /** @class */
 function () {
   function EventResponse(targets, response) {
+    var _this = this;
+
     this.targets = targets;
     this.response = response;
+
+    this.processResponseToSeries = function () {
+      var seriesList = [];
+
+      for (var i = 0; i < _this.response.responses.length; i++) {
+        var response = _this.response.responses[i];
+        var target = _this.targets[i];
+
+        if (response.error) {
+          throw _this.getErrorFromEventResponse(_this.response, response.error);
+        }
+
+        if (response.hits && response.hits.hits.length > 0) {
+          _this.processHits(response.hits, seriesList, target);
+        }
+
+        if (response.aggregations) {
+          var aggregations = response.aggregations;
+          var target_1 = _this.targets[i];
+          var tmpSeriesList = [];
+          var table = new _metric_table_model__WEBPACK_IMPORTED_MODULE_5__["default"]();
+          table.refId = target_1.refId;
+
+          _this.processBuckets(aggregations, target_1, tmpSeriesList, table, {}, 0);
+
+          _this.trimDatapoints(tmpSeriesList, target_1);
+
+          _this.nameSeries(tmpSeriesList, target_1);
+
+          for (var y = 0; y < tmpSeriesList.length; y++) {
+            seriesList.push(tmpSeriesList[y]);
+          }
+
+          if (table.rows.length > 0) {
+            seriesList.push(table);
+          }
+        }
+      }
+
+      return {
+        data: seriesList
+      };
+    };
+
     this.targets = targets;
     this.response = response;
   }
@@ -23698,12 +23816,13 @@ function () {
     }
   };
 
-  EventResponse.prototype.processHits = function (hits, seriesList) {
+  EventResponse.prototype.processHits = function (hits, seriesList, target) {
     var hitsTotal = typeof hits.total === 'number' ? hits.total : hits.total.value; // <- Works with Elasticsearch 7.0+
 
     var series = {
-      target: 'docs',
+      target: target.refId,
       type: 'docs',
+      refId: target.refId,
       datapoints: [],
       total: hitsTotal,
       filterable: true
@@ -23715,7 +23834,9 @@ function () {
       doc = {
         _id: hit._id,
         _type: hit._type,
-        _index: hit._index
+        _index: hit._index,
+        sort: hit.sort,
+        highlight: hit.highlight
       };
 
       if (hit._source) {
@@ -23735,7 +23856,7 @@ function () {
   };
 
   EventResponse.prototype.trimDatapoints = function (aggregations, target) {
-    var histogram = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(target.sourceQuery.bucketAggs, {
+    var histogram = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(target.bucketAggs, {
       type: 'date_histogram'
     });
 
@@ -23772,40 +23893,142 @@ function () {
   };
 
   EventResponse.prototype.getTimeSeries = function () {
-    var seriesList = [];
+    if (this.targets.some(function (target) {
+      return target.sourceQuery.metrics.some(function (metric) {
+        return metric.type === 'raw_data';
+      });
+    })) {
+      return this.processResponseToDataFrames(false);
+    }
 
-    for (var i = 0; i < this.response.responses.length; i++) {
-      var response = this.response.responses[i];
+    return this.processResponseToSeries();
+  };
+
+  EventResponse.prototype.processResponseToDataFrames = function (isLogsRequest, logMessageField, logLevelField) {
+    var e_5, _a;
+
+    var _b;
+
+    var dataFrame = [];
+
+    for (var n = 0; n < this.response.responses.length; n++) {
+      var response = this.response.responses[n];
 
       if (response.error) {
         throw this.getErrorFromEventResponse(this.response, response.error);
       }
 
       if (response.hits && response.hits.hits.length > 0) {
-        this.processHits(response.hits, seriesList);
+        var _c = flattenHits(response.hits.hits),
+            propNames = _c.propNames,
+            docs = _c.docs;
+
+        if (docs.length > 0) {
+          var series = createEmptyDataFrame(propNames.map(toNameTypePair(docs)), this.targets[0].timeField, isLogsRequest, logMessageField, logLevelField);
+
+          var _loop_1 = function _loop_1(doc) {
+            if (logLevelField) {
+              // Remap level field based on the datasource config. This field is
+              // then used in explore to figure out the log level. We may rewrite
+              // some actual data in the level field if they are different.
+              doc['level'] = doc[logLevelField];
+            } // When highlighting exists, we need to collect all the highlighted
+            // phrases and add them to the DataFrame's meta.searchWords array.
+
+
+            if (doc.highlight) {
+              // There might be multiple words so we need two versions of the
+              // regular expression. One to match gobally, when used with part.match,
+              // it returns and array of matches. The second one is used to capture the
+              // values between the tags.
+              var globalHighlightWordRegex_1 = new RegExp(HIGHLIGHT_TAGS_EXP, 'g');
+              var highlightWordRegex_1 = new RegExp(HIGHLIGHT_TAGS_EXP);
+              var newSearchWords = Object.keys(doc.highlight).flatMap(function (key) {
+                return doc.highlight[key].flatMap(function (line) {
+                  var matchedPhrases = line.match(globalHighlightWordRegex_1);
+
+                  if (!matchedPhrases) {
+                    return [];
+                  }
+
+                  return matchedPhrases.map(function (part) {
+                    var matches = part.match(highlightWordRegex_1);
+                    return matches && matches[1] || null;
+                  });
+                });
+              }).filter(lodash__WEBPACK_IMPORTED_MODULE_1___default.a.identity); // If meta and searchWords already exists, add the words and
+              // deduplicate otherwise create a new set of search words.
+
+              var searchWords = ((_b = series.meta) === null || _b === void 0 ? void 0 : _b.searchWords) ? lodash__WEBPACK_IMPORTED_MODULE_1___default.a.uniq(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(series.meta.searchWords, newSearchWords)) : Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(newSearchWords);
+              series.meta = series.meta ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, series.meta), {
+                searchWords: searchWords
+              }) : {
+                searchWords: searchWords
+              };
+            }
+
+            series.add(doc);
+          };
+
+          try {
+            // Add a row for each document
+            for (var docs_1 = (e_5 = void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(docs)), docs_1_1 = docs_1.next(); !docs_1_1.done; docs_1_1 = docs_1.next()) {
+              var doc = docs_1_1.value;
+
+              _loop_1(doc);
+            }
+          } catch (e_5_1) {
+            e_5 = {
+              error: e_5_1
+            };
+          } finally {
+            try {
+              if (docs_1_1 && !docs_1_1.done && (_a = docs_1["return"])) _a.call(docs_1);
+            } finally {
+              if (e_5) throw e_5.error;
+            }
+          }
+
+          if (isLogsRequest) {
+            series = addPreferredVisualisationType(series, 'logs');
+          }
+
+          var target = this.targets[n];
+          series.refId = target.refId;
+          dataFrame.push(series);
+        }
       }
 
       if (response.aggregations) {
         var aggregations = response.aggregations;
-        var target = this.targets[i];
+        var target = this.targets[n];
         var tmpSeriesList = [];
-        var table = new grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3___default.a();
+        var table = new _metric_table_model__WEBPACK_IMPORTED_MODULE_5__["default"]();
         this.processBuckets(aggregations, target, tmpSeriesList, table, {}, 0);
         this.trimDatapoints(tmpSeriesList, target);
         this.nameSeries(tmpSeriesList, target);
 
-        for (var y = 0; y < tmpSeriesList.length; y++) {
-          seriesList.push(tmpSeriesList[y]);
+        if (table.rows.length > 0) {
+          var series = Object(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["toDataFrame"])(table);
+          series.refId = target.refId;
+          dataFrame.push(series);
         }
 
-        if (table.rows.length > 0) {
-          seriesList.push(table);
+        for (var y = 0; y < tmpSeriesList.length; y++) {
+          var series = Object(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["toDataFrame"])(tmpSeriesList[y]); // When log results, show aggregations only in graph. Log fields are then going to be shown in table.
+
+          if (isLogsRequest) {
+            series = addPreferredVisualisationType(series, 'graph');
+          }
+
+          series.refId = target.refId;
+          dataFrame.push(series);
         }
       }
     }
 
     return {
-      data: seriesList
+      data: dataFrame
     };
   };
 
@@ -23824,7 +24047,7 @@ function () {
   };
 
   EventResponse.prototype.getSeriesName = function (series, target, metricTypeCount) {
-    var e_5, _a;
+    var e_6, _a;
 
     var metricName = this.getMetricName(series.metric);
 
@@ -23874,15 +24097,15 @@ function () {
                 metricName = metricName.replace('params.' + pv.name, _event_query_def__WEBPACK_IMPORTED_MODULE_2__["describeMetric"](appliedAgg));
               }
             }
-          } catch (e_5_1) {
-            e_5 = {
-              error: e_5_1
+          } catch (e_6_1) {
+            e_6 = {
+              error: e_6_1
             };
           } finally {
             try {
               if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             } finally {
-              if (e_5) throw e_5.error;
+              if (e_6) throw e_6.error;
             }
           }
         } else {
@@ -23926,6 +24149,177 @@ function () {
 }();
 
 
+
+var flattenHits = function flattenHits(hits) {
+  var e_7, _a, e_8, _b;
+
+  var docs = []; // We keep a list of all props so that we can create all the fields in the dataFrame, this can lead
+  // to wide sparse dataframes in case the scheme is different per document.
+
+  var propNames = [];
+
+  try {
+    for (var hits_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(hits), hits_1_1 = hits_1.next(); !hits_1_1.done; hits_1_1 = hits_1.next()) {
+      var hit = hits_1_1.value;
+      var flattened = hit._source ? Object(_flatten__WEBPACK_IMPORTED_MODULE_4__["default"])(hit._source) : {};
+
+      var doc = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+        _id: hit._id,
+        _type: hit._type,
+        _index: hit._index,
+        sort: hit.sort,
+        highlight: hit.highlight,
+        _source: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, flattened)
+      }, flattened);
+
+      try {
+        for (var _c = (e_8 = void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(Object.keys(doc))), _d = _c.next(); !_d.done; _d = _c.next()) {
+          var propName = _d.value;
+
+          if (propNames.indexOf(propName) === -1) {
+            propNames.push(propName);
+          }
+        }
+      } catch (e_8_1) {
+        e_8 = {
+          error: e_8_1
+        };
+      } finally {
+        try {
+          if (_d && !_d.done && (_b = _c["return"])) _b.call(_c);
+        } finally {
+          if (e_8) throw e_8.error;
+        }
+      }
+
+      docs.push(doc);
+    }
+  } catch (e_7_1) {
+    e_7 = {
+      error: e_7_1
+    };
+  } finally {
+    try {
+      if (hits_1_1 && !hits_1_1.done && (_a = hits_1["return"])) _a.call(hits_1);
+    } finally {
+      if (e_7) throw e_7.error;
+    }
+  }
+
+  propNames.sort();
+  return {
+    docs: docs,
+    propNames: propNames
+  };
+};
+
+var toNameTypePair = function toNameTypePair(docs) {
+  return function (propName) {
+    var _a;
+
+    return [propName, guessType((_a = docs.find(function (doc) {
+      return doc[propName] !== undefined;
+    })) === null || _a === void 0 ? void 0 : _a[propName])];
+  };
+};
+
+var addPreferredVisualisationType = function addPreferredVisualisationType(series, type) {
+  var s = series;
+  s.meta ? s.meta.preferredVisualisationType = type : s.meta = {
+    preferredVisualisationType: type
+  };
+  return s;
+};
+
+var createEmptyDataFrame = function createEmptyDataFrame(props, timeField, isLogsRequest, logMessageField, logLevelField) {
+  var e_9, _a;
+
+  var series = new _grafana_data__WEBPACK_IMPORTED_MODULE_3__["MutableDataFrame"]({
+    fields: []
+  });
+  series.addField({
+    config: {
+      filterable: true
+    },
+    name: timeField,
+    type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].time
+  });
+
+  if (logMessageField) {
+    series.addField({
+      name: logMessageField,
+      type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string
+    }).parse = function (v) {
+      return v || '';
+    };
+  }
+
+  if (logLevelField) {
+    series.addField({
+      name: 'level',
+      type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string
+    }).parse = function (v) {
+      return v || '';
+    };
+  }
+
+  var fieldNames = series.fields.map(function (field) {
+    return field.name;
+  });
+
+  try {
+    for (var props_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(props), props_1_1 = props_1.next(); !props_1_1.done; props_1_1 = props_1.next()) {
+      var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(props_1_1.value, 2),
+          name = _b[0],
+          type = _b[1]; // Do not duplicate fields. This can mean that we will shadow some fields.
+
+
+      if (fieldNames.includes(name)) {
+        continue;
+      } // Do not add _source field (besides logs) as we are showing each _source field in table instead.
+
+
+      if (!isLogsRequest && name === '_source') {
+        continue;
+      }
+
+      series.addField({
+        config: {
+          filterable: true
+        },
+        name: name,
+        type: type
+      }).parse = function (v) {
+        return v || '';
+      };
+    }
+  } catch (e_9_1) {
+    e_9 = {
+      error: e_9_1
+    };
+  } finally {
+    try {
+      if (props_1_1 && !props_1_1.done && (_a = props_1["return"])) _a.call(props_1);
+    } finally {
+      if (e_9) throw e_9.error;
+    }
+  }
+
+  return series;
+};
+
+var guessType = function guessType(value) {
+  switch (_typeof(value)) {
+    case 'number':
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].number;
+
+    case 'string':
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string;
+
+    default:
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].other;
+  }
+};
 
 /***/ }),
 
@@ -24138,6 +24532,7 @@ function () {
           }
 
         case 'raw_document':
+        case 'raw_data':
           {
             $scope.agg.settings.size = $scope.agg.settings.size || 500;
             $scope.settingsLinkText = 'Size: ' + $scope.agg.settings.size;
@@ -24204,7 +24599,7 @@ function () {
       $scope.agg.meta = {};
       $scope.showOptions = false; // reset back to metric/group by query
 
-      if ($scope.target.bucketAggs.length === 0 && $scope.agg.type !== 'raw_document') {
+      if ($scope.target.bucketAggs.length === 0 && ($scope.agg.type !== 'raw_document' || $scope.agg.type !== 'raw_data')) {
         $scope.target.bucketAggs = [_event_query_def__WEBPACK_IMPORTED_MODULE_2__["defaultBucketAgg"]()];
       }
 
@@ -24395,7 +24790,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _LogConstants__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./LogConstants */ "./query-modules/log/LogConstants.ts");
 /* harmony import */ var _DataSource__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../DataSource */ "./DataSource.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 
 
 
@@ -25070,6 +25464,8 @@ function () {
 
   /** @ngInject */
   function LogQueryEditorCtrl($scope, $rootScope, uiSegmentSrv) {
+    var _this = this;
+
     $scope.target.sourceQuery = $scope.target.sourceQuery || {};
     $scope.target.sourceQuery.metrics = $scope.target.sourceQuery.metrics || [_log_query_def__WEBPACK_IMPORTED_MODULE_0__["defaultMetricAgg"]()];
     $scope.target.sourceQuery.bucketAggs = $scope.target.sourceQuery.bucketAggs || [_log_query_def__WEBPACK_IMPORTED_MODULE_0__["defaultBucketAgg"]()];
@@ -25099,13 +25495,19 @@ function () {
     };
 
     $scope.queryUpdated = function () {
+      // As Raw Data and Raw Document have the same request, we need to run refresh if they are updated
+      var isPossiblyRawDataSwitch = $scope.target.sourceQuery.metrics.some(function (metric) {
+        return metric.type === 'raw_data' || metric.type === 'raw_document';
+      });
       var newJson = angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson($scope.buildQueryBuilder(), true);
 
-      if (this.rawQueryOld && newJson !== this.rawQueryOld) {
+      if (_this.rawQueryOld && newJson !== _this.rawQueryOld) {
+        $scope.queryctrl.refresh();
+      } else if (isPossiblyRawDataSwitch) {
         $scope.queryctrl.refresh();
       }
 
-      this.rawQueryOld = newJson;
+      _this.rawQueryOld = newJson;
       $rootScope.appEvent('elastic-query-updated');
     };
 
@@ -25774,7 +26176,9 @@ function () {
   };
 
   LogQueryBuilder.prototype.build = function (target, adhocFilters, queryString) {
-    // make sure query has defaults;
+    var _a, _b, _c, _d; // make sure query has defaults;
+
+
     target.metrics = target.metrics || [_log_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultMetricAgg"]()];
     target.bucketAggs = target.bucketAggs || [_log_query_def__WEBPACK_IMPORTED_MODULE_1__["defaultBucketAgg"]()];
     target.timeField = this.timeField;
@@ -25811,7 +26215,7 @@ function () {
      */
 
 
-    if (target.metrics[0].type === 'raw_document') {
+    if (((_b = (_a = target.metrics) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.type) === 'raw_document' || ((_d = (_c = target.metrics) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.type) === 'raw_data') {
       metric = target.metrics[0];
       var size = metric.settings && metric.settings.size !== 0 && metric.settings.size || 500;
       return this.documentQuery(query, size);
@@ -26049,13 +26453,14 @@ function () {
 /*!********************************************!*\
   !*** ./query-modules/log/log_query_def.ts ***!
   \********************************************/
-/*! exports provided: metricAggTypes, bucketAggTypes, orderByOptions, orderOptions, sizeOptions, extendedStats, intervalOptions, movingAvgModelOptions, pipelineOptions, movingAvgModelSettings, getMetricAggTypes, getPipelineOptions, isPipelineAgg, isPipelineAggWithMultipleBucketPaths, getPipelineAggOptions, getMovingAvgSettings, getOrderByOptions, describeOrder, describeMetric, describeOrderBy, defaultMetricAgg, defaultBucketAgg, findMetricById, hasMetricOfType */
+/*! exports provided: metricAggTypes, bucketAggTypes, highlightTags, orderByOptions, orderOptions, sizeOptions, extendedStats, intervalOptions, movingAvgModelOptions, pipelineOptions, movingAvgModelSettings, getMetricAggTypes, getPipelineOptions, isPipelineAgg, isPipelineAggWithMultipleBucketPaths, getPipelineAggOptions, getMovingAvgSettings, getOrderByOptions, describeOrder, describeMetric, describeOrderBy, defaultMetricAgg, defaultBucketAgg, findMetricById, hasMetricOfType */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "metricAggTypes", function() { return metricAggTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bucketAggTypes", function() { return bucketAggTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "highlightTags", function() { return highlightTags; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "orderByOptions", function() { return orderByOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "orderOptions", function() { return orderOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sizeOptions", function() { return sizeOptions; });
@@ -26146,8 +26551,12 @@ var metricAggTypes = [{
   supportsMultipleBucketPaths: true,
   minVersion: 2
 }, {
-  text: 'Raw Document',
+  text: 'Raw Document (legacy)',
   value: 'raw_document',
+  requiresField: false
+}, {
+  text: 'Raw Data',
+  value: 'raw_data',
   requiresField: false
 }];
 var bucketAggTypes = [{
@@ -26170,6 +26579,10 @@ var bucketAggTypes = [{
   value: 'histogram',
   requiresField: true
 }];
+var highlightTags = {
+  pre: '@HIGHLIGHT@',
+  post: '@/HIGHLIGHT@'
+};
 var orderByOptions = [{
   text: 'Doc Count',
   value: '_count'
@@ -26486,19 +26899,72 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _log_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./log_query_def */ "./query-modules/log/log_query_def.ts");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! grafana/app/core/table_model */ "grafana/app/core/table_model");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _metric_table_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../metric/table_model */ "./query-modules/metric/table_model.ts");
+/* harmony import */ var _flatten__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../flatten */ "./flatten.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
 
 
+
+
+
+var HIGHLIGHT_TAGS_EXP = _log_query_def__WEBPACK_IMPORTED_MODULE_2__["highlightTags"].pre + "([^@]+)" + _log_query_def__WEBPACK_IMPORTED_MODULE_2__["highlightTags"].post;
 
 var LogResponse =
 /** @class */
 function () {
   function LogResponse(targets, response) {
+    var _this = this;
+
     this.targets = targets;
     this.response = response;
+
+    this.processResponseToSeries = function () {
+      var seriesList = [];
+
+      for (var i = 0; i < _this.response.responses.length; i++) {
+        var response = _this.response.responses[i];
+        var target = _this.targets[i];
+
+        if (response.error) {
+          throw _this.getErrorFromLogResponse(_this.response, response.error);
+        }
+
+        if (response.hits && response.hits.hits.length > 0) {
+          _this.processHits(response.hits, seriesList, target);
+        }
+
+        if (response.aggregations) {
+          var aggregations = response.aggregations;
+          var target_1 = _this.targets[i];
+          var tmpSeriesList = [];
+          var table = new _metric_table_model__WEBPACK_IMPORTED_MODULE_4__["default"]();
+          table.refId = target_1.refId;
+
+          _this.processBuckets(aggregations, target_1, tmpSeriesList, table, {}, 0);
+
+          _this.trimDatapoints(tmpSeriesList, target_1);
+
+          _this.nameSeries(tmpSeriesList, target_1);
+
+          for (var y = 0; y < tmpSeriesList.length; y++) {
+            seriesList.push(tmpSeriesList[y]);
+          }
+
+          if (table.rows.length > 0) {
+            seriesList.push(table);
+          }
+        }
+      }
+
+      return {
+        data: seriesList
+      };
+    };
+
     this.targets = targets;
     this.response = response;
   }
@@ -26839,12 +27305,13 @@ function () {
     }
   };
 
-  LogResponse.prototype.processHits = function (hits, seriesList) {
+  LogResponse.prototype.processHits = function (hits, seriesList, target) {
     var hitsTotal = typeof hits.total === 'number' ? hits.total : hits.total.value; // <- Works with Elasticsearch 7.0+
 
     var series = {
-      target: 'docs',
+      target: target.refId,
       type: 'docs',
+      refId: target.refId,
       datapoints: [],
       total: hitsTotal,
       filterable: true
@@ -26856,7 +27323,9 @@ function () {
       doc = {
         _id: hit._id,
         _type: hit._type,
-        _index: hit._index
+        _index: hit._index,
+        sort: hit.sort,
+        highlight: hit.highlight
       };
 
       if (hit._source) {
@@ -26913,40 +27382,142 @@ function () {
   };
 
   LogResponse.prototype.getTimeSeries = function () {
-    var seriesList = [];
+    if (this.targets.some(function (target) {
+      return target.sourceQuery.metrics.some(function (metric) {
+        return metric.type === 'raw_data' || metric.type === 'raw_document';
+      });
+    })) {
+      return this.processResponseToDataFrames(false);
+    }
 
-    for (var i = 0; i < this.response.responses.length; i++) {
-      var response = this.response.responses[i];
+    return this.processResponseToSeries();
+  };
+
+  LogResponse.prototype.processResponseToDataFrames = function (isLogsRequest, logMessageField, logLevelField) {
+    var e_5, _a;
+
+    var _b;
+
+    var dataFrame = [];
+
+    for (var n = 0; n < this.response.responses.length; n++) {
+      var response = this.response.responses[n];
 
       if (response.error) {
         throw this.getErrorFromLogResponse(this.response, response.error);
       }
 
       if (response.hits && response.hits.hits.length > 0) {
-        this.processHits(response.hits, seriesList);
+        var _c = flattenHits(response.hits.hits),
+            propNames = _c.propNames,
+            docs = _c.docs;
+
+        if (docs.length > 0) {
+          var series = createEmptyDataFrame(propNames.map(toNameTypePair(docs)), this.targets[0].timeField, isLogsRequest, logMessageField, logLevelField);
+
+          var _loop_1 = function _loop_1(doc) {
+            if (logLevelField) {
+              // Remap level field based on the datasource config. This field is
+              // then used in explore to figure out the log level. We may rewrite
+              // some actual data in the level field if they are different.
+              doc['level'] = doc[logLevelField];
+            } // When highlighting exists, we need to collect all the highlighted
+            // phrases and add them to the DataFrame's meta.searchWords array.
+
+
+            if (doc.highlight) {
+              // There might be multiple words so we need two versions of the
+              // regular expression. One to match gobally, when used with part.match,
+              // it returns and array of matches. The second one is used to capture the
+              // values between the tags.
+              var globalHighlightWordRegex_1 = new RegExp(HIGHLIGHT_TAGS_EXP, 'g');
+              var highlightWordRegex_1 = new RegExp(HIGHLIGHT_TAGS_EXP);
+              var newSearchWords = Object.keys(doc.highlight).flatMap(function (key) {
+                return doc.highlight[key].flatMap(function (line) {
+                  var matchedPhrases = line.match(globalHighlightWordRegex_1);
+
+                  if (!matchedPhrases) {
+                    return [];
+                  }
+
+                  return matchedPhrases.map(function (part) {
+                    var matches = part.match(highlightWordRegex_1);
+                    return matches && matches[1] || null;
+                  });
+                });
+              }).filter(lodash__WEBPACK_IMPORTED_MODULE_1___default.a.identity); // If meta and searchWords already exists, add the words and
+              // deduplicate otherwise create a new set of search words.
+
+              var searchWords = ((_b = series.meta) === null || _b === void 0 ? void 0 : _b.searchWords) ? lodash__WEBPACK_IMPORTED_MODULE_1___default.a.uniq(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(series.meta.searchWords, newSearchWords)) : Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(newSearchWords);
+              series.meta = series.meta ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, series.meta), {
+                searchWords: searchWords
+              }) : {
+                searchWords: searchWords
+              };
+            }
+
+            series.add(doc);
+          };
+
+          try {
+            // Add a row for each document
+            for (var docs_1 = (e_5 = void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(docs)), docs_1_1 = docs_1.next(); !docs_1_1.done; docs_1_1 = docs_1.next()) {
+              var doc = docs_1_1.value;
+
+              _loop_1(doc);
+            }
+          } catch (e_5_1) {
+            e_5 = {
+              error: e_5_1
+            };
+          } finally {
+            try {
+              if (docs_1_1 && !docs_1_1.done && (_a = docs_1["return"])) _a.call(docs_1);
+            } finally {
+              if (e_5) throw e_5.error;
+            }
+          }
+
+          if (isLogsRequest) {
+            series = addPreferredVisualisationType(series, 'logs');
+          }
+
+          var target = this.targets[n];
+          series.refId = target.refId;
+          dataFrame.push(series);
+        }
       }
 
       if (response.aggregations) {
         var aggregations = response.aggregations;
-        var target = this.targets[i];
+        var target = this.targets[n];
         var tmpSeriesList = [];
-        var table = new grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_3___default.a();
+        var table = new _metric_table_model__WEBPACK_IMPORTED_MODULE_4__["default"]();
         this.processBuckets(aggregations, target, tmpSeriesList, table, {}, 0);
         this.trimDatapoints(tmpSeriesList, target);
         this.nameSeries(tmpSeriesList, target);
 
-        for (var y = 0; y < tmpSeriesList.length; y++) {
-          seriesList.push(tmpSeriesList[y]);
+        if (table.rows.length > 0) {
+          var series = Object(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["toDataFrame"])(table);
+          series.refId = target.refId;
+          dataFrame.push(series);
         }
 
-        if (table.rows.length > 0) {
-          seriesList.push(table);
+        for (var y = 0; y < tmpSeriesList.length; y++) {
+          var series = Object(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["toDataFrame"])(tmpSeriesList[y]); // When log results, show aggregations only in graph. Log fields are then going to be shown in table.
+
+          if (isLogsRequest) {
+            series = addPreferredVisualisationType(series, 'graph');
+          }
+
+          series.refId = target.refId;
+          dataFrame.push(series);
         }
       }
     }
 
     return {
-      data: seriesList
+      data: dataFrame
     };
   };
 
@@ -26965,7 +27536,7 @@ function () {
   };
 
   LogResponse.prototype.getSeriesName = function (series, target, metricTypeCount) {
-    var e_5, _a;
+    var e_6, _a;
 
     var metricName = this.getMetricName(series.metric);
 
@@ -27015,15 +27586,15 @@ function () {
                 metricName = metricName.replace('params.' + pv.name, _log_query_def__WEBPACK_IMPORTED_MODULE_2__["describeMetric"](appliedAgg));
               }
             }
-          } catch (e_5_1) {
-            e_5 = {
-              error: e_5_1
+          } catch (e_6_1) {
+            e_6 = {
+              error: e_6_1
             };
           } finally {
             try {
               if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
             } finally {
-              if (e_5) throw e_5.error;
+              if (e_6) throw e_6.error;
             }
           }
         } else {
@@ -27067,6 +27638,177 @@ function () {
 }();
 
 
+
+var flattenHits = function flattenHits(hits) {
+  var e_7, _a, e_8, _b;
+
+  var docs = []; // We keep a list of all props so that we can create all the fields in the dataFrame, this can lead
+  // to wide sparse dataframes in case the scheme is different per document.
+
+  var propNames = [];
+
+  try {
+    for (var hits_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(hits), hits_1_1 = hits_1.next(); !hits_1_1.done; hits_1_1 = hits_1.next()) {
+      var hit = hits_1_1.value;
+      var flattened = hit._source ? Object(_flatten__WEBPACK_IMPORTED_MODULE_5__["default"])(hit._source) : {};
+
+      var doc = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+        _id: hit._id,
+        _type: hit._type,
+        _index: hit._index,
+        sort: hit.sort,
+        highlight: hit.highlight,
+        _source: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, flattened)
+      }, flattened);
+
+      try {
+        for (var _c = (e_8 = void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(Object.keys(doc))), _d = _c.next(); !_d.done; _d = _c.next()) {
+          var propName = _d.value;
+
+          if (propNames.indexOf(propName) === -1) {
+            propNames.push(propName);
+          }
+        }
+      } catch (e_8_1) {
+        e_8 = {
+          error: e_8_1
+        };
+      } finally {
+        try {
+          if (_d && !_d.done && (_b = _c["return"])) _b.call(_c);
+        } finally {
+          if (e_8) throw e_8.error;
+        }
+      }
+
+      docs.push(doc);
+    }
+  } catch (e_7_1) {
+    e_7 = {
+      error: e_7_1
+    };
+  } finally {
+    try {
+      if (hits_1_1 && !hits_1_1.done && (_a = hits_1["return"])) _a.call(hits_1);
+    } finally {
+      if (e_7) throw e_7.error;
+    }
+  }
+
+  propNames.sort();
+  return {
+    docs: docs,
+    propNames: propNames
+  };
+};
+
+var createEmptyDataFrame = function createEmptyDataFrame(props, timeField, isLogsRequest, logMessageField, logLevelField) {
+  var e_9, _a;
+
+  var series = new _grafana_data__WEBPACK_IMPORTED_MODULE_3__["MutableDataFrame"]({
+    fields: []
+  });
+  series.addField({
+    config: {
+      filterable: true
+    },
+    name: timeField,
+    type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].time
+  });
+
+  if (logMessageField) {
+    series.addField({
+      name: logMessageField,
+      type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string
+    }).parse = function (v) {
+      return v || '';
+    };
+  }
+
+  if (logLevelField) {
+    series.addField({
+      name: 'level',
+      type: _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string
+    }).parse = function (v) {
+      return v || '';
+    };
+  }
+
+  var fieldNames = series.fields.map(function (field) {
+    return field.name;
+  });
+
+  try {
+    for (var props_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(props), props_1_1 = props_1.next(); !props_1_1.done; props_1_1 = props_1.next()) {
+      var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(props_1_1.value, 2),
+          name = _b[0],
+          type = _b[1]; // Do not duplicate fields. This can mean that we will shadow some fields.
+
+
+      if (fieldNames.includes(name)) {
+        continue;
+      } // Do not add _source field (besides logs) as we are showing each _source field in table instead.
+
+
+      if (!isLogsRequest && name === '_source') {
+        continue;
+      }
+
+      series.addField({
+        config: {
+          filterable: true
+        },
+        name: name,
+        type: type
+      }).parse = function (v) {
+        return v || '';
+      };
+    }
+  } catch (e_9_1) {
+    e_9 = {
+      error: e_9_1
+    };
+  } finally {
+    try {
+      if (props_1_1 && !props_1_1.done && (_a = props_1["return"])) _a.call(props_1);
+    } finally {
+      if (e_9) throw e_9.error;
+    }
+  }
+
+  return series;
+};
+
+var toNameTypePair = function toNameTypePair(docs) {
+  return function (propName) {
+    var _a;
+
+    return [propName, guessType((_a = docs.find(function (doc) {
+      return doc[propName] !== undefined;
+    })) === null || _a === void 0 ? void 0 : _a[propName])];
+  };
+};
+
+var addPreferredVisualisationType = function addPreferredVisualisationType(series, type) {
+  var s = series;
+  s.meta ? s.meta.preferredVisualisationType = type : s.meta = {
+    preferredVisualisationType: type
+  };
+  return s;
+};
+
+var guessType = function guessType(value) {
+  switch (_typeof(value)) {
+    case 'number':
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].number;
+
+    case 'string':
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].string;
+
+    default:
+      return _grafana_data__WEBPACK_IMPORTED_MODULE_3__["FieldType"].other;
+  }
+};
 
 /***/ }),
 
@@ -27202,6 +27944,7 @@ function () {
           }
 
         case 'raw_document':
+        case 'raw_data':
           {
             $scope.agg.settings.size = $scope.agg.settings.size || 500;
             $scope.settingsLinkText = 'Size: ' + $scope.agg.settings.size;
@@ -27268,7 +28011,7 @@ function () {
       $scope.agg.meta = {};
       $scope.showOptions = false; // reset back to metric/group by query
 
-      if ($scope.target.bucketAggs.length === 0 && $scope.agg.type !== 'raw_document') {
+      if ($scope.target.bucketAggs.length === 0 && ($scope.agg.type !== 'raw_document' || $scope.agg.type !== 'raw_data')) {
         $scope.target.bucketAggs = [_log_query_def__WEBPACK_IMPORTED_MODULE_2__["defaultBucketAgg"]()];
       }
 
@@ -28287,7 +29030,7 @@ function prometheusRegularEscape(value) {
 } //removed . in replace for fixing devicename having issues
 
 function prometheusSpecialRegexEscape(value) {
-  return typeof value === 'string' ? prometheusRegularEscape(value.replace(/\\/g, '\\\\\\\\').replace(/[$^*{}\[\]+?()|]/g, '\\\\$&')) : value;
+  return typeof value === 'string' ? prometheusRegularEscape(value.replace(/\\/g, '\\\\\\\\').replace(/[$%!^*{}\[\]+?()|]/g, '\\\\$&')) : value;
 }
 /**
  * Align query range to step.
@@ -29637,10 +30380,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _MetricQueryField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MetricQueryField */ "./query-modules/metric/MetricQueryField.tsx");
-/* harmony import */ var QueryCtrl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! QueryCtrl */ "./QueryCtrl.ts");
-/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! Constants */ "./Constants.ts");
-
-
 
 
 
@@ -29784,7 +30523,7 @@ function (_super) {
         intervalFactorOption = _a.intervalFactorOption,
         legendFormat = _a.legendFormat,
         instant = _a.instant;
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, Object(QueryCtrl__WEBPACK_IMPORTED_MODULE_5__["getFeatureStatus"])(Constants__WEBPACK_IMPORTED_MODULE_6__["OPTIMIZE_SELECTION"]) ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "gf-form-label width-7 query-keyword"
@@ -29800,7 +30539,7 @@ function (_super) {
         key: i,
         value: value
       }, label);
-    }))) : null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MetricQueryField__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MetricQueryField__WEBPACK_IMPORTED_MODULE_4__["default"], {
       datasource: datasource,
       query: query,
       onRunQuery: this.onRunQuery,
@@ -29826,7 +30565,7 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFormLabel"], {
       className: "query-keyword",
       width: 7,
-      tooltip: react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, "An additional lower limit for the step parameter of the Prometheus query and for the", ' ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("code", null, "$__interval"), " variable. The limit is absolute and not modified by the \"Resolution\" setting.")
+      tooltip: react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, "An additional lower limit for the step parameter of the Prometheus query and for the", ' ', react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("code", null, "$__interval"), " variable. The limit is absolute and not modified by the ", '"Resolution"', " setting.")
     }, "Min step"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "text",
       className: "gf-form-input width-8",
@@ -29897,7 +30636,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prismjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prismjs */ "prismjs");
 /* harmony import */ var prismjs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prismjs__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _CancelablePromise__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CancelablePromise */ "./query-modules/metric/CancelablePromise.ts");
-
 
 
 
@@ -31674,7 +32412,12 @@ function () {
   function RemedyConstants() {}
 
   RemedyConstants.REMEDY_QUERY_URL = 'api/arsys/v1.0/report/arsqlquery';
+  /**
+   * @deprecated single query and form
+   */
+
   RemedyConstants.REMEDY_FORM_URL = 'api/arsys/v1.0/report/formquery';
+  RemedyConstants.REMEDY_QUERIES_URL = 'api/arsys/v1.0/report/arsqlqueries';
   RemedyConstants.REMEDY_METRIC_FORM_URL = 'api/arsys/v1.0/form';
   RemedyConstants.REMEDY_METRIC_COLUMN_URL = 'api/arsys/v1.0/fields/';
   RemedyConstants.REMEDY_METRIC_COLUMN_QUERY_PARAM = '?field_criteria=NAME,DATATYPE,OPTIONS&field_type=DATA';
@@ -31698,19 +32441,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 /* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! angular */ "angular");
 /* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(angular__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
-/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _remedy_query_builder__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./remedy_query_builder */ "./query-modules/remedy/remedy_query_builder.ts");
-/* harmony import */ var _remedy_response__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./remedy_response */ "./query-modules/remedy/remedy_response.ts");
-/* harmony import */ var _RemedyConstants__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./RemedyConstants */ "./query-modules/remedy/RemedyConstants.ts");
-/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! grafana/app/core/table_model */ "grafana/app/core/table_model");
-/* harmony import */ var grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var DataSource__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! DataSource */ "./DataSource.ts");
+/* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _RemedyTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./RemedyTypes */ "./query-modules/remedy/RemedyTypes.ts");
+/* harmony import */ var _remedy_query_builder__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./remedy_query_builder */ "./query-modules/remedy/remedy_query_builder.ts");
+/* harmony import */ var _remedy_response__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./remedy_response */ "./query-modules/remedy/remedy_response.ts");
+/* harmony import */ var _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./RemedyConstants */ "./query-modules/remedy/RemedyConstants.ts");
+/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+/* harmony import */ var DataSource__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! DataSource */ "./DataSource.ts");
+
 
 
 
@@ -31740,6 +32484,32 @@ function (_super) {
     _this.templateSrv = templateSrv;
     _this.backendSrv = backendSrv;
 
+    _this.interpolateVariable = function (value, variable) {
+      var checkNumber = value;
+
+      if (!isNaN(parseFloat(checkNumber)) && !isNaN(checkNumber - 0)) {
+        return value;
+      } else if (typeof value === 'string') {
+        return _this.quoteLiteral(value);
+      } else if (Array.isArray(value)) {
+        var quotedValues = lodash__WEBPACK_IMPORTED_MODULE_3___default.a.map(value, function (v) {
+          var checkNumber = v;
+
+          if (!isNaN(parseFloat(checkNumber)) && !isNaN(0 - checkNumber)) {
+            return v;
+          } else if (typeof v === 'string') {
+            return _this.quoteLiteral(v);
+          }
+
+          return v;
+        });
+
+        return quotedValues.join(',');
+      } else {
+        return value;
+      }
+    };
+
     _this.refreshSettings(instanceSettings);
 
     return _this;
@@ -31753,7 +32523,8 @@ function (_super) {
     var settingsData = instSet.jsonData || {};
     this.timeField = settingsData.timeField || 'headers.messageIngestedTimestamp';
     this.interval = settingsData.timeInterval || '10s';
-    this.queryBuilder = new _remedy_query_builder__WEBPACK_IMPORTED_MODULE_5__["RemedyQueryBuilder"]();
+    this.queryBuilder = new _remedy_query_builder__WEBPACK_IMPORTED_MODULE_7__["RemedyQueryBuilder"]();
+    this.platformQueue = settingsData.platformQueue;
     /*-- End --*/
   };
 
@@ -31766,22 +32537,44 @@ function (_super) {
     return RemedyDatasource.instance;
   };
 
-  RemedyDatasource.prototype.request = function (method, url, data) {
+  RemedyDatasource.prototype.request = function (method, url, data, headers) {
     var options = {
       url: this.remedyUrl + '/' + url,
       method: method,
       data: data,
       headers: {
-        Authorization: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["EMPTY"]
+        Authorization: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]
       }
     };
-    var imsJWTToken = DataSource__WEBPACK_IMPORTED_MODULE_10__["BMCDataSource"].tokenObj.adeJWTToken;
+    var imsJWTToken = DataSource__WEBPACK_IMPORTED_MODULE_11__["BMCDataSource"].tokenObj.adeJWTToken;
     var loginId = 'Admin';
 
-    if (this.backendSrv.dependencies && this.backendSrv.dependencies.contextSrv && this.backendSrv.dependencies.contextSrv.user && this.backendSrv.dependencies.contextSrv.user.adeJWTToken) {
-      imsJWTToken = this.backendSrv.dependencies.contextSrv.user.adeJWTToken;
-      loginId = this.backendSrv.dependencies.contextSrv.user.Login;
-    }
+    if (this.backendSrv.dependencies && this.backendSrv.dependencies.contextSrv && this.backendSrv.dependencies.contextSrv.user) {
+      loginId = this.backendSrv.dependencies.contextSrv.user.Login; // Set User timezone
+      //Commenting This code to fix DRJ71-2892 - Grafana panle is already converting TZ before rendering hence we dont need explicit conversion
+      // options.headers[queryDef.HeaderFunctions.Timezone.arKey] =
+      //   this.backendSrv.dependencies.contextSrv.user.timezone === 'browser'
+      //     ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      //    : this.backendSrv.dependencies.contextSrv.user.timezone;    
+      // Check/Set User locale against remedy locales
+
+      options.headers[_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].Locale.arKey] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getRemedyLocale"](this.backendSrv.dependencies.contextSrv.user.locale).value;
+    } // Add Headers, Override any user settings
+
+
+    if (headers !== undefined) {
+      headers.forEach(function (data) {
+        options.headers[data.key] = data.value;
+      });
+    } // Add Queue
+
+
+    if (this.platformQueue !== undefined) {
+      options.headers[_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].Queue.arKey] = this.platformQueue;
+    } // Helix dashboard client type
+
+
+    options.headers['X-AR-Client-Type'] = 4021;
 
     if (imsJWTToken !== undefined) {
       options.headers['Authorization'] = 'IMS-JWT ' + imsJWTToken;
@@ -31797,7 +32590,7 @@ function (_super) {
       };
     }
 
-    return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_4__["getBackendSrv"])().datasourceRequest(options);
+    return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_5__["getBackendSrv"])().datasourceRequest(options);
   };
 
   RemedyDatasource.prototype.get = function (url) {
@@ -31809,14 +32602,14 @@ function (_super) {
     });
   };
 
-  RemedyDatasource.prototype.post = function (url, data) {
-    return this.request('POST', url, data).then(function (results) {
+  RemedyDatasource.prototype.post = function (url, data, header) {
+    return this.request('POST', url, data, header).then(function (results) {
       results.data.$$config = results.config;
       return results.data;
     })["catch"](function (err) {
       if (err.data[0] && err.data[0].messageNumber && err.data[0].messageText) {
         throw {
-          message: err.data[0].messageNumber + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["COLON"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["SPACE"] + err.data[0].messageText + (err.data[0].messageAppendedText ? _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["COMMA"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["SPACE"] + err.data[0].messageAppendedText : _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["DOT"]),
+          message: err.data[0].messageNumber + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["COLON"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["SPACE"] + err.data[0].messageText + (err.data[0].messageAppendedText ? _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["COMMA"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["SPACE"] + err.data[0].messageAppendedText : _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DOT"]),
           error: err.data[0].messageNumber
         };
       }
@@ -31825,80 +32618,163 @@ function (_super) {
     });
   };
 
+  RemedyDatasource.prototype.annotationQuery = function (options) {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
+      var annotation, queryString, timeField, timeEndField, titleField, textField, tagsField, query, esQuery, payload;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        annotation = options.annotation;
+        queryString = annotation.query || '*';
+        timeField = annotation.timeField || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+        timeEndField = annotation.timeEndField || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+        titleField = annotation.titleField || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+        textField = annotation.textField || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+        tagsField = annotation.tagsField || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]; // required fields
+
+        if (timeField === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"] || titleField === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+          return [2
+          /*return*/
+          , Promise.resolve([])];
+        }
+
+        query = {
+          date_time_format: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_FORMAT"],
+          output_type: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["TABLE"],
+          sql: queryString
+        };
+        esQuery = angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(query);
+        payload = this.variableSupport(esQuery, options);
+        return [2
+        /*return*/
+        , this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_QUERY_URL, payload).then(function (response) {
+          var getFieldIndexFromColumn = function getFieldIndexFromColumn(columns, fieldName) {
+            for (var i = 0; i < columns.length; i++) {
+              if (columns[i].text === fieldName) {
+                return i;
+              }
+            }
+
+            return -1;
+          };
+
+          var eventList = [];
+          var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_8__["RemedyResponse"](response).getTableData('A').data[0];
+          var rows = res.rows;
+          var columns = res.columns;
+
+          for (var i = 0; i < rows.length; i++) {
+            var event = {};
+            event.annotation = annotation;
+
+            if (timeField !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+              var index = getFieldIndexFromColumn(columns, timeField);
+              event.time = rows[i][index] ? rows[i][index] : _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+            }
+
+            if (timeEndField !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+              var index = getFieldIndexFromColumn(columns, timeEndField);
+              event.timeEnd = rows[i][index] ? rows[i][index] : _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+            }
+
+            if (titleField !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+              var index = getFieldIndexFromColumn(columns, titleField);
+              event.text = rows[i][index] ? rows[i][index] : _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"];
+            }
+
+            if (textField !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+              var index = getFieldIndexFromColumn(columns, textField); // Add description as second line
+
+              event.text = rows[i][index] ? event.text + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["NEWLINE"] + rows[i][index] : event.text;
+            }
+
+            if (tagsField !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"]) {
+              var index = getFieldIndexFromColumn(columns, tagsField);
+              var data = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["EMPTY"] + rows[i][index];
+
+              if (data) {
+                event.tags = data.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["COMMA"]) > -1 ? data.split(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["COMMA"]) : [data];
+              }
+            }
+
+            eventList.push(event);
+          }
+
+          return eventList;
+        })];
+      });
+    });
+  };
+
+  RemedyDatasource.prototype.interpolateVariablesInQueries = function (queries, scopedVars) {
+    var _this = this;
+
+    var expandedQueries = queries;
+
+    if (queries && queries.length > 0) {
+      expandedQueries = queries.map(function (query) {
+        var expandedQuery = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+          datasource: _this.name,
+          query: _this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, _this.interpolateVariable)
+        });
+
+        return expandedQuery;
+      });
+    }
+
+    return expandedQueries;
+  };
+
   RemedyDatasource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var targets, adhocFilters, data, _loop_1, this_1, targets_1, targets_1_1, target;
-
-      var e_1, _a;
+      var targets, adhocFilters, data, remedyHeaderFirst, payload, payload;
 
       var _this = this;
 
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-        targets = lodash__WEBPACK_IMPORTED_MODULE_2___default.a.cloneDeep(options.targets);
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        targets = lodash__WEBPACK_IMPORTED_MODULE_3___default.a.cloneDeep(options.targets);
         adhocFilters = this.templateSrv.getAdhocFilters(this.name);
         data = [];
+        remedyHeaderFirst = [];
+        targets.forEach(function (target, index) {
+          var _a;
 
-        _loop_1 = function _loop_1(target) {
-          if (target.hide) {
-            return "continue";
+          if (!target.hide) {
+            var remedyBody = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_6__["RemedyRequestBody"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_FORMAT"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_TIME_FORMAT"], target.sourceQuery.formatAs, '');
+            var remedyHeader = [];
+
+            if (target.sourceQuery.header !== undefined && target.sourceQuery.header.hideHeader !== undefined && !target.sourceQuery.header.hideHeader) {
+              // Process/Split header values
+              _a = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_this.processHeaderList(target.sourceQuery.header.headerList), 2), remedyBody = _a[0], remedyHeader = _a[1]; // Pick only first Header Ignore rest
+
+              if (index === 0) {
+                remedyHeaderFirst = remedyHeader;
+              }
+            } // Build Request body
+
+
+            var queryObj = _this.queryBuilder.build(target, remedyBody, adhocFilters);
+
+            data.push(queryObj);
           }
+        }); // Check if there is any payload
+        // Backward compatibility: Support server w/o new api
 
-          var queryObj = void 0;
-          queryObj = this_1.queryBuilder.build(target, adhocFilters);
-          var esQuery = angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(queryObj); // Support: Variable
-
-          var payload = this_1.variableSupport(esQuery, options); // this.remedyUrl;
-
-          var returnData = this_1.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_QUERY_URL, payload).then(function (response) {
-            var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_6__["RemedyResponse"](response);
-
-            if (target.sourceQuery.formatAs === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["TABLE"]) {
-              return res.getTableData(target.refId);
-            } else {
-              return res.getTimeSeries(target.refId);
-            }
-          });
-          data.push(returnData);
-        };
-
-        this_1 = this;
-
-        try {
-          for (targets_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(targets), targets_1_1 = targets_1.next(); !targets_1_1.done; targets_1_1 = targets_1.next()) {
-            target = targets_1_1.value;
-
-            _loop_1(target);
-          }
-        } catch (e_1_1) {
-          e_1 = {
-            error: e_1_1
-          };
-        } finally {
-          try {
-            if (targets_1_1 && !targets_1_1.done && (_a = targets_1["return"])) _a.call(targets_1);
-          } finally {
-            if (e_1) throw e_1.error;
-          }
-        }
-
-        if (data.length > 0) {
+        if (data.length === 1) {
+          payload = this.variableSupport(angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(data[0]), options);
           return [2
           /*return*/
-          , Promise.all(data).then(function (values) {
-            if (values.length > 1) {
-              var seriesList = _this.mergeTable(values);
-
-              if (seriesList && seriesList[0].columns.length > 0) {
-                return {
-                  data: seriesList
-                };
-              }
-            } // Return First Element
-
-
-            return {
-              data: values[0].data
-            };
+          , this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_QUERY_URL, payload, remedyHeaderFirst).then(function (response) {
+            var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_8__["RemedyResponse"](response);
+            var returnData = res.getData();
+            return returnData;
+          })];
+        } else if (data.length >= 2) {
+          payload = this.variableSupport(angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(data), options);
+          return [2
+          /*return*/
+          , this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_QUERIES_URL, payload, remedyHeaderFirst).then(function (response) {
+            var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_8__["RemedyResponse"](response);
+            var returnData = res.getData();
+            return returnData;
           })];
         } else {
           return [2
@@ -31915,9 +32791,22 @@ function (_super) {
     });
   };
 
+  RemedyDatasource.prototype.quoteLiteral = function (value) {
+    // Handle backslash data
+    value = String(value).replace(/\\/g, '\\\\'); // Handle single and double quote
+
+    value = String(value).replace(/'/g, "\\\\'");
+    value = String(value).replace(/\"/g, '\\"');
+    return "'" + value + "'";
+  };
+
   RemedyDatasource.prototype.variableSupport = function (esQuery, options) {
     // Support: Variables
-    var payload = this.templateSrv.replace(esQuery, options.scopedVars, 'sqlstring'); // Support: Millisecond epoch
+    var payload = this.templateSrv.replace(esQuery, options.scopedVars, this.interpolateVariable); // Support: Time Filter using regex match
+
+    payload = payload.replace(/\$__/g, '$$');
+    payload = payload.replace(/\$_/g, '$$');
+    payload = payload.replace(/\$timeFilter\(([\w|\s|:|'|`|\.]*)\)/g, '$1 BETWEEN $timeFrom AND $timeTo'); // Support: Millisecond epoch
 
     payload = payload.replace(/\$timeFrom/g, options.range.from.valueOf().toString());
     payload = payload.replace(/\$timeTo/g, options.range.to.valueOf().toString());
@@ -31925,46 +32814,15 @@ function (_super) {
     return payload;
   };
 
-  RemedyDatasource.prototype.mergeTable = function (values) {
-    var caller = this;
-    var seriesList = [];
-    var table = new grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_9___default.a();
-    table.rows = [];
-
-    lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(values, function (value, index) {
-      if (value.type === 'table') {
-        table.type = 'table';
-        table.columns = table.columns.concat(value.data[0].columns);
-
-        if (table.rows.length > 0) {
-          table.rows = caller.addColumn(table.rows, value.data[0].rows);
-        } else {
-          table.rows = value.data[0].rows;
-        }
-      }
-    });
-
-    seriesList.push(table);
-    return seriesList;
-  };
-
-  RemedyDatasource.prototype.addColumn = function (rows, newColumn) {
-    lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(rows, function (column, index) {
-      column[column.length] = newColumn[index];
-    });
-
-    return rows;
-  };
-
   RemedyDatasource.prototype.metricFindData = function (query) {
     query = angular__WEBPACK_IMPORTED_MODULE_1___default.a.fromJson(query);
 
     if (query) {
-      if (query.find === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["KEYWORD_FORM"]) {
+      if (query.find === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["KEYWORD_FORM"]) {
         return this.getForms(query);
       }
 
-      if (query.find === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["KEYWORD_COLUMN"]) {
+      if (query.find === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["KEYWORD_COLUMN"]) {
         return this.getColumns(query);
       }
     }
@@ -31973,12 +32831,10 @@ function (_super) {
   };
 
   RemedyDatasource.prototype.getForms = function (query) {
-    console.log('Form Query: ' + _RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_METRIC_FORM_URL);
-    var result = this.get(_RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_METRIC_FORM_URL).then(function (result) {
+    var result = this.get(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_METRIC_FORM_URL).then(function (result) {
       var formNames = [];
-      console.log('Form Result: ' + result.length);
 
-      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(result, function (name) {
+      lodash__WEBPACK_IMPORTED_MODULE_3___default.a.each(result, function (name) {
         formNames.push({
           text: name,
           value: name
@@ -31991,13 +32847,11 @@ function (_super) {
   };
 
   RemedyDatasource.prototype.getColumns = function (query) {
-    var url = _RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_METRIC_COLUMN_URL + query.name + _RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_METRIC_COLUMN_QUERY_PARAM;
-    console.log('Column Query: ' + url);
+    var url = _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_METRIC_COLUMN_URL + query.name + _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_METRIC_COLUMN_QUERY_PARAM;
     var result = this.get(url).then(function (result) {
       var columnNames = [];
-      console.log('Column Result: ' + result.length);
 
-      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(result, function (column) {
+      lodash__WEBPACK_IMPORTED_MODULE_3___default.a.each(result, function (column) {
         if (column && column.name && column.field_option !== 'DISPLAY') {
           columnNames.push({
             text: column.name,
@@ -32006,7 +32860,6 @@ function (_super) {
         }
       });
 
-      console.log('Column Result reduced: ' + columnNames.length);
       return columnNames;
     });
     return result;
@@ -32018,21 +32871,22 @@ function (_super) {
     if (sql) {
       var data = [];
       var queryObj = {
-        date_time_format: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["DEFAULT_DATE_FORMAT"],
-        output_type: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_8__["TABLE"],
+        date_time_format: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_FORMAT"],
+        output_type: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["TABLE"],
         sql: sql
-      };
-      var payload = angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(queryObj);
-      var returnData = this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_7__["RemedyConstants"].REMEDY_QUERY_URL, payload).then(function (response) {
-        var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_6__["RemedyResponse"](response);
+      }; // Support: Variables
+
+      var payload = this.templateSrv.replace(angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(queryObj), {}, this.interpolateVariable);
+      var returnData = this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_QUERY_URL, payload).then(function (response) {
+        var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_8__["RemedyResponse"](response);
         return res.getTableData('A');
       });
       data.push(returnData);
       return Promise.all(data).then(function (values) {
         var fields = {};
 
-        lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(values, function (value, index) {
-          lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(value.data[0].rows, function (row, index) {
+        lodash__WEBPACK_IMPORTED_MODULE_3___default.a.each(values, function (value, index) {
+          lodash__WEBPACK_IMPORTED_MODULE_3___default.a.each(value.data[0].rows, function (row, index) {
             // pick first, ignore rest column
             if (row[0] !== undefined) {
               fields[value.data[0].columns[0].text + ':' + row[0]] = {
@@ -32041,11 +32895,10 @@ function (_super) {
               };
             }
           });
-        }); // console.log('fields: ' + JSON.stringify(fields));
-        // transform to array
+        }); // transform to array
 
 
-        return lodash__WEBPACK_IMPORTED_MODULE_2___default.a.map(fields, function (value) {
+        return lodash__WEBPACK_IMPORTED_MODULE_3___default.a.map(fields, function (value) {
           return value;
         });
       });
@@ -32054,12 +32907,41 @@ function (_super) {
     }
   };
 
+  RemedyDatasource.prototype.processHeaderList = function (headerList) {
+    var remedyRequestBody = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_6__["RemedyRequestBody"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_FORMAT"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_DATE_TIME_FORMAT"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_10__["TABLE"], '');
+    var remedyHeader = [];
+    headerList.forEach(function (header) {
+      switch (header.arKey) {
+        case 'date_format':
+          remedyRequestBody.date_format = header.value;
+          break;
+
+        case 'date_time_format':
+          remedyRequestBody.date_time_format = header.value;
+          break;
+
+        case 'rowLimit':
+          remedyRequestBody.rowLimit = header.value;
+          break;
+
+        default:
+          // Add all other in header
+          remedyHeader.push({
+            key: header.arKey,
+            value: header.value
+          });
+          break;
+      }
+    });
+    return [remedyRequestBody, remedyHeader];
+  };
+
   RemedyDatasource.prototype.testDatasource = function () {
     throw new Error('Method not implemented.');
   };
 
   return RemedyDatasource;
-}(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["DataSourceApi"]);
+}(_grafana_data__WEBPACK_IMPORTED_MODULE_4__["DataSourceApi"]);
 
 
 
@@ -32080,17 +32962,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! Constants */ "./Constants.ts");
 /* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
-/* harmony import */ var _remedy_form_query__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./remedy.form.query */ "./query-modules/remedy/remedy.form.query.ts");
-/* harmony import */ var _remedy_column_query__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./remedy.column.query */ "./query-modules/remedy/remedy.column.query.ts");
-/* harmony import */ var _remedy_group_query__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./remedy.group.query */ "./query-modules/remedy/remedy.group.query.ts");
-/* harmony import */ var _remedy_having_query__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./remedy.having.query */ "./query-modules/remedy/remedy.having.query.ts");
-/* harmony import */ var _remedy_order_query__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./remedy.order.query */ "./query-modules/remedy/remedy.order.query.ts");
-/* harmony import */ var _remedy_where_query__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./remedy.where.query */ "./query-modules/remedy/remedy.where.query.ts");
-/* harmony import */ var _remedy_qual_query__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./remedy.qual.query */ "./query-modules/remedy/remedy.qual.query.ts");
-/* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! angular */ "angular");
-/* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(angular__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _remedy_query_builder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./remedy_query_builder */ "./query-modules/remedy/remedy_query_builder.ts");
-/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+/* harmony import */ var _remedy_header_query__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./remedy.header.query */ "./query-modules/remedy/remedy.header.query.ts");
+/* harmony import */ var _remedy_form_query__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./remedy.form.query */ "./query-modules/remedy/remedy.form.query.ts");
+/* harmony import */ var _remedy_column_query__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./remedy.column.query */ "./query-modules/remedy/remedy.column.query.ts");
+/* harmony import */ var _remedy_group_query__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./remedy.group.query */ "./query-modules/remedy/remedy.group.query.ts");
+/* harmony import */ var _remedy_having_query__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./remedy.having.query */ "./query-modules/remedy/remedy.having.query.ts");
+/* harmony import */ var _remedy_order_query__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./remedy.order.query */ "./query-modules/remedy/remedy.order.query.ts");
+/* harmony import */ var _remedy_where_query__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./remedy.where.query */ "./query-modules/remedy/remedy.where.query.ts");
+/* harmony import */ var _remedy_qual_query__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./remedy.qual.query */ "./query-modules/remedy/remedy.qual.query.ts");
+/* harmony import */ var _remedy_calculated_query__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./remedy.calculated.query */ "./query-modules/remedy/remedy.calculated.query.ts");
+/* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! angular */ "angular");
+/* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(angular__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _remedy_query_builder__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./remedy_query_builder */ "./query-modules/remedy/remedy_query_builder.ts");
+/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+
+
 
 
 
@@ -32112,19 +32998,29 @@ function () {
 
   /** @ngInject */
   function RemedyQueryEditorCtrl($scope, $rootScope, uiSegmentSrv) {
-    var _a, _b, _c, _d;
+    var _a;
+
+    var _b, _c, _d, _e, _f, _g, _h, _j;
 
     this.queryType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["queryType"];
     this.formatAs = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["formatAs"];
     this["default"] = {
-      sourceQuery: _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["defaultRemedyQuery"]
+      sourceQuery: _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getRemedyQuery"]()
     };
+    this.dstType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["dstType"];
+    $scope.target.sourceQuery.guid = $scope.target.sourceQuery.guid || ((_b = this["default"].sourceQuery) === null || _b === void 0 ? void 0 : _b.guid); // Must be first, hack to init global data
+    // if not present, Init on rootscope
+
+    $rootScope.inputAutoComplete = (_a = {}, _a[$scope.target.sourceQuery.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"](), _a);
     $scope.target.queryType = $scope.target.queryType || this.queryType;
-    $scope.target.sourceQuery.queryType = $scope.target.sourceQuery.queryType || ((_a = this["default"].sourceQuery) === null || _a === void 0 ? void 0 : _a.queryType);
-    $scope.target.sourceQuery.formatAs = $scope.target.sourceQuery.formatAs || ((_b = this["default"].sourceQuery) === null || _b === void 0 ? void 0 : _b.formatAs);
-    $scope.target.sourceQuery.rawQuery = $scope.target.sourceQuery.rawQuery || ((_c = this["default"].sourceQuery) === null || _c === void 0 ? void 0 : _c.rawQuery);
-    $scope.target.sourceQuery.form = $scope.target.sourceQuery.form || ((_d = this["default"].sourceQuery) === null || _d === void 0 ? void 0 : _d.form);
-    var queryBuilder = new _remedy_query_builder__WEBPACK_IMPORTED_MODULE_11__["RemedyQueryBuilder"]();
+    $scope.target.sourceQuery.queryType = $scope.target.sourceQuery.queryType || ((_c = this["default"].sourceQuery) === null || _c === void 0 ? void 0 : _c.queryType);
+    $scope.target.sourceQuery.dstType = $scope.target.sourceQuery.dstType || ((_d = this["default"].sourceQuery) === null || _d === void 0 ? void 0 : _d.dstType);
+    $scope.target.sourceQuery.formatAs = $scope.target.sourceQuery.formatAs || ((_e = this["default"].sourceQuery) === null || _e === void 0 ? void 0 : _e.formatAs);
+    $scope.target.sourceQuery.rawQuery = $scope.target.sourceQuery.rawQuery || ((_f = this["default"].sourceQuery) === null || _f === void 0 ? void 0 : _f.rawQuery);
+    $scope.target.sourceQuery.form = $scope.target.sourceQuery.form || ((_g = this["default"].sourceQuery) === null || _g === void 0 ? void 0 : _g.form);
+    $scope.target.sourceQuery.header = $scope.target.sourceQuery.header || ((_h = this["default"].sourceQuery) === null || _h === void 0 ? void 0 : _h.header);
+    $scope.target.sourceQuery.guid = $scope.target.sourceQuery.guid || ((_j = this["default"].sourceQuery) === null || _j === void 0 ? void 0 : _j.guid);
+    var queryBuilder = new _remedy_query_builder__WEBPACK_IMPORTED_MODULE_13__["RemedyQueryBuilder"]();
 
     $scope.handleQueryError = function (err) {
       this.error = err.message || 'Failed to issue remedy query';
@@ -32138,7 +33034,7 @@ function () {
     $scope.onQueryTypeChange = function () {
       var form = $scope.target.sourceQuery.form;
 
-      if ($scope.target.sourceQuery.queryType === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_12__["KEYWORD_SQL"] && form.meta.syncToSql) {
+      if ($scope.target.sourceQuery.queryType === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_14__["KEYWORD_SQL"] && form.meta.syncToSql) {
         $scope.target.sourceQuery.rawQuery = form.meta.rawSql;
         form.meta.syncToSql = false;
       }
@@ -32154,7 +33050,7 @@ function () {
 
       if (form.meta.hideJson) {
         var outputForm = queryBuilder.build($scope.target);
-        form.meta.rawJson = angular__WEBPACK_IMPORTED_MODULE_10___default.a.toJson(outputForm, 2);
+        form.meta.rawJson = angular__WEBPACK_IMPORTED_MODULE_12___default.a.toJson(outputForm, 2);
       }
     };
 
@@ -32206,34 +33102,69 @@ grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default.a.directive('r
 /*!*********************************************!*\
   !*** ./query-modules/remedy/RemedyTypes.ts ***!
   \*********************************************/
-/*! exports provided: RemedyQuery, RemedyForm, SelectionList, Qualification, LeftOperand, RightOperand, RemedyMetaForm, SortField, SourceList, RemedyFormOnClause, GroupQualification */
+/*! exports provided: RemedyRequestBody, RemedyHeader, RemedyQuery, RemedyForm, SelectionList, CalculatedFieldList, Qualification, LeftOperand, RightOperand, RemedyMetaForm, SortField, HeaderList, SourceList, RemedyFormOnClause, GroupQualification */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyRequestBody", function() { return RemedyRequestBody; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyHeader", function() { return RemedyHeader; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyQuery", function() { return RemedyQuery; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyForm", function() { return RemedyForm; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectionList", function() { return SelectionList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CalculatedFieldList", function() { return CalculatedFieldList; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Qualification", function() { return Qualification; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LeftOperand", function() { return LeftOperand; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RightOperand", function() { return RightOperand; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyMetaForm", function() { return RemedyMetaForm; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortField", function() { return SortField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HeaderList", function() { return HeaderList; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SourceList", function() { return SourceList; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyFormOnClause", function() { return RemedyFormOnClause; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GroupQualification", function() { return GroupQualification; });
 /* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
 
 
+var RemedyRequestBody =
+/** @class */
+function () {
+  function RemedyRequestBody($date_format, $date_time_format, $output_type, $sql) {
+    this.date_format = $date_format;
+    this.date_time_format = $date_time_format;
+    this.output_type = $output_type;
+    this.sql = $sql;
+  }
+
+  return RemedyRequestBody;
+}();
+
+
+
+var RemedyHeader =
+/** @class */
+function () {
+  function RemedyHeader($hideHeader, $headerList) {
+    this.hideHeader = $hideHeader;
+    this.headerList = $headerList;
+  }
+
+  return RemedyHeader;
+}();
+
+
+
 var RemedyQuery =
 /** @class */
 function () {
-  function RemedyQuery($version, $queryType, $formatAs, $rawQuery, $form) {
+  function RemedyQuery($version, $queryType, $formatAs, $rawQuery, $form, $dstType, $header, $guid) {
     this.version = $version;
     this.queryType = $queryType;
     this.formatAs = $formatAs;
     this.rawQuery = $rawQuery;
     this.form = $form;
+    this.dstType = $dstType;
+    this.header = $header;
+    this.guid = $guid;
   }
 
   return RemedyQuery;
@@ -32244,7 +33175,7 @@ function () {
 var RemedyForm =
 /** @class */
 function () {
-  function RemedyForm($meta, $sourceList, $selectionList, $hideQual, $qualification, $hideGroupBy, $groupByField, $hideHaving, $havingQualification, $hideSort, $sortField, $useDistinct, $useAlias, $startEntry, $maxEntries, $useLocale, $outputNumMatches) {
+  function RemedyForm($meta, $sourceList, $selectionList, $hideQual, $qualification, $hideGroupBy, $groupByField, $hideHaving, $havingQualification, $hideSort, $sortField, $dstType, $useDistinct, $useAlias, $startEntry, $maxEntries, $useLocale, $outputNumMatches, $calculatedFieldList) {
     this.useOneEqualOne = false;
     this.meta = $meta;
     this.sourceList = $sourceList;
@@ -32257,12 +33188,14 @@ function () {
     this.havingQualification = $havingQualification;
     this.hideSort = $hideSort;
     this.sortField = $sortField;
+    this.dstType = $dstType;
     this.useDistinct = $useDistinct;
     this.useAlias = $useAlias;
     this.startEntry = $startEntry;
     this.maxEntries = $maxEntries;
     this.useLocale = $useLocale;
     this.outputNumMatches = $outputNumMatches;
+    this.calculatedFieldList = $calculatedFieldList;
   }
 
   return RemedyForm;
@@ -32281,6 +33214,23 @@ function () {
   }
 
   return SelectionList;
+}();
+
+
+
+var CalculatedFieldList =
+/** @class */
+function () {
+  function CalculatedFieldList($selectionCalculatedFields, $selectionQuery, $selectionAlias, $selectionCalculatedFieldName, $hideCalculatedField, $selectionAggregation) {
+    this.selectionCalculatedFields = $selectionCalculatedFields;
+    this.selectionQuery = $selectionQuery;
+    this.selectionAlias = $selectionAlias;
+    this.selectionCalculatedFieldName = $selectionCalculatedFieldName;
+    this.hideCalculatedField = $hideCalculatedField;
+    this.selectionAggregation = $selectionAggregation;
+  }
+
+  return CalculatedFieldList;
 }();
 
 
@@ -32343,7 +33293,7 @@ function () {
 var RemedyMetaForm =
 /** @class */
 function () {
-  function RemedyMetaForm($syncToSql, $hideSql, $rawSql, $hideJson, $rawJson, $metaFullFormNames, $metaColumnNames, $metaGroupNames) {
+  function RemedyMetaForm($syncToSql, $hideSql, $rawSql, $hideJson, $rawJson, $metaFullFormNames, $metaColumnNames, $metaGroupNames, $metaCalculatedFields) {
     this.syncToSql = $syncToSql;
     this.hideSql = $hideSql;
     this.rawSql = $rawSql;
@@ -32352,6 +33302,7 @@ function () {
     this.metaFullFormNames = $metaFullFormNames;
     this.metaColumnNames = $metaColumnNames;
     this.metaGroupNames = $metaGroupNames;
+    this.metaCalculatedFields = $metaCalculatedFields;
   }
 
   return RemedyMetaForm;
@@ -32368,6 +33319,23 @@ function () {
   }
 
   return SortField;
+}();
+
+
+
+var HeaderList =
+/** @class */
+function () {
+  function HeaderList($text, $value, $collapseHeader, $dataType, $arType, $arKey) {
+    this.text = $text;
+    this.value = $value;
+    this.collapseHeader = $collapseHeader;
+    this.dataType = $dataType;
+    this.arType = $arType;
+    this.arKey = $arKey;
+  }
+
+  return HeaderList;
 }();
 
 
@@ -32430,6 +33398,284 @@ function () {
 
 /***/ }),
 
+/***/ "./query-modules/remedy/remedy.calculated.query.ts":
+/*!*********************************************************!*\
+  !*** ./query-modules/remedy/remedy.calculated.query.ts ***!
+  \*********************************************************/
+/*! exports provided: RemedyCalculatedQueryCtrl, remedyCalculatedQuery */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyCalculatedQueryCtrl", function() { return RemedyCalculatedQueryCtrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remedyCalculatedQuery", function() { return remedyCalculatedQuery; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! grafana/app/core/core_module */ "grafana/app/core/core_module");
+/* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
+/* harmony import */ var _RemedyTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RemedyTypes */ "./query-modules/remedy/RemedyTypes.ts");
+/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_7__);
+
+
+
+
+
+
+
+
+
+var RemedyCalculatedQueryCtrl =
+/** @class */
+function () {
+  RemedyCalculatedQueryCtrl.$inject = ["$scope", "uiSegmentSrv", "$rootScope"];
+
+  /** @ngInject */
+  function RemedyCalculatedQueryCtrl($scope, uiSegmentSrv, $rootScope) {
+    var _this = this;
+
+    var IDENTIFIER_PREFIX = 'CF';
+    var inputForm = $scope.target.form;
+    var inputCalculatedFieldList = $scope.target.form.calculatedFieldList; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_3__["getAutoComplete"]();
+    }
+
+    $scope.init = function () {
+      $scope.remedyForm = inputCalculatedFieldList;
+      $scope.inputValue = {
+        selectionSeqGroupBy: 0,
+        selectionQuery: inputCalculatedFieldList[$scope.index].selectionQuery || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"],
+        selectionAlias: inputCalculatedFieldList[$scope.index].selectionAlias || IDENTIFIER_PREFIX + ($scope.index + 1),
+        selectionCalculatedFields: inputCalculatedFieldList[$scope.index].selectionCalculatedFields || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CALCULATED_FIELD"],
+        hideCalculatedField: inputCalculatedFieldList[$scope.index].hideCalculatedField,
+        selectionCalculatedFieldName: inputCalculatedFieldList[$scope.index].selectionCalculatedFieldName
+      };
+      $scope.inputAutoComplete = {
+        selectionQuery: inputForm.meta.metaColumnNames || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"],
+        selectionAlias: [],
+        selectionCalculatedFields: inputForm.meta.metaCalculatedFields || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CALCULATED_FIELD"]
+      };
+      $scope.inputAutoComplete.selectionAlias.splice(0, 0, {
+        text: IDENTIFIER_PREFIX + ($scope.index + 1),
+        value: IDENTIFIER_PREFIX + ($scope.index + 1)
+      }); // Add if existing Alias is not already present
+
+      var existingAlias = inputCalculatedFieldList[$scope.index].selectionAlias;
+
+      var index = lodash__WEBPACK_IMPORTED_MODULE_2___default.a.findIndex($scope.inputAutoComplete.selectionAlias, function (data) {
+        var data1 = data;
+        return data1.text === existingAlias;
+      });
+
+      if (existingAlias && existingAlias !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"] && index === -1) {
+        var addIndex = $scope.inputAutoComplete.selectionAlias.length;
+        $scope.inputAutoComplete.selectionAlias.splice(addIndex, 0, {
+          text: existingAlias,
+          value: existingAlias
+        });
+      } // Add column Name as alias if does not exist
+
+
+      existingAlias = inputCalculatedFieldList[$scope.index].selectionCalculatedFieldName;
+
+      if (existingAlias !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]) {
+        index = lodash__WEBPACK_IMPORTED_MODULE_2___default.a.findIndex($scope.inputAutoComplete.selectionAlias, function (data) {
+          var data1 = data;
+          return data1.text === existingAlias;
+        });
+
+        if (existingAlias && index === -1) {
+          $scope.inputAutoComplete.selectionAlias.splice(0 + 1, 0, {
+            text: existingAlias,
+            value: existingAlias
+          });
+        }
+      }
+
+      inputCalculatedFieldList[$scope.index].selectionAlias = $scope.inputValue.selectionAlias;
+      $scope.validateModel();
+    };
+
+    $rootScope.onAppEvent('remedy-calculated-query-updated', function () {
+      $scope.updateColumnsAutoComplete();
+    }, $scope);
+    $rootScope.onAppEvent('remedy-query-updated', function () {
+      $scope.validateModel();
+    }, $scope);
+    $rootScope.onAppEvent('remedy-form-name-query-updated', function () {
+      $scope.getCalculatedField();
+    }, $scope);
+
+    $scope.getCalculatedField = function () {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, Promise, function () {
+        var result, e_1;
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              _a.trys.push([0, 2, 3, 4]);
+
+              return [4
+              /*yield*/
+              , Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_7__["getBackendSrv"])().get('api/org/calculatedfield')];
+
+            case 1:
+              result = _a.sent();
+              return [3
+              /*break*/
+              , 4];
+
+            case 2:
+              e_1 = _a.sent();
+              $scope.updateCalculatedFieldList([]);
+              return [3
+              /*break*/
+              , 4];
+
+            case 3:
+              return [2
+              /*return*/
+              , $scope.updateCalculatedFieldList(result)];
+
+            case 4:
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
+    };
+
+    $scope.updateCalculatedFieldList = function (result) {
+      var calculatedFields = [];
+      var formNames = [];
+      inputForm.sourceList.forEach(function (item) {
+        formNames.push(item.sourceFormName);
+      });
+
+      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(result, function (item) {
+        if (formNames.includes(item.formName)) {
+          calculatedFields = calculatedFields.concat({
+            text: item.module + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["ARROW"] + item.name,
+            value: {
+              name: item.name,
+              text: item.module + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["ARROW"] + item.name,
+              query: item.sqlQuery,
+              aggregation: item.Aggregation
+            }
+          });
+        }
+      });
+
+      $scope.inputAutoComplete.selectionCalculatedFields = calculatedFields;
+      $rootScope.inputAutoComplete[$scope.target.guid].metaCalculatedFields = $scope.inputAutoComplete.selectionCalculatedFields;
+      $rootScope.appEvent('remedy-calculated-query-updated');
+    };
+
+    $scope.validateModel = function () {
+      $scope.isFirst = $scope.index === 0;
+      $scope.isSingle = $scope.remedyForm.length === 1;
+    };
+
+    $scope.updateColumnsAutoComplete = function () {
+      $scope.inputAutoComplete.selectionCalculatedFields = $rootScope.inputAutoComplete[$scope.target.guid].metaCalculatedFields;
+    };
+
+    $scope.onColumnAliasChange = function () {
+      inputCalculatedFieldList[$scope.index].selectionAlias = $scope.inputValue.selectionAlias;
+      $rootScope.appEvent('remedy-calc-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.onCalculatedFieldChange = function () {
+      if ($scope.inputValue.selectionCalculatedFields.name.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["OPENING_BRACKET"]) !== -1) {
+        $scope.inputValue.selectionCalculatedFields.name = $scope.inputValue.selectionCalculatedFields.name.split(/[(' ',?,.]/)[0];
+      } // Add new alias
+
+
+      $scope.inputAutoComplete.selectionAlias.splice(0, 0, {
+        text: $scope.inputValue.selectionCalculatedFields.name,
+        value: $scope.inputValue.selectionCalculatedFields.name
+      });
+      inputCalculatedFieldList[$scope.index].selectionCalculatedFields = $scope.inputValue.selectionCalculatedFields.text;
+      inputCalculatedFieldList[$scope.index].selectionQuery = $scope.inputValue.selectionCalculatedFields.query;
+      inputCalculatedFieldList[$scope.index].selectionAlias = IDENTIFIER_PREFIX + ($scope.index + 1);
+      inputCalculatedFieldList[$scope.index].selectionCalculatedFieldName = $scope.inputValue.selectionCalculatedFields.name;
+      inputCalculatedFieldList[$scope.index].selectionAggregation = $scope.inputValue.selectionCalculatedFields.aggregation;
+      $scope.showClause = true;
+      $rootScope.appEvent('remedy-calc-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.addCalculatedField = function () {
+      if ($scope.inputValue.hideCalculatedField) {
+        return;
+      }
+
+      var addIndex = inputCalculatedFieldList.length;
+      $scope.inputValue.selectionSeqGroupBy += 1;
+      var defaultSelectionList = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_4__["CalculatedFieldList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CALCULATED_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], true, false);
+      inputCalculatedFieldList.splice(addIndex, 0, defaultSelectionList);
+      $scope.onChange();
+    };
+
+    $scope.removeCalculatedField = function () {
+      if ($scope.inputValue.hideCalculatedField) {
+        return;
+      }
+
+      if ($scope.index === 0) {
+        inputCalculatedFieldList.splice(inputCalculatedFieldList.length - 1, 1);
+      } else {
+        inputCalculatedFieldList.splice($scope.index, 1);
+      }
+
+      $scope.inputValue.selectionSeqGroupBy -= 1;
+      $scope.onChange();
+    };
+
+    $scope.toggleShowCalculatedQuery = function () {
+      inputCalculatedFieldList[$scope.index].hideCalculatedField = !$scope.inputValue.hideCalculatedField;
+      $scope.inputValue.hideCalculatedField = !$scope.inputValue.hideCalculatedField;
+      $scope.onChange();
+    };
+
+    $scope.init();
+    $scope.getCalculatedField();
+  }
+
+  return RemedyCalculatedQueryCtrl;
+}();
+
+
+function remedyCalculatedQuery() {
+  return {
+    templateUrl: Constants__WEBPACK_IMPORTED_MODULE_5__["TEMPLATE_BASE_URL"] + '/partials/remedy/remedy.calculated.query.html',
+    controller: RemedyCalculatedQueryCtrl,
+    controllerAs: 'remedycalculatedctrl',
+    restrict: 'E',
+    scope: {
+      target: '=',
+      index: '=',
+      datasource: '=',
+      onChange: '&'
+    }
+  };
+}
+grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_1___default.a.directive('remedyCalculatedQuery', remedyCalculatedQuery);
+
+/***/ }),
+
 /***/ "./query-modules/remedy/remedy.column.query.ts":
 /*!*****************************************************!*\
   !*** ./query-modules/remedy/remedy.column.query.ts ***!
@@ -32470,7 +33716,16 @@ function () {
     var inputForm = $scope.target.form;
     var inputSourceList = $scope.target.form.sourceList;
     var inputSelectionList = $scope.target.form.selectionList;
-    var queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(Constants__WEBPACK_IMPORTED_MODULE_4__["SOURCE_TYPE_REMEDY"]);
+    var queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(Constants__WEBPACK_IMPORTED_MODULE_4__["SOURCE_TYPE_REMEDY"]); // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.remedyForm = inputSelectionList;
@@ -32552,18 +33807,13 @@ function () {
 
     $scope.updateColumnsAutoComplete = function () {
       // Update Field Name
-      $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaColumnNames;
+      $scope.inputAutoComplete.selectionColumnName = $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames;
     };
 
     $scope.updateFullColumnList = function () {
-      // Process only for first row
-      if ($scope.index !== 0) {
-        return;
-      } // Reset ColumnList
-
-
-      inputForm.meta.metaColumnNames = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getColumnNames"]();
-      $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaColumnNames; // Query Column list based on all the form
+      // Reset ColumnList
+      // inputForm.meta.metaColumnNames = queryDef.getColumnNames();
+      $scope.inputAutoComplete.selectionColumnName = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getColumnNames"](); // Query Column list based on all the form
 
       var result = [];
 
@@ -32595,10 +33845,24 @@ function () {
             });
           });
         }); // refresh ColumnList
+        // inputForm.meta.metaColumnNames = modifiedColumList;
 
 
-        inputForm.meta.metaColumnNames = modifiedColumList;
-        $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaColumnNames; // refresh column names across all scopes
+        $scope.inputAutoComplete.selectionColumnName = modifiedColumList; // Double check/reset root scope list
+
+        if ($rootScope.inputAutoComplete === undefined) {
+          $rootScope.inputAutoComplete = {};
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames = [];
+        }
+
+        $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames = $scope.inputAutoComplete.selectionColumnName; // refresh column names across all scopes
 
         $rootScope.appEvent('remedy-column-query-updated');
       });
@@ -32648,7 +33912,7 @@ function () {
       inputSelectionList[$scope.index].selectionColumnName = $scope.inputValue.selectionColumnName.formName + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["ARROW"] + $scope.inputValue.selectionColumnName.columnName;
       inputSelectionList[$scope.index].selectionAlias = $scope.inputValue.selectionAlias; // Assign Source Alias
 
-      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some(inputForm.meta.metaFullFormNames, function (srcAlias) {
+      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some($rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames, function (srcAlias) {
         if ($scope.inputValue.selectionColumnName.formName.includes(srcAlias.text)) {
           if (inputForm.useAlias) {
             $scope.inputValue.selectionSrcAlias = $scope.inputValue.selectionColumnName.formAlias;
@@ -32701,6 +33965,7 @@ function () {
     };
 
     $scope.init();
+    $scope.updateFullColumnList();
   }
 
   return RemedyColumnQueryCtrl;
@@ -32764,7 +34029,16 @@ function () {
     var IDENTIFIER_PREFIX = 'F';
     var inputForm = $scope.target.form;
     var inputSourceList = $scope.target.form.sourceList;
-    var queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(Constants__WEBPACK_IMPORTED_MODULE_4__["SOURCE_TYPE_REMEDY"]);
+    var queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(Constants__WEBPACK_IMPORTED_MODULE_4__["SOURCE_TYPE_REMEDY"]); // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.remedyForm = inputSourceList;
@@ -32786,7 +34060,11 @@ function () {
         text: IDENTIFIER_PREFIX + ($scope.index + 1),
         value: IDENTIFIER_PREFIX + ($scope.index + 1)
       });
-      inputSourceList[$scope.index].sourceAlias = $scope.inputValue.sourceAlias;
+      inputSourceList[$scope.index].sourceAlias = $scope.inputValue.sourceAlias; // Reset to blank
+
+      inputForm.meta.metaFullFormNames = [];
+      inputForm.meta.metaColumnNames = [];
+      inputForm.meta.metaGroupNames = [];
       $scope.validateModel();
     };
 
@@ -32803,8 +34081,21 @@ function () {
     };
 
     $scope.updateColumnsAutoComplete = function () {
-      // Update Field Name
-      $scope.inputAutoComplete.joinColumnName = inputForm.meta.metaColumnNames;
+      // Double check/reset root scope list
+      if ($rootScope.inputAutoComplete === undefined) {
+        $rootScope.inputAutoComplete = {};
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames = [];
+      } // Update Field Name
+
+
+      $scope.inputAutoComplete.joinColumnName = $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames;
     };
 
     $scope.getMetricColumnList = function (form) {
@@ -32830,16 +34121,31 @@ function () {
     };
 
     $scope.getMetaFullFormNames = function () {
-      // Temp Reset Form List
-      inputForm.meta.metaFullFormNames = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getFormNames"]();
-      $scope.inputAutoComplete.sourceFormName = inputForm.meta.metaFullFormNames;
+      $scope.inputAutoComplete.sourceFormName = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getFormNames"]();
       var jsonStr = angular__WEBPACK_IMPORTED_MODULE_5___default.a.toJson({
         find: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["KEYWORD_FORM"]
       });
       var result = $scope.metricQuery(jsonStr);
       Promise.all([result]).then(function (data) {
-        inputForm.meta.metaFullFormNames = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getFormNames"](data[0]);
-        $scope.inputAutoComplete.sourceFormName = inputForm.meta.metaFullFormNames;
+        // inputForm.meta.metaFullFormNames = queryDef.getFormNames(data[0]);
+        $scope.inputAutoComplete.sourceFormName = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getFormNames"](data[0]); // Double check/reset root scope list
+
+        if ($rootScope.inputAutoComplete === undefined) {
+          $rootScope.inputAutoComplete = {};
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames = [];
+        } // Assign to root scope
+
+
+        $rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames = $scope.inputAutoComplete.sourceFormName; // refresh column names across all scopes
+
+        $rootScope.appEvent('remedy-form-name-query-updated');
         $scope.onChange();
       });
     };
@@ -33031,6 +34337,16 @@ function () {
     var inputSourceList = $scope.target.form.sourceList;
     var inputSelectionList = $scope.target.form.selectionList;
     var inputGroupList = $scope.target.form.groupByField;
+    var inputCalculatedFieldList = $scope.target.form.calculatedFieldList; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.remedyForm = inputGroupList;
@@ -33058,6 +34374,10 @@ function () {
 
     $rootScope.onAppEvent('remedy-column-query-updated', function () {
       $scope.updateColumnsForGroup();
+      $scope.updateGroupWhenCalculatedFieldSelected();
+    }, $scope);
+    $rootScope.onAppEvent('remedy-calc-query-updated', function () {
+      $scope.updateGroupWhenCalculatedFieldSelected();
     }, $scope);
     $rootScope.onAppEvent('remedy-query-updated', function () {
       $scope.validateModel();
@@ -33069,7 +34389,7 @@ function () {
     };
 
     $scope.updateColumnsForGroup = function () {
-      inputForm.meta.metaGroupNames = [];
+      var metaGroupNames = [];
 
       lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(inputSelectionList, function (column) {
         if (!_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["isDBFunctionsAggregate"](column.selectionType)) {
@@ -33081,7 +34401,7 @@ function () {
             }
           });
 
-          inputForm.meta.metaGroupNames = inputForm.meta.metaGroupNames.concat({
+          metaGroupNames = metaGroupNames.concat({
             text: column.selectionType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + column.selectionColumnName,
             value: {
               formName: form_1.sourceFormName,
@@ -33092,7 +34412,102 @@ function () {
         }
       });
 
-      $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaGroupNames;
+      $scope.inputAutoComplete.selectionColumnName = metaGroupNames; // Double check/reset root scope list
+
+      if ($rootScope.inputAutoComplete === undefined) {
+        $rootScope.inputAutoComplete = {};
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid].metaGroupNames === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid].metaGroupNames = [];
+      }
+
+      $rootScope.inputAutoComplete[$scope.target.guid].metaGroupNames = metaGroupNames;
+    };
+
+    $scope.updateGroupWhenCalculatedFieldSelected = function () {
+      var hideCalculatedField = false;
+      var showGroupBy = true;
+
+      if (inputCalculatedFieldList !== undefined) {
+        inputCalculatedFieldList.forEach(function (item) {
+          if (!item.hideCalculatedField) {
+            hideCalculatedField = true;
+          }
+
+          if (item.selectionAggregation) {
+            showGroupBy = false;
+          }
+        });
+      }
+
+      if (hideCalculatedField) {
+        var metaGroupNames_1 = [];
+
+        if (!showGroupBy) {
+          inputSelectionList.forEach(function (column) {
+            if (column.selectionColumnName !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_SELECT_COLUMN_NAME"]) {
+              if (!_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["isDBFunctionsAggregate"](column.selectionType)) {
+                metaGroupNames_1.push(column);
+              }
+            }
+          });
+
+          if (inputCalculatedFieldList !== undefined) {
+            lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(inputCalculatedFieldList, function (field) {
+              if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["CALCULATED_FIELD"]) {
+                var form_2 = inputSourceList[0];
+
+                lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(inputSourceList, function (f) {
+                  if (field.selectionAlias.includes(f.sourceFormName)) {
+                    form_2 = f;
+                  }
+                });
+
+                if (!field.selectionAggregation) {
+                  var tempColumnName = $scope.replaceSpaceWithUnderscore(field.selectionAlias);
+                  metaGroupNames_1 = metaGroupNames_1.concat(new _RemedyTypes__WEBPACK_IMPORTED_MODULE_3__["SelectionList"]('Field', tempColumnName, 'Calculated Field', form_2.sourceAlias));
+                }
+              }
+            });
+          }
+        }
+
+        if (metaGroupNames_1.length > 0) {
+          inputGroupList.forEach(function (column, index) {
+            if (column.selectionColumnName === '' || column.selectionColumnName === column.selectionType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_SELECT_COLUMN_NAME"]) {
+              inputGroupList.splice(index, 1);
+            }
+          });
+          $scope.remedyForm.hideGroupBy = false;
+          inputForm.hideGroupBy = false;
+        }
+
+        if (metaGroupNames_1.length > 0 && metaGroupNames_1.length !== inputGroupList.length) {
+          for (var i = inputGroupList.length; i < metaGroupNames_1.length; i++) {
+            $scope.inputValue.selectionSeqGroupBy += 1;
+            var defaultGroupByField = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_3__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["EMPTY"]);
+            inputGroupList.splice(i, 0, defaultGroupByField);
+          }
+        }
+
+        metaGroupNames_1.forEach(function (column, index) {
+          inputGroupList[index].selectionColumnName = column.selectionType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + column.selectionColumnName;
+          inputGroupList[index].selectionSrcAlias = column.selectionSrcAlias;
+          inputGroupList[index].selectionAlias = IDENTIFIER_PREFIX + (index + 1);
+        }); // refresh group names across all scopes
+
+        $rootScope.appEvent('remedy-group-query-updated');
+        $scope.onChange();
+      }
+    };
+
+    $scope.replaceSpaceWithUnderscore = function (input) {
+      return input.replace(/\s/g, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["UNDERSCORE"]);
     };
 
     $scope.addColumnTypeMenu = function (menu, subMenu) {
@@ -33132,7 +34547,7 @@ function () {
       inputGroupList[$scope.index].selectionColumnName = $scope.inputValue.selectionColumnName.columnName;
       inputGroupList[$scope.index].selectionAlias = $scope.inputValue.selectionAlias; // Assign Source Alias
 
-      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some(inputForm.meta.metaFullFormNames, function (srcAlias) {
+      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some($rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames, function (srcAlias) {
         if (inputGroupList[$scope.index].selectionColumnName.includes(srcAlias.text)) {
           // Assign Selection Type
           $scope.inputValue.selectionType = inputGroupList[$scope.index].selectionColumnName.substring(0, inputGroupList[$scope.index].selectionColumnName.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"]));
@@ -33240,7 +34655,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remedyHavingQuery", function() { return remedyHavingQuery; });
 /* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! grafana/app/core/core_module */ "grafana/app/core/core_module");
 /* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+/* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
+/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+
 
 
 
@@ -33252,7 +34669,16 @@ function () {
   /** @ngInject */
   function RemedyHavingQueryCtrl($scope, uiSegmentSrv, $rootScope) {
     var inputForm = $scope.target.form;
-    var inputQualification = $scope.target.form.qualification;
+    var inputQualification = $scope.target.form.qualification; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_1__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.qualType = 'Having';
@@ -33293,7 +34719,7 @@ function () {
 
 function remedyHavingQuery() {
   return {
-    templateUrl: Constants__WEBPACK_IMPORTED_MODULE_1__["TEMPLATE_BASE_URL"] + '/partials/remedy/remedy.having.query.html',
+    templateUrl: Constants__WEBPACK_IMPORTED_MODULE_2__["TEMPLATE_BASE_URL"] + '/partials/remedy/remedy.having.query.html',
     controller: RemedyHavingQueryCtrl,
     controllerAs: 'remedyhavingctrl',
     restrict: 'E',
@@ -33306,6 +34732,206 @@ function remedyHavingQuery() {
   };
 }
 grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default.a.directive('remedyHavingQuery', remedyHavingQuery);
+
+/***/ }),
+
+/***/ "./query-modules/remedy/remedy.header.query.ts":
+/*!*****************************************************!*\
+  !*** ./query-modules/remedy/remedy.header.query.ts ***!
+  \*****************************************************/
+/*! exports provided: RemedyHeaderQueryCtrl, remedyHeaderQuery */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyHeaderQueryCtrl", function() { return RemedyHeaderQueryCtrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remedyHeaderQuery", function() { return remedyHeaderQuery; });
+/* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! grafana/app/core/core_module */ "grafana/app/core/core_module");
+/* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
+/* harmony import */ var _RemedyTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./RemedyTypes */ "./query-modules/remedy/RemedyTypes.ts");
+/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+
+
+
+
+
+
+var RemedyHeaderQueryCtrl =
+/** @class */
+function () {
+  RemedyHeaderQueryCtrl.$inject = ["$scope", "uiSegmentSrv", "$rootScope"];
+
+  /** @ngInject */
+  function RemedyHeaderQueryCtrl($scope, uiSegmentSrv, $rootScope) {
+    var inputRemedyHeader = $scope.target.header;
+    var inputHeaderList = $scope.target.header.headerList; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
+
+    $scope.init = function () {
+      $scope.remedyForm = inputRemedyHeader;
+      $scope.remedyForm.hideHeader = inputRemedyHeader.hideHeader;
+      $scope.remedyForm.collapseHeader = true;
+      $scope.remedyHeaderList = inputHeaderList;
+      $scope.remedyHeaderList.collapseHeader = inputHeaderList[$scope.index].collapseHeader;
+      $scope.inputValue = {
+        sourceText: inputHeaderList[$scope.index].text || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.text,
+        sourceValue: inputHeaderList[$scope.index].value || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.value,
+        sourceCollapseHeader: inputHeaderList[$scope.index].collapseHeader || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.collapseHeader,
+        sourceDataType: inputHeaderList[$scope.index].dataType || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.dataType,
+        sourceARType: inputHeaderList[$scope.index].arType || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.arType,
+        sourceARKey: inputHeaderList[$scope.index].arKey || _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].RowLimit.arKey
+      };
+      $scope.inputAutoComplete = {
+        sourceHeader: _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getHeaderFunctions"](),
+        sourceValue: $scope.inputValue.sourceText === _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].Locale.text ? $rootScope.inputAutoComplete[$scope.target.guid].locale : $rootScope.inputAutoComplete[$scope.target.guid].timezone
+      };
+      $scope.validateModel();
+    };
+
+    $rootScope.onAppEvent('remedy-header-query-updated', function () {
+      $scope.validateModel();
+    }, $scope);
+
+    $scope.validateModel = function () {
+      $scope.isFirst = $scope.index === 0;
+      $scope.isSingle = inputHeaderList.length === 1;
+      $scope.remedyHeaderList = inputHeaderList;
+
+      if ($scope.isFirst) {
+        inputHeaderList[$scope.index].collapseHeader = false;
+      }
+
+      $scope.remedyHeaderList.collapseHeader = inputHeaderList[$scope.index].collapseHeader;
+    };
+
+    $scope.addHeaderTypeMenu = function (menu, subMenu) {
+      var menuValue = menu.value;
+
+      if (subMenu && subMenu.value) {
+        menuValue = subMenu.value;
+      }
+
+      $scope.inputValue.sourceText = menu.text;
+      $scope.inputValue.sourceValue = menuValue;
+      $scope.onHeaderTypeChange();
+    };
+
+    $scope.onHeaderTypeChange = function () {
+      inputHeaderList[$scope.index].text = $scope.inputValue.sourceText;
+      inputHeaderList[$scope.index].value = $scope.inputValue.sourceValue;
+      inputHeaderList[$scope.index].collapseHeader = $scope.inputValue.sourceCollapseHeader; // Data Type
+
+      $scope.inputValue.sourceDataType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getHeaderDataType"]($scope.inputValue.sourceText).dataType;
+      inputHeaderList[$scope.index].dataType = $scope.inputValue.sourceDataType; // AR type
+
+      $scope.inputValue.sourceARType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getHeaderDataType"]($scope.inputValue.sourceText).arType;
+      inputHeaderList[$scope.index].arType = $scope.inputValue.sourceARType; // AR Key
+
+      $scope.inputValue.sourceARKey = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getHeaderDataType"]($scope.inputValue.sourceText).arKey;
+      inputHeaderList[$scope.index].arKey = $scope.inputValue.sourceARKey; // Set selection list
+
+      switch ($scope.inputValue.sourceText) {
+        case _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].Locale.text:
+          $scope.inputAutoComplete.sourceValue = $rootScope.inputAutoComplete[$scope.target.guid].locale;
+          break;
+
+        case _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].Timezone.text:
+          $scope.inputAutoComplete.sourceValue = $rootScope.inputAutoComplete[$scope.target.guid].timezone;
+          break;
+
+        default:
+          break;
+      }
+
+      $scope.onChange();
+    };
+
+    $scope.onInputValueChangeCalculate = function () {
+      inputHeaderList[$scope.index].value = $scope.inputValue.sourceValue;
+      $scope.onChange();
+    };
+
+    $scope.addRemedyHeader = function () {
+      if ($scope.remedyForm.hideHeader) {
+        return;
+      }
+
+      var addIndex = inputHeaderList.length; // Add new element at the end
+
+      var defaultHeaderList = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_3__["HeaderList"](_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.text, _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.value, _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.collapseHeader, _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.dataType, _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.arType, _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["HeaderFunctions"].DateFormat.arKey);
+      inputHeaderList.splice(addIndex, 0, defaultHeaderList);
+      $rootScope.appEvent('remedy-header-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.removeRemedyHeader = function () {
+      if ($scope.remedyForm.hideHeader) {
+        return;
+      }
+
+      if ($scope.index === 0) {
+        inputHeaderList.splice(inputHeaderList.length - 1, 1);
+      } else {
+        inputHeaderList.splice($scope.index, 1);
+      }
+
+      $rootScope.appEvent('remedy-header-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.toggleShowHeaderQuery = function () {
+      $scope.remedyForm.hideHeader = !$scope.remedyForm.hideHeader;
+      inputRemedyHeader.hideHeader = $scope.remedyForm.hideHeader;
+      $rootScope.appEvent('remedy-header-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.collapseHeader = function () {
+      $scope.remedyForm.collapseHeader = !$scope.remedyForm.collapseHeader;
+
+      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(inputHeaderList, function (header, index) {
+        if (index !== 0) {
+          header.collapseHeader = !header.collapseHeader;
+        }
+      });
+
+      $rootScope.appEvent('remedy-header-query-updated');
+      $scope.onChange();
+    };
+
+    $scope.init();
+  }
+
+  return RemedyHeaderQueryCtrl;
+}();
+
+
+function remedyHeaderQuery() {
+  return {
+    templateUrl: Constants__WEBPACK_IMPORTED_MODULE_4__["TEMPLATE_BASE_URL"] + '/partials/remedy/remedy.header.query.html',
+    controller: RemedyHeaderQueryCtrl,
+    controllerAs: 'remedyheaderctrl',
+    restrict: 'E',
+    scope: {
+      target: '=',
+      index: '=',
+      datasource: '=',
+      onChange: '&'
+    }
+  };
+}
+grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default.a.directive('remedyHeaderQuery', remedyHeaderQuery);
 
 /***/ }),
 
@@ -33346,7 +34972,17 @@ function () {
     var inputForm = $scope.target.form;
     var inputSourceList = $scope.target.form.sourceList;
     var inputGroupList = $scope.target.form.groupByField;
-    var inputOrderByList = $scope.target.form.sortField; // const queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(SOURCE_TYPE_REMEDY);
+    var inputOrderByList = $scope.target.form.sortField;
+    var inputCalculatedFieldList = $scope.target.form.calculatedFieldList; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.remedyForm = inputOrderByList;
@@ -33377,6 +35013,9 @@ function () {
     $rootScope.onAppEvent('remedy-column-query-updated', function () {
       $scope.updateColumnsAutoComplete();
     }, $scope);
+    $rootScope.onAppEvent('remedy-calc-query-updated', function () {
+      $scope.updateColumnsAutoComplete();
+    }, $scope);
     $rootScope.onAppEvent('remedy-group-query-updated', function () {
       $scope.updateColumnsAutoComplete();
     }, $scope);
@@ -33389,16 +35028,34 @@ function () {
       $scope.isSingle = $scope.remedyForm.length === 1;
     };
 
+    $scope.replaceSpaceWithUnderscore = function (input) {
+      return input.replace(/\s/g, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["UNDERSCORE"]);
+    };
+
     $scope.updateColumnsAutoComplete = function () {
+      // When GroupBy is Enabled Order by column list is same as Group By List
       if (inputForm.hideGroupBy) {
-        $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaColumnNames;
+        // Double check/reset root scope list
+        if ($rootScope.inputAutoComplete === undefined) {
+          $rootScope.inputAutoComplete = {};
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+        }
+
+        if ($rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames === undefined) {
+          $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames = [];
+        }
+
+        $scope.inputAutoComplete.selectionColumnName = $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames;
       } else {
         $scope.updateColumnsForOrder();
       }
     };
 
     $scope.updateColumnsForOrder = function () {
-      inputForm.meta.metaGroupNames = [];
+      var metaOrderNames = [];
 
       lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(inputGroupList, function (column) {
         if (!_remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["isDBFunctionsAggregate"](column.selectionType)) {
@@ -33410,7 +35067,7 @@ function () {
             }
           });
 
-          inputForm.meta.metaGroupNames = inputForm.meta.metaGroupNames.concat({
+          metaOrderNames = metaOrderNames.concat({
             text: column.selectionColumnName,
             value: {
               formName: form_1.sourceFormName,
@@ -33422,7 +35079,46 @@ function () {
         }
       });
 
-      $scope.inputAutoComplete.selectionColumnName = inputForm.meta.metaGroupNames;
+      if (inputCalculatedFieldList !== undefined) {
+        lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(inputCalculatedFieldList, function (field) {
+          if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["CALCULATED_FIELD"]) {
+            var form_2 = inputSourceList[0];
+
+            lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(inputSourceList, function (f) {
+              if (field.selectionAlias.includes(f.sourceFormName)) {
+                form_2 = f;
+              }
+            });
+
+            var tempColumnName = $scope.replaceSpaceWithUnderscore(field.selectionAlias);
+            metaOrderNames = metaOrderNames.concat({
+              text: field.selectionAlias,
+              value: {
+                formName: form_2.sourceFormName,
+                formAlias: form_2.sourceAlias,
+                columnName: tempColumnName,
+                isCalculatedField: true
+              }
+            });
+          }
+        });
+      }
+
+      $scope.inputAutoComplete.selectionColumnName = metaOrderNames; // Double check/reset root scope list
+
+      if ($rootScope.inputAutoComplete === undefined) {
+        $rootScope.inputAutoComplete = {};
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid].metaOrderNames === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid].metaOrderNames = [];
+      }
+
+      $rootScope.inputAutoComplete[$scope.target.guid].metaOrderNames = metaOrderNames;
     };
 
     $scope.addColumnTypeMenu = function (menu, subMenu) {
@@ -33462,6 +35158,9 @@ function () {
       if ($scope.inputValue.selectionColumnName.selectionType) {
         inputOrderByList[$scope.index].sortOperand.selectionType = $scope.inputValue.selectionColumnName.selectionType;
         inputOrderByList[$scope.index].sortOperand.selectionColumnName = $scope.inputValue.selectionColumnName.columnName;
+      } else if ($scope.inputValue.selectionColumnName.isCalculatedField === true) {
+        inputOrderByList[$scope.index].sortOperand.selectionType = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_FIELD"];
+        inputOrderByList[$scope.index].sortOperand.selectionColumnName = $scope.inputValue.selectionColumnName.columnName;
       } else {
         inputOrderByList[$scope.index].sortOperand.selectionType = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_FIELD"];
         inputOrderByList[$scope.index].sortOperand.selectionColumnName = $scope.inputValue.selectionColumnName.formName + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + $scope.inputValue.selectionColumnName.columnName;
@@ -33469,7 +35168,7 @@ function () {
 
       inputOrderByList[$scope.index].sortOperand.selectionAlias = $scope.inputValue.selectionAlias; // Assign Source Alias
 
-      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some(inputForm.meta.metaFullFormNames, function (srcAlias) {
+      lodash__WEBPACK_IMPORTED_MODULE_1___default.a.some($rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames, function (srcAlias) {
         if (inputOrderByList[$scope.index].sortOperand.selectionColumnName.includes(srcAlias.text)) {
           if (inputForm.useAlias) {
             $scope.inputValue.selectionSrcAlias = $scope.inputValue.selectionColumnName.formAlias;
@@ -33592,10 +35291,22 @@ function () {
   /** @ngInject */
   function RemedyQualQueryCtrl($scope, uiSegmentSrv, $rootScope) {
     var inputForm = $scope.target.form;
+    var inputSourceList = $scope.target.form.sourceList;
+    var inputSelectionList = $scope.target.form.selectionList;
+    var inputCalculatedFieldList = $scope.target.form.calculatedFieldList;
     var inputQualification = $scope.qualification;
     var inputQualificationList = $scope.qualifications;
     var showHideQual = $scope.showhide;
-    var qualType = $scope.qualtype; // const queryHandlerInstance = $scope.datasource.getQueryHandlerInstance(SOURCE_TYPE_REMEDY);
+    var qualType = $scope.qualtype; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.qualType = qualType;
@@ -33604,7 +35315,7 @@ function () {
       $scope.qualList = inputQualificationList;
       $scope.inputValue = inputQualification;
       $scope.inputAutoComplete = {
-        fieldType: _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getQualTypes"](),
+        fieldType: _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getWhereTypes"](),
         fieldName: inputForm.meta.metaColumnNames || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_SELECT_COLUMN_NAME"],
         fieldAlias: _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getColumnAliases"](),
         fieldSrcAlias: inputForm.meta.metaFullFormNames || _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["COLUMN_TYPE_SELECT_FORM_NAME"],
@@ -33630,7 +35341,10 @@ function () {
       $scope.toggleHideHavingQuery();
     }, $scope);
     $rootScope.onAppEvent('remedy-column-query-updated', function () {
-      $scope.updateColumnsAutoComplete();
+      $scope.updateAllColumns();
+    }, $scope);
+    $rootScope.onAppEvent('remedy-calc-query-updated', function () {
+      $scope.updateAllColumns();
     }, $scope);
     $rootScope.onAppEvent('remedy-query-updated', function () {
       $scope.validateModel();
@@ -33641,9 +35355,98 @@ function () {
       $scope.isSingle = $scope.remedyForm.length === 1;
     };
 
+    $scope.replaceSpaceWithUnderscore = function (input) {
+      return input.replace(/\s/g, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["UNDERSCORE"]);
+    };
+
+    $scope.updateAllColumns = function () {
+      if ($scope.qualType === 'Where') {
+        $scope.updateColumnsAutoComplete();
+        $scope.inputAutoComplete.fieldType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getWhereTypes"]();
+      }
+
+      if ($scope.qualType === 'Having') {
+        $scope.updateColumnsForGroup();
+        $scope.inputAutoComplete.fieldType = _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getHavingTypes"]();
+      }
+
+      $scope.onChange();
+    };
+
     $scope.updateColumnsAutoComplete = function () {
-      // Update Field Name
-      $scope.inputAutoComplete.fieldName = inputForm.meta.metaColumnNames;
+      // Double check/reset root scope list
+      if ($rootScope.inputAutoComplete === undefined) {
+        $rootScope.inputAutoComplete = {};
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["getAutoComplete"]();
+      }
+
+      if ($rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames === undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames = [];
+      } // Update Field Name
+
+
+      $scope.inputAutoComplete.fieldName = $rootScope.inputAutoComplete[$scope.target.guid].metaColumnNames;
+      $scope.onChange();
+    };
+
+    $scope.updateColumnsForGroup = function () {
+      var metaHavingNames = [];
+
+      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(inputSelectionList, function (column) {
+        if (_remedy_query_def__WEBPACK_IMPORTED_MODULE_0__["isDBFunctionsAggregate"](column.selectionType)) {
+          var form_1 = inputSourceList[0];
+
+          lodash__WEBPACK_IMPORTED_MODULE_2___default.a.find(inputSourceList, function (f) {
+            if (column.selectionColumnName.includes(f.sourceFormName)) {
+              form_1 = f;
+            }
+          });
+
+          var tempColumnName = column.selectionColumnName.substring(column.selectionColumnName.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"]) + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"].length, column.selectionColumnName.length);
+          metaHavingNames = metaHavingNames.concat({
+            text: column.selectionColumnName,
+            value: {
+              formName: form_1.sourceFormName,
+              formAlias: form_1.sourceAlias,
+              columnName: tempColumnName
+            }
+          });
+        }
+      });
+
+      if (inputCalculatedFieldList !== undefined) {
+        lodash__WEBPACK_IMPORTED_MODULE_2___default.a.each(inputCalculatedFieldList, function (field) {
+          if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["CALCULATED_FIELD"]) {
+            var form_2 = inputSourceList[0];
+
+            lodash__WEBPACK_IMPORTED_MODULE_2___default.a.find(inputSourceList, function (f) {
+              if (field.selectionAlias.includes(f.sourceFormName)) {
+                form_2 = f;
+              }
+            });
+
+            var tempColumnName = $scope.replaceSpaceWithUnderscore(field.selectionAlias);
+            metaHavingNames = metaHavingNames.concat({
+              text: field.selectionAlias,
+              value: {
+                formName: form_2.sourceFormName,
+                formAlias: form_2.sourceAlias,
+                columnName: tempColumnName,
+                isCalculatedField: true
+              }
+            });
+          }
+        });
+      }
+
+      $scope.inputAutoComplete.fieldName = metaHavingNames;
+
+      if ($rootScope.inputAutoComplete !== undefined && $rootScope.inputAutoComplete[$scope.target.guid] !== undefined && $rootScope.inputAutoComplete[$scope.target.guid].metaHavingNames !== undefined) {
+        $rootScope.inputAutoComplete[$scope.target.guid].metaHavingNames = metaHavingNames;
+      }
     };
 
     $scope.addColumnTypeMenu = function (menu, subMenu) {
@@ -33682,12 +35485,17 @@ function () {
       var tempFormName = $scope.inputValue.leftOperand.fieldName; // Assign column as Form Name and Column Value
 
       if (inputQualification.leftOperand) {
-        inputQualification.leftOperand.fieldName = tempFormName.formName + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + tempFormName.columnName;
+        if (inputQualification.leftOperand.fieldName.isCalculatedField === true) {
+          inputQualification.leftOperand.fieldName = tempFormName.columnName;
+        } else {
+          inputQualification.leftOperand.fieldName = tempFormName.formName + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_5__["ARROW"] + tempFormName.columnName;
+        }
+
         inputQualification.leftOperand.fieldAlias = $scope.inputValue.leftOperand.fieldAlias;
       } // Assign Source Alias
 
 
-      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.some(inputForm.meta.metaFullFormNames, function (srcAlias) {
+      lodash__WEBPACK_IMPORTED_MODULE_2___default.a.some($rootScope.inputAutoComplete[$scope.target.guid].metaFullFormNames, function (srcAlias) {
         if (inputQualification.leftOperand && inputQualification.leftOperand.fieldName.includes(srcAlias.text)) {
           if (inputForm.useAlias) {
             $scope.inputValue.leftOperand.formAlias = tempFormName.formAlias;
@@ -33758,21 +35566,18 @@ function () {
 
     $scope.toggleHideWhereQuery = function () {
       if ($scope.qualType === 'Where') {
-        $scope.showHideQual = !$scope.showHideQual;
-        $scope.remedyForm.hideQual = $scope.showHideQual;
-        inputForm.hideQual = $scope.showHideQual;
+        $scope.showHideQual = inputForm.hideQual;
+        $scope.remedyForm.hideQual = inputForm.hideQual;
       }
 
-      $rootScope.appEvent('remedy-qual-query-updated'); // $scope.generateSQL();
-
+      $rootScope.appEvent('remedy-qual-query-updated');
       $scope.onChange();
     };
 
     $scope.toggleHideHavingQuery = function () {
       if ($scope.qualType === 'Having') {
-        $scope.showHideQual = !$scope.showHideQual;
-        $scope.remedyForm.hideHaving = $scope.showHideQual;
-        inputForm.hideHaving = $scope.showHideQual;
+        $scope.showHideQual = inputForm.hideHaving;
+        $scope.remedyForm.hideHaving = inputForm.hideHaving;
       }
 
       $rootScope.appEvent('remedy-qual-query-updated'); // $scope.generateSQL();
@@ -33783,10 +35588,12 @@ function () {
     $scope.toggleShowHideQuery = function () {
       // Toggle all row for show Hide
       if ($scope.qualType === 'Where') {
+        inputForm.hideQual = !inputForm.hideQual;
         $rootScope.appEvent('remedy-where-query-updated');
       }
 
       if ($scope.qualType === 'Having') {
+        inputForm.hideHaving = !inputForm.hideHaving;
         $rootScope.appEvent('remedy-having-query-updated');
       } // $scope.generateSQL();
 
@@ -33919,6 +35726,7 @@ function () {
     };
 
     $scope.init();
+    $scope.updateAllColumns();
   }
 
   return RemedyQualQueryCtrl;
@@ -33961,6 +35769,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! grafana/app/core/core_module */ "grafana/app/core/core_module");
 /* harmony import */ var grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+/* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./remedy_query_def */ "./query-modules/remedy/remedy_query_def.ts");
+
 
 
 
@@ -33972,7 +35782,16 @@ function () {
   /** @ngInject */
   function RemedyWhereQueryCtrl($scope, uiSegmentSrv, $rootScope) {
     var inputForm = $scope.target.form;
-    var inputQualification = $scope.target.form.qualification;
+    var inputQualification = $scope.target.form.qualification; // Must be first, hack to init global data
+    // if not present, Init on root scope
+
+    if ($rootScope.inputAutoComplete === undefined) {
+      $rootScope.inputAutoComplete = {};
+    }
+
+    if ($rootScope.inputAutoComplete[$scope.target.guid] === undefined) {
+      $rootScope.inputAutoComplete[$scope.target.guid] = _remedy_query_def__WEBPACK_IMPORTED_MODULE_2__["getAutoComplete"]();
+    }
 
     $scope.init = function () {
       $scope.qualType = 'Where';
@@ -34025,7 +35844,7 @@ grafana_app_core_core_module__WEBPACK_IMPORTED_MODULE_0___default.a.directive('r
 /*!*******************************************************!*\
   !*** ./query-modules/remedy/remedy_literal_string.ts ***!
   \*******************************************************/
-/*! exports provided: DOT, NULL, COLON, COMMA, EMPTY, ARROW, SPACE, NEWLINE, UNDERSCORE, BACK_QUOTE, SINGLE_QUOTE, DOUBLE_QUOTE, FUNCTION_SYMBOL, OPENING_BRACKET, CLOSING_BRACKET, OPERATOR_AND, OPERATOR_OR, OPERATOR_EQUAL, GROUP_IDENTIFIER, SINGLE_IDENTIFIER, RELATIONAL, BINARYLOGICAL, SAME, IN, OUT, SPLIT, DEFAULT_DATE_FORMAT, DEFAULT_DATE_RAW_SQL, DEFAULT_GROUP, TABLE, KEYWORD_COLUMN, KEYWORD_FORM, KEYWORD_SQL, KEYWORD_JOIN, KEYWORD_TIME, KEYWORD_METRIC, KEYWORD_VALUE, KEYWORD_SELECT, VALUE, VALUELIST, CHAR, INTEGER, COLUMN_TYPE_FIELD, COLUMN_TYPE_SELECT_FORM_NAME, COLUMN_TYPE_SELECT_COLUMN_NAME, COLUMN_TYPE_SELECT_COLUMN_TYPE, COLUMN_TYPE_FUNCTION, SQL_SELECT, SQL_AS, SQL_ON, SQL_FROM, SQL_LIMIT, SQL_WHERE, SQL_ONE_EQUAL_ONE, SQL_GROUPBY, SQL_ORDERBY, SQL_HAVING, SQL_DISTINCT, SQL_ASCENDING, SQL_DESCENDING */
+/*! exports provided: DOT, NULL, COLON, COMMA, EMPTY, ARROW, SPACE, NEWLINE, UNDERSCORE, BACK_QUOTE, DOLLAR_SYMBOL, SINGLE_QUOTE, DOUBLE_QUOTE, FUNCTION_SYMBOL, OPENING_BRACKET, CLOSING_BRACKET, OPERATOR_AND, OPERATOR_OR, OPERATOR_EQUAL, GROUP_IDENTIFIER, SINGLE_IDENTIFIER, RELATIONAL, BINARYLOGICAL, SAME, IN, OUT, SPLIT, DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, DEFAULT_DATE_RAW_SQL, DEFAULT_GROUP, TABLE, KEYWORD_COLUMN, KEYWORD_FORM, KEYWORD_SQL, KEYWORD_JOIN, KEYWORD_TIME, KEYWORD_METRIC, KEYWORD_VALUE, KEYWORD_SELECT, VALUE, VALUELIST, CHAR, INTEGER, COLUMN_TYPE_FIELD, COLUMN_TYPE_SELECT_FORM_NAME, COLUMN_TYPE_SELECT_COLUMN_NAME, COLUMN_TYPE_SELECT_COLUMN_TYPE, COLUMN_TYPE_FUNCTION, SQL_SELECT, SQL_AS, SQL_ON, SQL_FROM, SQL_LIMIT, SQL_WHERE, SQL_ONE_EQUAL_ONE, SQL_GROUPBY, SQL_ORDERBY, SQL_HAVING, SQL_DISTINCT, SQL_ASCENDING, SQL_DESCENDING, SQL_DST_SERVER, SQL_APPLYDST, SQL_IGNOREDST, CALCULATED_FIELD */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34040,6 +35859,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NEWLINE", function() { return NEWLINE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UNDERSCORE", function() { return UNDERSCORE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BACK_QUOTE", function() { return BACK_QUOTE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOLLAR_SYMBOL", function() { return DOLLAR_SYMBOL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SINGLE_QUOTE", function() { return SINGLE_QUOTE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOUBLE_QUOTE", function() { return DOUBLE_QUOTE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FUNCTION_SYMBOL", function() { return FUNCTION_SYMBOL; });
@@ -34057,6 +35877,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OUT", function() { return OUT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SPLIT", function() { return SPLIT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_DATE_FORMAT", function() { return DEFAULT_DATE_FORMAT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_DATE_TIME_FORMAT", function() { return DEFAULT_DATE_TIME_FORMAT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_DATE_RAW_SQL", function() { return DEFAULT_DATE_RAW_SQL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_GROUP", function() { return DEFAULT_GROUP; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TABLE", function() { return TABLE; });
@@ -34090,6 +35911,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_DISTINCT", function() { return SQL_DISTINCT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_ASCENDING", function() { return SQL_ASCENDING; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_DESCENDING", function() { return SQL_DESCENDING; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_DST_SERVER", function() { return SQL_DST_SERVER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_APPLYDST", function() { return SQL_APPLYDST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SQL_IGNOREDST", function() { return SQL_IGNOREDST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CALCULATED_FIELD", function() { return CALCULATED_FIELD; });
 // literals
 var DOT = '.';
 var NULL = 'NULL';
@@ -34101,6 +35926,7 @@ var SPACE = ' ';
 var NEWLINE = '\n';
 var UNDERSCORE = '_';
 var BACK_QUOTE = '`';
+var DOLLAR_SYMBOL = '$';
 var SINGLE_QUOTE = "'";
 var DOUBLE_QUOTE = '"';
 var FUNCTION_SYMBOL = "\u0284";
@@ -34122,6 +35948,7 @@ var OUT = 102;
 var SPLIT = 103; // Defaults
 
 var DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
+var DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YYYY HH:MM:SS';
 var DEFAULT_DATE_RAW_SQL = 'SELECT 1';
 var DEFAULT_GROUP = 'G1';
 var TABLE = 'Table'; // keywords
@@ -34157,8 +35984,13 @@ var SQL_GROUPBY = 'GROUP BY';
 var SQL_ORDERBY = 'ORDER BY';
 var SQL_HAVING = 'HAVING';
 var SQL_DISTINCT = 'DISTINCT';
-var SQL_ASCENDING = 'ASCENDING';
-var SQL_DESCENDING = 'DESCENDING';
+var SQL_ASCENDING = 'ASC';
+var SQL_DESCENDING = 'DESC';
+var SQL_DST_SERVER = 'SERVER';
+var SQL_APPLYDST = 'APPLYDST';
+var SQL_IGNOREDST = 'IGNOREDST'; //Calculated fields
+
+var CALCULATED_FIELD = 'Select Calculated Field';
 
 /***/ }),
 
@@ -34189,22 +36021,18 @@ var RemedyQueryBuilder =
 function () {
   function RemedyQueryBuilder() {}
 
-  RemedyQueryBuilder.prototype.build = function (target, adhocFilters) {
-    if (target.sourceQuery.queryType === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["KEYWORD_FORM"]) {
-      var query = {
-        date_time_format: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_DATE_FORMAT"],
-        output_type: target.sourceQuery.formatAs,
-        sql: this.buildFullSql(target.sourceQuery.form)
-      };
-      return query;
-    } else {
-      var query = {
-        date_time_format: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_DATE_FORMAT"],
-        output_type: target.sourceQuery.formatAs,
-        sql: target.sourceQuery.rawQuery
-      };
-      return query;
+  RemedyQueryBuilder.prototype.build = function (target, remedyBody, adhocFilters) {
+    if (remedyBody === undefined) {
+      remedyBody = _remedy_query_def__WEBPACK_IMPORTED_MODULE_3__["getRemedyBody"]();
     }
+
+    if (target.sourceQuery.queryType === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["KEYWORD_FORM"]) {
+      remedyBody.sql = this.buildFullSql(target.sourceQuery.form);
+    } else {
+      remedyBody.sql = target.sourceQuery.rawQuery;
+    }
+
+    return remedyBody;
   };
 
   RemedyQueryBuilder.prototype.buildForm = function (target) {
@@ -34563,7 +36391,12 @@ function () {
 
   RemedyQueryBuilder.prototype.buildFullSql = function (inputForm) {
     var sql = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["EMPTY"];
-    sql += this.buildColumnSql(inputForm.selectionList, inputForm.useDistinct);
+    sql += this.buildColumnSql(inputForm.selectionList, inputForm.useDistinct, inputForm.calculatedFieldList);
+
+    if (inputForm.calculatedFieldList !== undefined) {
+      sql += this.buildCalculatedFieldSql(inputForm.calculatedFieldList);
+    }
+
     sql += this.buildFormSql(inputForm.sourceList);
 
     if (!inputForm.hideQual) {
@@ -34582,13 +36415,18 @@ function () {
 
     if (!inputForm.hideSort) {
       sql += this.buildOrderBySql(inputForm.sortField);
+    } // Don't pass anything for DST_SERVER
+
+
+    if (inputForm.dstType !== undefined && inputForm.dstType !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SQL_DST_SERVER"]) {
+      sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["NEWLINE"] + inputForm.dstType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SPACE"];
     }
 
     sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["NEWLINE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SQL_LIMIT"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SPACE"] + inputForm.maxEntries;
     return sql;
   };
 
-  RemedyQueryBuilder.prototype.buildColumnSql = function (inputList, use_distinct) {
+  RemedyQueryBuilder.prototype.buildColumnSql = function (inputList, use_distinct, calculatedFieldList) {
     var sql = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["EMPTY"];
     sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SQL_SELECT"];
 
@@ -34616,9 +36454,56 @@ function () {
 
       if (index !== inputList.length - 1) {
         sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"];
+      } else if (calculatedFieldList !== undefined) {
+        var addComma_1 = false;
+        calculatedFieldList.forEach(function (item) {
+          if (!item.hideCalculatedField) {
+            addComma_1 = true;
+          }
+        });
+
+        if (addComma_1) {
+          sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"];
+        }
       }
 
       sql += caller.isNewLine(sql);
+    });
+
+    return sql;
+  };
+
+  RemedyQueryBuilder.prototype.buildCalculatedFieldSql = function (calculatedFieldList) {
+    var sql = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["EMPTY"];
+    var caller = this;
+
+    lodash__WEBPACK_IMPORTED_MODULE_1___default.a.each(calculatedFieldList, function (column, index) {
+      if (!column.hideCalculatedField) {
+        var input = column.selectionQuery;
+
+        if (input && input.length > 0) {
+          var updatedQuery = input.replace(/"/g, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["BACK_QUOTE"]);
+          sql += updatedQuery;
+        }
+
+        sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SQL_AS"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SPACE"] + caller.replaceSpaceWithUnderscore(column.selectionAlias);
+
+        if (index !== calculatedFieldList.length - 1) {
+          var addComma = false;
+
+          for (var i = index + 1; i < calculatedFieldList.length; i++) {
+            if (!calculatedFieldList[i].hideCalculatedField) {
+              addComma = true;
+            }
+          }
+
+          if (addComma) {
+            sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"];
+          }
+        }
+
+        sql += caller.isNewLine(sql);
+      }
     });
 
     return sql;
@@ -34739,6 +36624,14 @@ function () {
           var input = (_b = qual.leftOperand) === null || _b === void 0 ? void 0 : _b.fieldName;
 
           if (input && input.length > 0) {
+            // Replace twice if two arrow exists
+            var firstIndex = input.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["ARROW"]);
+            var lastIndex = input.lastIndexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["ARROW"]);
+
+            if (firstIndex !== lastIndex) {
+              input = input.substring(input.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["ARROW"]) + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["ARROW"].length, input.length);
+            }
+
             sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["BACK_QUOTE"] + input.replace(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["ARROW"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["BACK_QUOTE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DOT"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["BACK_QUOTE"]) + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["BACK_QUOTE"];
           }
 
@@ -34758,16 +36651,37 @@ function () {
 
             if (relationalOperator === _remedy_query_def__WEBPACK_IMPORTED_MODULE_3__["DBOperator"].In.text || relationalOperator === _remedy_query_def__WEBPACK_IMPORTED_MODULE_3__["DBOperator"].NotIn.text) {
               if (fieldValue.indexOf(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"]) > 0) {
-                fieldValue = fieldValue.split(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"]).join(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"]);
+                var fieldValueList = fieldValue.split(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"]);
+                var finalFieldValue_1 = [];
+                fieldValueList.forEach(function (fieldValue) {
+                  // Variables gets replaced with Quote
+                  if (fieldValue.trim().startsWith(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DOLLAR_SYMBOL"])) {
+                    finalFieldValue_1.push(fieldValue);
+                  } else {
+                    finalFieldValue_1.push(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"]);
+                  }
+                });
+                fieldValue = finalFieldValue_1.join(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"]);
+                sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["OPENING_BRACKET"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["CLOSING_BRACKET"];
+              } else {
+                // Variables gets replaced with Quote
+                if (fieldValue.trim().startsWith(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DOLLAR_SYMBOL"])) {
+                  sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["OPENING_BRACKET"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["CLOSING_BRACKET"];
+                } else {
+                  sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["CLOSING_BRACKET"];
+                }
               }
-
-              sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["CLOSING_BRACKET"];
             } else {
               // Integer doesn't need quotes
               if (_remedy_query_def__WEBPACK_IMPORTED_MODULE_3__["getDBFunctions"](fieldType).argType === _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["INTEGER"]) {
                 sql += fieldValue;
               } else {
-                sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"];
+                // Variables gets replaced with Quote
+                if (fieldValue.trim().startsWith(_remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["DOLLAR_SYMBOL"])) {
+                  sql += fieldValue;
+                } else {
+                  sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"] + fieldValue + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SINGLE_QUOTE"];
+                }
               }
             }
           }
@@ -34846,7 +36760,7 @@ function () {
       sql += caller.isNewLine(sql);
     });
 
-    return sql;
+    return sql + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["SPACE"];
   };
 
   RemedyQueryBuilder.prototype.buildGroupQualification = function (input) {
@@ -35011,33 +36925,48 @@ function () {
 /*!**************************************************!*\
   !*** ./query-modules/remedy/remedy_query_def.ts ***!
   \**************************************************/
-/*! exports provided: queryType, formatAs, DBFunctions, getDBFunctions, isDBFunctionsAggregate, defaultSortFieldSortOperand, defaultSortField, defaultGroupByField, defaultHavingLeftOperand, defaulHavingRightOperand, defaultHavingQualification, defaultWhereLeftOperand, defaulWhereRightOperand, defaultWhereQualification, defaultSelectionList, defaultJoinClauseLeftOperand, defaulJoinClauseRightOperand, defaultJoinClauseQualification, defaultSourceList, defaultMeta, defaultRemedyForm, defaultRemedyQuery, DBFormType, getDBFormJoinType, getFormTypes, formNames, getFormNames, formAliases, getFormAliases, getColumnTypes, columnNames, getColumnNames, columnAliases, getColumnAliases, getQualTypes, DBOperator, getDBOperator, getRelationalOperator, getFormJoinRelationalOperator, sortOrder, getSortOrder */
+/*! exports provided: queryType, dstType, getDSTType, formatAs, DBFunctions, getDBFunctions, isDBFunctionsAggregate, HeaderFunctions, getHeaderFunctions, getHeaderDataType, RemedyLocale, getRemedyLocaleList, getRemedyLocale, getTimeZoneList, getAutoComplete, getSortFieldSortOperand, getSortField, getGroupByField, getHavingLeftOperand, getHavingRightOperand, getHavingQualification, getWhereLeftOperand, getWhereRightOperand, getWhereQualification, getSelectionList, getNewCalculatedFieldList, getJoinClauseLeftOperand, getJoinClauseRightOperand, getJoinClauseQualification, getSourceList, getRemedyMeta, getRemedyForm, getRemedyBody, getHeaderList, getRemedyHeader, getRemedyQuery, guid, DBFormType, getDBFormJoinType, getFormTypes, formNames, getFormNames, formAliases, getFormAliases, getColumnTypes, columnNames, getColumnNames, columnAliases, getColumnAliases, getWhereTypes, getHavingTypes, DBOperator, getDBOperator, getRelationalOperator, getFormJoinRelationalOperator, sortOrder, getSortOrder */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryType", function() { return queryType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dstType", function() { return dstType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDSTType", function() { return getDSTType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatAs", function() { return formatAs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DBFunctions", function() { return DBFunctions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDBFunctions", function() { return getDBFunctions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDBFunctionsAggregate", function() { return isDBFunctionsAggregate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultSortFieldSortOperand", function() { return defaultSortFieldSortOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultSortField", function() { return defaultSortField; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGroupByField", function() { return defaultGroupByField; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultHavingLeftOperand", function() { return defaultHavingLeftOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaulHavingRightOperand", function() { return defaulHavingRightOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultHavingQualification", function() { return defaultHavingQualification; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultWhereLeftOperand", function() { return defaultWhereLeftOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaulWhereRightOperand", function() { return defaulWhereRightOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultWhereQualification", function() { return defaultWhereQualification; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultSelectionList", function() { return defaultSelectionList; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultJoinClauseLeftOperand", function() { return defaultJoinClauseLeftOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaulJoinClauseRightOperand", function() { return defaulJoinClauseRightOperand; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultJoinClauseQualification", function() { return defaultJoinClauseQualification; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultSourceList", function() { return defaultSourceList; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultMeta", function() { return defaultMeta; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultRemedyForm", function() { return defaultRemedyForm; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultRemedyQuery", function() { return defaultRemedyQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HeaderFunctions", function() { return HeaderFunctions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHeaderFunctions", function() { return getHeaderFunctions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHeaderDataType", function() { return getHeaderDataType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RemedyLocale", function() { return RemedyLocale; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyLocaleList", function() { return getRemedyLocaleList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyLocale", function() { return getRemedyLocale; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTimeZoneList", function() { return getTimeZoneList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAutoComplete", function() { return getAutoComplete; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSortFieldSortOperand", function() { return getSortFieldSortOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSortField", function() { return getSortField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getGroupByField", function() { return getGroupByField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHavingLeftOperand", function() { return getHavingLeftOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHavingRightOperand", function() { return getHavingRightOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHavingQualification", function() { return getHavingQualification; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getWhereLeftOperand", function() { return getWhereLeftOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getWhereRightOperand", function() { return getWhereRightOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getWhereQualification", function() { return getWhereQualification; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSelectionList", function() { return getSelectionList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getNewCalculatedFieldList", function() { return getNewCalculatedFieldList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getJoinClauseLeftOperand", function() { return getJoinClauseLeftOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getJoinClauseRightOperand", function() { return getJoinClauseRightOperand; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getJoinClauseQualification", function() { return getJoinClauseQualification; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSourceList", function() { return getSourceList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyMeta", function() { return getRemedyMeta; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyForm", function() { return getRemedyForm; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyBody", function() { return getRemedyBody; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHeaderList", function() { return getHeaderList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyHeader", function() { return getRemedyHeader; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRemedyQuery", function() { return getRemedyQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DBFormType", function() { return DBFormType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDBFormJoinType", function() { return getDBFormJoinType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFormTypes", function() { return getFormTypes; });
@@ -35050,185 +36979,204 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColumnNames", function() { return getColumnNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "columnAliases", function() { return columnAliases; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColumnAliases", function() { return getColumnAliases; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQualTypes", function() { return getQualTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getWhereTypes", function() { return getWhereTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHavingTypes", function() { return getHavingTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DBOperator", function() { return DBOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDBOperator", function() { return getDBOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRelationalOperator", function() { return getRelationalOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFormJoinRelationalOperator", function() { return getFormJoinRelationalOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sortOrder", function() { return sortOrder; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSortOrder", function() { return getSortOrder; });
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RemedyTypes */ "./query-modules/remedy/RemedyTypes.ts");
-/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RemedyTypes */ "./query-modules/remedy/RemedyTypes.ts");
+/* harmony import */ var _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./remedy_literal_string */ "./query-modules/remedy/remedy_literal_string.ts");
+
 
 
 
 var queryType = [{
-  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"]
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"]
 }, {
-  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_SQL"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_SQL"]
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_SQL"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_SQL"]
 }];
+var dstType = [{
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_DST_SERVER"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_DST_SERVER"]
+}, {
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_APPLYDST"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_APPLYDST"]
+}, {
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_IGNOREDST"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_IGNOREDST"]
+}];
+function getDSTType() {
+  return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(dstType, function (f) {
+    return true;
+  });
+}
 var formatAs = [{
-  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["TABLE"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["TABLE"]
+  label: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["TABLE"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["TABLE"]
 }, {
   label: 'TimeSeries',
   value: 'TimeSeries'
 }];
 var DBFunctions = {
   Field: {
-    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"],
-    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"],
+    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"],
+    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"],
     "function": 'Field',
     sql: '',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Average: {
     text: 'Average',
     value: 'Average',
     "function": 'DBAvg',
     sql: 'AVG',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Count: {
     text: 'Count',
     value: 'Count',
     "function": 'DBCount',
     sql: 'COUNT',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Maximum: {
     text: 'Maximum',
     value: 'Maximum',
     "function": 'DBMax',
     sql: 'MAX',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Minimum: {
     text: 'Minimum',
     value: 'Minimum',
     "function": 'DBMin',
     sql: 'MIN',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Sum: {
     text: 'Sum',
     value: 'Sum',
     "function": 'DBSum',
     sql: 'SUM',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Date: {
     text: 'Date',
     value: 'Date',
     "function": 'Date',
     sql: 'DATE',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Weekday: {
     text: 'Weekday',
     value: 'Weekday',
     "function": 'Weekday',
     sql: 'WEEKDAY',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Day: {
     text: 'Day',
     value: 'Day',
     "function": 'Day',
     sql: 'DAY',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Month: {
     text: 'Month',
     value: 'Month',
     "function": 'Month',
     sql: 'MONTH',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Quarter: {
     text: 'Quarter',
     value: 'Quarter',
     "function": 'Quarter',
     sql: 'QUARTER',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Year: {
     text: 'Year',
     value: 'Year',
     "function": 'Year',
     sql: 'YEAR',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Time: {
     text: 'Time',
     value: 'Time',
     "function": 'Time',
     sql: 'TIME',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Hour: {
     text: 'Hour',
     value: 'Hour',
     "function": 'Hour',
     sql: 'HOUR',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Minute: {
     text: 'Minute',
     value: 'Minute',
     "function": 'Minute',
     sql: 'MINUTE',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Second: {
     text: 'Second',
     value: 'Second',
     "function": 'Second',
     sql: 'SECOND',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["INTEGER"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["INTEGER"]
   },
   Upper: {
     text: 'Upper',
     value: 'Upper',
     "function": 'Upper',
     sql: 'UPPER',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Lower: {
     text: 'Lower',
     value: 'Lower',
     "function": 'Lower',
     sql: 'LOWER',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Ltrim: {
     text: 'Ltrim',
     value: 'Ltrim',
     "function": 'Ltrim',
     sql: 'LTRIM',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Rtrim: {
     text: 'Rtrim',
     value: 'Rtrim',
     "function": 'Rtrim',
     sql: 'RTRIM',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   },
   Distinct: {
     text: 'Distinct',
     value: 'Distinct',
     "function": 'Distinct',
     sql: 'DISTINCT',
-    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"]
+    argType: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"]
   }
 };
 function getDBFunctions(text) {
-  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.find(DBFunctions, function (f) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(DBFunctions, function (f) {
     return f.text.includes(text);
   });
 
@@ -35239,7 +37187,7 @@ function getDBFunctions(text) {
   return DBFunctions.Field;
 }
 function isDBFunctionsAggregate(text) {
-  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.find(aggregateFunctions.submenu, function (f) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(aggregateFunctions.submenu, function (f) {
     return f.text.includes(text);
   });
 
@@ -35248,38 +37196,283 @@ function isDBFunctionsAggregate(text) {
   }
 
   return false;
-} // Sort
+}
+var HeaderFunctions = {
+  DateFormat: {
+    text: 'Date Format',
+    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_DATE_FORMAT"],
+    collapseHeader: false,
+    dataType: 'string',
+    arType: 'body',
+    arKey: 'date_format'
+  },
+  DateTimeFormat: {
+    text: 'Date/Time Format',
+    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_DATE_TIME_FORMAT"],
+    collapseHeader: false,
+    dataType: 'string',
+    arType: 'body',
+    arKey: 'date_time_format'
+  },
+  Locale: {
+    text: 'Locale',
+    value: 'en-US',
+    collapseHeader: false,
+    dataType: 'selection',
+    arType: 'header',
+    arKey: 'Accept-Language'
+  },
+  RowLimit: {
+    text: 'Row limit',
+    value: '0',
+    collapseHeader: false,
+    dataType: 'number',
+    arType: 'body',
+    arKey: 'rowLimit'
+  },
+  Timeout: {
+    text: 'Timeout',
+    value: '120',
+    collapseHeader: false,
+    dataType: 'number',
+    arType: 'header',
+    arKey: 'X-AR-Timeout'
+  },
+  Timezone: {
+    text: 'TimeZone',
+    value: 'America/Los_Angeles',
+    collapseHeader: false,
+    dataType: 'selection',
+    arType: 'header',
+    arKey: 'X-AR-Timezone'
+  },
+  Queue: {
+    text: 'Queue',
+    value: '',
+    collapseHeader: false,
+    dataType: 'string',
+    arType: 'header',
+    arKey: 'X-AR-RPC-Queue'
+  }
+};
+function getHeaderFunctions() {
+  var headerTypes = [];
+  headerTypes.push(HeaderFunctions.DateFormat);
+  headerTypes.push(HeaderFunctions.DateTimeFormat);
+  headerTypes.push(HeaderFunctions.Locale);
+  headerTypes.push(HeaderFunctions.RowLimit);
+  headerTypes.push(HeaderFunctions.Timeout);
+  headerTypes.push(HeaderFunctions.Timezone);
+  return headerTypes;
+}
+function getHeaderDataType(text) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(HeaderFunctions, function (f) {
+    return f.text.includes(text);
+  });
 
-var defaultSortFieldSortOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaultSortField = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["SortField"](defaultSortFieldSortOperand, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SQL_ASCENDING"])]; // Group
+  if (returnValue) {
+    return returnValue;
+  }
 
-var defaultGroupByField = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"])]; // Having
+  return HeaderFunctions.DateFormat;
+}
+var RemedyLocale = {
+  English: {
+    text: 'en',
+    value: 'en'
+  },
+  French: {
+    text: 'fr',
+    value: 'fr'
+  },
+  German: {
+    text: 'de',
+    value: 'de'
+  },
+  Italian: {
+    text: 'it',
+    value: 'it'
+  },
+  Japanese: {
+    text: 'ja',
+    value: 'ja'
+  },
+  Korean: {
+    text: 'ko',
+    value: 'ko'
+  },
+  Portuguese: {
+    text: 'pt-BR',
+    value: 'pt-BR'
+  },
+  Russian: {
+    text: 'ru',
+    value: 'ru'
+  },
+  Simplified_Chinese: {
+    text: 'zh-CN',
+    value: 'zh-CN'
+  },
+  Spanish: {
+    text: 'es',
+    value: 'es'
+  },
+  Dutch: {
+    text: 'nl',
+    value: 'nl'
+  },
+  Swedish: {
+    text: 'sv',
+    value: 'sv'
+  },
+  Danish: {
+    text: 'da',
+    value: 'da'
+  },
+  Norwegian: {
+    text: 'no',
+    value: 'no'
+  }
+};
+function getRemedyLocaleList() {
+  var locales = [];
+  locales.push(RemedyLocale.English);
+  locales.push(RemedyLocale.French);
+  locales.push(RemedyLocale.German);
+  locales.push(RemedyLocale.Italian);
+  locales.push(RemedyLocale.Japanese);
+  locales.push(RemedyLocale.Korean);
+  locales.push(RemedyLocale.Portuguese);
+  locales.push(RemedyLocale.Russian);
+  locales.push(RemedyLocale.Simplified_Chinese);
+  locales.push(RemedyLocale.Spanish);
+  locales.push(RemedyLocale.Dutch);
+  locales.push(RemedyLocale.Swedish);
+  locales.push(RemedyLocale.Danish);
+  locales.push(RemedyLocale.Norwegian);
+  return locales;
+}
+function getRemedyLocale(text) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(RemedyLocale, function (f) {
+    return f.text.includes(text);
+  });
 
-var defaultHavingLeftOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaulHavingRightOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaultHavingQualification = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"], null, null, defaultHavingLeftOperand, defaulHavingRightOperand)]; // Where
+  if (returnValue) {
+    return returnValue;
+  }
 
-var defaultWhereLeftOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaulWhereRightOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaultWhereQualification = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"], null, null, defaultWhereLeftOperand, defaulWhereRightOperand)]; // Column
+  return RemedyLocale.English;
+}
+function getTimeZoneList() {
+  var timezone = Object(_grafana_data__WEBPACK_IMPORTED_MODULE_0__["getTimeZones"])();
+  var returnValue = [];
+  timezone.forEach(function (tz) {
+    returnValue.push({
+      text: tz,
+      value: tz
+    });
+  });
+  return returnValue;
+}
+function getAutoComplete() {
+  return {
+    locale: getRemedyLocaleList(),
+    timezone: getTimeZoneList(),
+    metaFullFormNames: [],
+    metaColumnNames: [],
+    metaGroupNames: [],
+    metaOrderNames: [],
+    metaHavingNames: [],
+    metaCalculatedFields: []
+  };
+} // Default Data
+// Sort
 
-var defaultSelectionList = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"])]; // Form
+function getSortFieldSortOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getSortField() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["SortField"](getSortFieldSortOperand(), _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_ASCENDING"])];
+} // Group
+
+function getGroupByField() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"])];
+} // Having
+
+function getHavingLeftOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getHavingRightOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getHavingQualification() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"], null, null, getHavingLeftOperand(), getHavingRightOperand())];
+} // Where
+
+function getWhereLeftOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getWhereRightOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getWhereQualification() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"], null, null, getWhereLeftOperand(), getWhereRightOperand())];
+} // Column
+
+function getSelectionList() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["SelectionList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"])];
+}
+function getNewCalculatedFieldList() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["CalculatedFieldList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CALCULATED_FIELD"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], true, false)];
+} // Form
 // JoinClause
 
-var defaultJoinClauseLeftOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaulJoinClauseRightOperand = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]);
-var defaultJoinClauseQualification = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"], null, null, defaultJoinClauseLeftOperand, defaulJoinClauseRightOperand)];
-var defaultSourceList = [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["SourceList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["COLUMN_TYPE_SELECT_FORM_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], false, defaultJoinClauseQualification)];
-var defaultMeta = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RemedyMetaForm"](false, false, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], false, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"], [], [], []);
-var defaultRemedyForm = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RemedyForm"](defaultMeta, defaultSourceList, defaultSelectionList, true, defaultWhereQualification, true, defaultGroupByField, true, defaultHavingQualification, true, defaultSortField, true, true, 0, 100, true, true); // Remedy Query
+function getJoinClauseLeftOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getJoinClauseRightOperand() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+}
+function getJoinClauseQualification() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["Qualification"](false, 1, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_GROUP"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["RELATIONAL"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"], null, null, getJoinClauseLeftOperand(), getJoinClauseRightOperand())];
+}
+function getSourceList() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["SourceList"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_FORM_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], false, getJoinClauseQualification())];
+}
+function getRemedyMeta() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RemedyMetaForm"](false, false, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], false, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], [], [], [], []);
+}
+function getRemedyForm() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RemedyForm"](getRemedyMeta(), getSourceList(), getSelectionList(), true, getWhereQualification(), true, getGroupByField(), true, getHavingQualification(), true, getSortField(), _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_DST_SERVER"], true, true, 0, 100, true, true, getNewCalculatedFieldList());
+} // Remedy Body
 
-var defaultRemedyQuery = new _RemedyTypes__WEBPACK_IMPORTED_MODULE_1__["RemedyQuery"]('1.0', queryType[0].value, formatAs[0].value, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_DATE_RAW_SQL"], defaultRemedyForm);
+function getRemedyBody() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RemedyRequestBody"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_DATE_FORMAT"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_DATE_TIME_FORMAT"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["TABLE"], '');
+}
+function getHeaderList() {
+  return [new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["HeaderList"](HeaderFunctions.DateFormat.text, HeaderFunctions.DateFormat.value, HeaderFunctions.DateFormat.collapseHeader, HeaderFunctions.DateFormat.dataType, HeaderFunctions.DateFormat.arType, HeaderFunctions.DateFormat.arKey)];
+}
+function getRemedyHeader() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RemedyHeader"](true, getHeaderList());
+} // Remedy Query
+
+function getRemedyQuery() {
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RemedyQuery"]('1.0', queryType[0].value, formatAs[0].value, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["DEFAULT_DATE_RAW_SQL"], getRemedyForm(), dstType[0].value, getRemedyHeader(), guid());
+}
+function guid() {
+  function _p8(s) {
+    var p = (Math.random().toString(16) + '000000000').substr(2, 8);
+    return s ? '-' + p.substr(0, 4) + '-' + p.substr(4, 4) : p;
+  }
+
+  return _p8() + _p8(true) + _p8(true) + _p8();
+}
 var DBFormType = {
   FORM: {
-    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"],
-    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"],
-    type: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"],
-    sql: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_FORM"]
+    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"],
+    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"],
+    type: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"],
+    sql: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_FORM"]
   },
   INNER_JOIN: {
     text: 'Inner Join',
@@ -35301,7 +37494,7 @@ var DBFormType = {
   }
 };
 function getDBFormJoinType(text) {
-  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.find(DBFormType, function (f) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(DBFormType, function (f) {
     return f.text.includes(text);
   });
 
@@ -35320,51 +37513,51 @@ function getFormTypes() {
   return formTypes;
 }
 var formNames = [{
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]
 }];
 function getFormNames(formList) {
   if (formList && formList.length > 0) {
-    return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(formList, function (f) {
+    return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(formList, function (f) {
       return true;
     });
   }
 
-  return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(formNames, function (f) {
+  return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(formNames, function (f) {
     return true;
   });
 }
 var formAliases = [{
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]
 }];
 function getFormAliases() {
-  return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(formAliases, function (f) {
+  return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(formAliases, function (f) {
     return true;
   });
 }
 var basicFunctions = {
-  text: 'Basic' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CLOSING_BRACKET"],
+  text: 'Basic' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CLOSING_BRACKET"],
   value: 'Basic',
-  submenu: [DBFunctions.Field, DBFunctions.Count]
+  submenu: [DBFunctions.Field]
 };
 var aggregateFunctions = {
-  text: 'Aggregates' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CLOSING_BRACKET"],
+  text: 'Aggregates' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CLOSING_BRACKET"],
   value: 'Aggregates',
   submenu: [DBFunctions.Average, DBFunctions.Count, DBFunctions.Sum, DBFunctions.Maximum, DBFunctions.Minimum]
 };
 var dateFunctions = {
-  text: 'Date' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CLOSING_BRACKET"],
+  text: 'Date' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CLOSING_BRACKET"],
   value: 'Date',
   submenu: [DBFunctions.Date, DBFunctions.Weekday, DBFunctions.Day, DBFunctions.Month, DBFunctions.Quarter, DBFunctions.Year]
 };
 var timeFunctions = {
-  text: 'Time' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CLOSING_BRACKET"],
+  text: 'Time' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CLOSING_BRACKET"],
   value: 'Time',
   submenu: [DBFunctions.Time, DBFunctions.Hour, DBFunctions.Minute, DBFunctions.Second]
 };
 var stringFunctions = {
-  text: 'String' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["CLOSING_BRACKET"],
+  text: 'String' + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SPACE"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPENING_BRACKET"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["FUNCTION_SYMBOL"] + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CLOSING_BRACKET"],
   value: 'String',
   submenu: [DBFunctions.Upper, DBFunctions.Lower, DBFunctions.Ltrim, DBFunctions.Rtrim]
 };
@@ -35378,49 +37571,53 @@ function getColumnTypes() {
   return columnTypes;
 }
 var columnNames = [{
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["EMPTY"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]
 }];
 function getColumnNames(columnList) {
   if (columnList && columnList.length > 0) {
-    return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(columnList, function (f) {
+    return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(columnList, function (f) {
       return true;
     });
   } else {
-    return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(columnNames, function (f) {
+    return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(columnNames, function (f) {
       return true;
     });
   }
 }
 var columnAliases = [{
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_TIME"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_TIME"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_TIME"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_TIME"]
 }, {
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_METRIC"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_METRIC"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_METRIC"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_METRIC"]
 }, {
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_VALUE"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["KEYWORD_VALUE"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_VALUE"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["KEYWORD_VALUE"]
 }];
 function getColumnAliases() {
-  return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(columnAliases, function (f) {
+  return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(columnAliases, function (f) {
     return true;
   });
 }
-function getQualTypes() {
+function getWhereTypes() {
   var columnTypes = [];
   columnTypes.push(basicFunctions);
-  columnTypes.push(aggregateFunctions);
   columnTypes.push(dateFunctions);
   columnTypes.push(timeFunctions);
   columnTypes.push(stringFunctions);
   return columnTypes;
 }
+function getHavingTypes() {
+  var columnTypes = [];
+  columnTypes.push(aggregateFunctions);
+  return columnTypes;
+}
 var DBOperator = {
   Equal: {
-    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"],
-    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"],
-    "function": _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["OPERATOR_EQUAL"],
+    text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"],
+    value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"],
+    "function": _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["OPERATOR_EQUAL"],
     sql: '='
   },
   NotEqual: {
@@ -35491,7 +37688,7 @@ var DBOperator = {
   }
 };
 function getDBOperator(value) {
-  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_0___default.a.find(DBOperator, function (f) {
+  var returnValue = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(DBOperator, function (f) {
     return f.value.includes(value);
   });
 
@@ -35510,14 +37707,14 @@ function getFormJoinRelationalOperator() {
   return relationalOperator;
 }
 var sortOrder = [{
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SQL_ASCENDING"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SQL_ASCENDING"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_ASCENDING"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_ASCENDING"]
 }, {
-  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SQL_DESCENDING"],
-  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_2__["SQL_DESCENDING"]
+  text: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_DESCENDING"],
+  value: _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["SQL_DESCENDING"]
 }];
 function getSortOrder() {
-  return lodash__WEBPACK_IMPORTED_MODULE_0___default.a.filter(sortOrder, function (f) {
+  return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.filter(sortOrder, function (f) {
     return true;
   });
 }
@@ -35546,6 +37743,41 @@ function () {
     this.responses = responses;
   }
 
+  RemedyResponse.prototype.getData = function () {
+    var seriesList = [];
+
+    for (var i = 0; i < this.responses.length; i++) {
+      if (this.responses[i].type === 'table') {
+        seriesList.push(this.getTable(this.responses[i]));
+      } else {
+        seriesList.push(this.getTime(this.responses[i]));
+      }
+    }
+
+    return {
+      data: seriesList
+    };
+  };
+
+  RemedyResponse.prototype.getTable = function (tData) {
+    var table = new grafana_app_core_table_model__WEBPACK_IMPORTED_MODULE_0___default.a();
+    table.type = 'table';
+    table.columns = tData.columns;
+    table.rows = tData.rows;
+    return table;
+  };
+
+  RemedyResponse.prototype.getTime = function (tData) {
+    return {
+      datapoints: tData.datapoints,
+      title: tData.target
+    };
+  };
+  /*
+    @depricated Method not used
+  */
+
+
   RemedyResponse.prototype.getTableData = function (refId) {
     var seriesList = [];
 
@@ -35564,6 +37796,10 @@ function () {
       refId: refId
     };
   };
+  /*
+    @depricated Method not used
+  */
+
 
   RemedyResponse.prototype.getTimeSeries = function (refId) {
     var seriesList = [];
@@ -35790,7 +38026,7 @@ function (_super) {
 
           var name = 'name';
           var id = '#id';
-          var nameArray = Object(result[0])['results'];
+          var nameArray = Object(result[0])["results"];
           var i = 0;
 
           try {
@@ -35837,7 +38073,7 @@ function (_super) {
 
     var interpolated = this.templateSrv.replace(query, scopedVars, this.interpolateQueryExpr);
 
-    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
+    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf("servicename") > 0) {
       return this.getServiceID(interpolated);
     } else {
       return this.getServiceNames();
@@ -35851,7 +38087,7 @@ function (_super) {
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        servicename = interpolated.substring(interpolated.indexOf('servicename') + 13, interpolated.indexOf('}') - 1);
+        servicename = interpolated.substring(interpolated.indexOf("servicename") + 13, interpolated.indexOf("}") - 1);
         this.serviceDetailsArray.forEach(function (value) {
           if (value.name === servicename) {
             _this.serviceDetailsArray1[0] = new ServiceDetails(value.name, value.id);
@@ -35918,12 +38154,12 @@ function (_super) {
   };
 
   SmartGraphDatasource.prototype.prometheusRegularEscape = function (value) {
-    return typeof value === 'string' ? value : '';
+    return typeof value === 'string' ? value : "";
   }; //removed . in replace for fixing devicename having issues
 
 
   SmartGraphDatasource.prototype.prometheusSpecialRegexEscape = function (value) {
-    return typeof value === 'string' ? value : '';
+    return typeof value === 'string' ? value : "";
   };
 
   return SmartGraphDatasource;
@@ -35971,6 +38207,10 @@ var queryTypeOptions = [{
   sourceType: Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_CLOUD_SECURITY"],
   text: 'CloudSecurity',
   value: 'cloudsecurity'
+}, {
+  sourceType: Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_LOG"],
+  text: 'Log',
+  value: 'log'
 }];
 var queryTypeOptionRemedy = [{
   sourceType: Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_REMEDY"],

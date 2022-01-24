@@ -17,6 +17,7 @@ export const SOURCE_TYPE_SMARTGRAPH = 'smartgraph';
 
 export const SOURCE_TYPE_REMEDY = 'remedy';
 export const SOURCE_TYPE_LOG = 'log';
+export const SOURCE_TYPE_ITSM_INSIGHTS = 'itsm-insights';
 
 export const JWT_TOKEN_REFRESH_URL = 'dashboards/ims/refresh-jwt';
 export const JWT_TOKEN_GEN_URL = 'ims/api/v1/access_keys/login';

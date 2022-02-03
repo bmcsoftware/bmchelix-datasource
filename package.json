@@ -1,6 +1,6 @@
 {
   "name": "bmc-bmc-ade",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Datasource plugin by BMC to support various query types.",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -14,13 +14,13 @@
     "moment": "^2.27.0"
   },
   "devDependencies": {
-    "@grafana/data": "7.3.1",
-    "@grafana/toolkit": "7.3.1",
-    "@grafana/ui": "7.3.1",
-    "@grafana/runtime": "7.3.1",
+    "@grafana/data": "7.5.4",
+    "@grafana/toolkit": "7.5.4",
+    "@grafana/ui": "7.5.4",
+    "@grafana/runtime": "7.5.4",
     "@types/lodash": "latest",
     "@types/angular": "^1.7.0",
-    "@types/jquery": "2.0.45",
+    "@types/jquery": "3.3.38",
     "@types/prismjs": "^1.5.1",
     "@types/lru-cache": "5.1.0",
     "@types/grafana": "github:CorpGlory/types-grafana.git",

@@ -23,16 +23,8 @@ export class ADEAuthHelper extends AuthHelper {
   }
 
   private getJWTTokenFromContext(backendSrv: any) {
-    let imsJWTTokenObj: any = { adeJWTToken: '', expiry: null };
-    if (
-      backendSrv.dependencies &&
-      backendSrv.dependencies.contextSrv &&
-      backendSrv.dependencies.contextSrv.user &&
-      backendSrv.dependencies.contextSrv.user.adeJWTToken
-    ) {
-      imsJWTTokenObj.adeJWTToken = backendSrv.dependencies.contextSrv.user.adeJWTToken;
-      imsJWTTokenObj.expiry = backendSrv.dependencies.contextSrv.user.jwtTokenExpiry;
-    }
+	  let imsJWTTokenObj: any = { adeJWTToken: ''};
+    imsJWTTokenObj.adeJWTToken =  "JWT PLACEHOLDER";
     return imsJWTTokenObj;
   }
 }

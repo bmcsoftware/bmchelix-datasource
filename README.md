@@ -39,6 +39,9 @@ The following query types are available:
 * Metric
 
   Use this query type to fetch the performance metrics data of the devices in your environment.
+* Log
+
+  Use this query type to fetch the log data from BMC Helix Log Analytics in your environment.
 
 ### Query Editor
 

@@ -1,4 +1,4 @@
-// Please do not modify these below URLs.
+// Please do not modify these below URLs.122
 // This is base url for query editor html template.
 export const QUERY_EDITOR_BASE_URL = 'partials/query.editor.html';
 // This is base url for all other html templates which will be defined in directive or ng-include.

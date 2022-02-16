@@ -26,8 +26,11 @@ export interface BMCDataSourceOptions extends DataSourceJsonData {
   platformQueue: string;
   tenantURL: string;
   tenantId: string;
-  accessKey: string;
-  secretKey: string;
+}
+
+export interface HelixSecureJsonData {
+  accessKey?: string;
+  secretKey?: string;
 }
 
 export const queryTypeOptions: any = [

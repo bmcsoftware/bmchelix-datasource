@@ -19388,10 +19388,8 @@ var EntConfigEditor =
 function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(EntConfigEditor, _super);
 
-  function EntConfigEditor(props) {
-    var _a, _b, _c, _d, _e, _f;
-
-    var _this = _super.call(this, props) || this;
+  function EntConfigEditor() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
 
     _this.onUpdateURL = function (e) {
       var _a = _this.props,
@@ -19404,32 +19402,36 @@ function (_super) {
     };
 
     _this.onResetAccessKey = function () {
+      var options = _this.props.options;
+      var secureJsonData = options.secureJsonData || {};
+
       _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
         accessKeyConfigured: false
       }));
 
-      _this.props.options.jsonData.accessKey = '';
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'accessKey');
+      secureJsonData.accessKey = '';
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(_this.props, 'accessKey');
     };
 
     _this.onResetSecretKey = function () {
+      var options = _this.props.options;
+      var secureJsonData = options.secureJsonData || {};
+
       _this.setState(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.state), {
         secretKeyConfigured: false
       }));
 
-      _this.props.options.jsonData.secretKey = '';
-      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(_this.props, 'secretKey');
+      secureJsonData.secretKey = '';
+      Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(_this.props, 'secretKey');
     };
 
-    _this.state = {
-      accessKeyConfigured: ((_c = (_b = (_a = _this.props.options) === null || _a === void 0 ? void 0 : _a.jsonData) === null || _b === void 0 ? void 0 : _b.accessKey) === null || _c === void 0 ? void 0 : _c.length) > 0,
-      secretKeyConfigured: ((_f = (_e = (_d = _this.props.options) === null || _d === void 0 ? void 0 : _d.jsonData) === null || _e === void 0 ? void 0 : _e.secretKey) === null || _f === void 0 ? void 0 : _f.length) > 0
-    };
     return _this;
   }
 
   EntConfigEditor.prototype.render = function () {
     var options = this.props.options;
+    var secureJsonFields = options.secureJsonFields;
+    var secureJsonData = options.secureJsonData || {};
     return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-group"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
@@ -19461,27 +19463,27 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: this.state.accessKeyConfigured,
-      value: options.jsonData.accessKey || '',
+      isConfigured: secureJsonFields && secureJsonFields.accessKey,
+      value: secureJsonData.accessKey || '',
       label: "Access key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetAccessKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'accessKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'accessKey')
     }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form-inline"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "gf-form"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(SecretFormField, {
-      isConfigured: this.state.secretKeyConfigured,
-      value: options.jsonData.secretKey || '',
+      isConfigured: secureJsonFields && secureJsonFields.secretKey,
+      value: secureJsonData.secretKey || '',
       label: "Secret key",
       labelWidth: 10,
       inputWidth: 20,
       placeholder: 'XXXXX-XXXXXXXXX-XXXXX',
       onReset: this.onResetSecretKey,
-      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceJsonDataOption"])(this.props, 'secretKey')
+      onChange: Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["onUpdateDatasourceSecureJsonDataOption"])(this.props, 'secretKey')
     }))));
   };
 
@@ -30552,7 +30554,7 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFormLabel"], {
       className: "query-keyword",
       width: 7,
-      tooltip: "Controls the name of the time series, using name or pattern. For example\n        {{hostname}} will be replaced with label value for the label hostname."
+      tooltip: "Controls the name of the time series, using name or pattern. For example\r\n        {{hostname}} will be replaced with label value for the label hostname."
     }, "Legend"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "text",
       className: "gf-form-input",

@@ -9,9 +9,10 @@ Hash: SHA512
   "signedByOrgName": "BMC Software",
   "plugin": "bmchelix-ade-datasource",
   "version": "2.0.0",
-  "time": 1643868850143,
+  "time": 1645008319393,
   "keyId": "7e4d0c6a708866e7",
   "files": {
+    "CHANGELOG.md": "53dfa578bab65f10e411224d34e84ddbc686cf91f02f2dc1767277fc09603b95",
     "gpx_bmchelix-ade-datasource_darwin_amd64": "4220596b907cee108bdc61a8b0f77b30a518598b9cbb07a961bab36ca1eda7ec",
     "gpx_bmchelix-ade-datasource_darwin_arm64": "36a33beb9f305a42ab7b7a1198dcba42de8d8f5cd43cd28b4225164b2c00a670",
     "gpx_bmchelix-ade-datasource_linux_amd64": "f36aa5814fe65c11ad396c922f11bbf6be3dd50067a1e19557f46e3274eb0bf2",
@@ -21,9 +22,8 @@ Hash: SHA512
     "img/grafana_icon.svg": "44a75989e1b74eeb5f441e321308a01d8fe0005891de65075aa63661475883c1",
     "img/logo.svg": "ab97c27e5086935b588cdd33b5bb35320bb0f8c03ebc5a5e0d618892e1f73c19",
     "LICENSE": "2e2fe007304853ac72ab4389a8c72bb86b9337e6f17f90b392b79ce2e5b480d4",
-    "module.js": "98b12c44afe62e02f90ce5776bee645cd3f6fb82c611e34b78c961e358fd9316",
-    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
-    "module.js.map": "f4faa2f2911a619069533e826893f290f3331ecfbb36f6f32e9dc3877513eb5c",
+    "module.js": "f83cc4d8fe5f5b67bd95ac4d490df1088b25e06f01b1163a4e2c852cfa619911",
+    "module.js.map": "ae1c679e5ba97136ea2599697bd2c979794654d69cdf774d8c309d54723b25c8",
     "partials/annotations.editor.html": "d215148e5b7c07831d0c3eacc4ebaa32c4e96b088eb1cff08f13826fd227d4a9",
     "partials/cloudsecurity/cloudsecurity.query.editor.html": "9a465868dc545c6652b1ca0338edb2a2cb628294ee2fb6039c535769468815c8",
     "partials/event/annotations.editor.html": "d2521f4d07730028f15d9dc99a060e5060db798ed574b9b74fe752078c5bee35",
@@ -46,7 +46,7 @@ Hash: SHA512
     "partials/remedy/remedy.qual.query.html": "4401bd1b1f2bf94323280f77caecdb513bdeaf1faf70127225fc62d0b6ff5a71",
     "partials/remedy/remedy.query.editor.html": "26d63cd6fdbdbfe030e3840fa63447b9a30b66c58660eff926e86c652db7c6ff",
     "partials/remedy/remedy.where.query.html": "903faaff89a8503aaae0c90adfe3212583732d7c9bcda87c44ab0c034b2496a7",
-    "plugin.json": "747d960dc9b43eeba0e0967076583a6141d79327089ea6bd43c9c60709379d17",
+    "plugin.json": "bbbe2e00dbd574955e91f480db71225aea0710125a77d6c7931996597390d501",
     "README.md": "2d0d3b6a2b56fea9036c5bf461188ace49eaef242ec0a3624e8a297236af7b08"
   }
 }
@@ -54,9 +54,9 @@ Hash: SHA512
 Version: OpenPGP.js v4.10.1
 Comment: https://openpgpjs.org
 
-wqAEARMKAAYFAmH7crIACgkQfk0ManCIZudHCAIHWfJit0U2D8Yy5jV5UKAQ
-6H7+oJQTccSz1c7/KLtFNFwrYCmJFVKknTURtHFB7eYlgSbbfXJZaSVBnpVP
-OSrq11cCBjZ6sdTmxA4g9Ajcx5y5k1XVJ0VkCE1jIu5iPkN/nGYebF0eYp2R
-Cmb/0tZhlKc24DtLHvna3ZpcWgpJ0Gqtjzhg
-=hB9o
+wqEEARMKAAYFAmIM1b8ACgkQfk0ManCIZud+XAIJAbNF/P+1Mi++0/qRlKEf
+0vaS1pjm0uO4rT+fhs+beTI6dOhuFX0CpZq0gKxPFa+HTyu7W4fQX2Uecddr
+uAzau6l0AgUXkn7nbjIBr809nkrJ+H0uiVXo/REWtfFgKIJCV1vdnDMfar6Z
+H3aI+T+6agWIilL9dx0z3oi0twzDLHCMi4IZcg==
+=pGWA
 -----END PGP SIGNATURE-----

@@ -2,22 +2,27 @@ import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceSecureJsonDataOption,
+  updateDatasourcePluginResetOption,
 } from '@grafana/data';
 import { InlineFormLabel, LegacyForms } from '@grafana/ui';
-import React, { PureComponent } from 'react';
+import React, { ChangeEvent, PureComponent } from 'react';
 import { BMCDataSourceOptions, HelixSecureJsonData } from '../types';
 const { Input, SecretFormField } = LegacyForms;
 
 interface Props extends DataSourcePluginOptionsEditorProps<BMCDataSourceOptions> {}
 
-interface State {
-  accessKeyConfigured: boolean;
-  secretKeyConfigured: boolean;
-}
+interface State {}
 
 export class EntConfigEditor extends PureComponent<Props, State> {
-  
-  onUpdateURL = (e: React.SyntheticEvent<HTMLInputElement>) => {
+  onResetAccessKey = () => {
+    updateDatasourcePluginResetOption(this.props, 'accessKey');
+  };
+
+  onResetSecretKey = () => {
+    updateDatasourcePluginResetOption(this.props, 'secretKey');
+  };
+
+  onUpdateURL = (e: ChangeEvent<HTMLInputElement>) => {
     const { options, onOptionsChange } = this.props;
     onOptionsChange({
       ...options,
@@ -26,32 +31,11 @@ export class EntConfigEditor extends PureComponent<Props, State> {
     });
   };
 
-  onResetAccessKey = () => {
-    const { options } = this.props;
-    const secureJsonData = (options.secureJsonData || {}) as HelixSecureJsonData;
-    this.setState({
-      ...this.state,
-      accessKeyConfigured: false,
-    });
-    secureJsonData.accessKey = '';
-    onUpdateDatasourceSecureJsonDataOption(this.props, 'accessKey');
-  };
-
-  onResetSecretKey = () => {
-    const { options } = this.props;
-    const secureJsonData = (options.secureJsonData || {}) as HelixSecureJsonData;
-    this.setState({
-      ...this.state,
-      secretKeyConfigured: false,
-    });
-    secureJsonData.secretKey = '';
-    onUpdateDatasourceSecureJsonDataOption(this.props, 'secretKey');
-  };
-
   render() {
     const { options } = this.props;
     const { secureJsonFields } = options;
     const secureJsonData = (options.secureJsonData || {}) as HelixSecureJsonData;
+
     return (
       <div className="gf-form-group">
         <div className="gf-form-inline">
@@ -79,7 +63,7 @@ export class EntConfigEditor extends PureComponent<Props, State> {
             <SecretFormField
               isConfigured={(secureJsonFields && secureJsonFields.accessKey) as boolean}
               value={secureJsonData.accessKey || ''}
-              label="Access key"
+              label="Access Key"
               labelWidth={10}
               inputWidth={20}
               placeholder={'XXXXX-XXXXXXXXX-XXXXX'}
@@ -93,7 +77,7 @@ export class EntConfigEditor extends PureComponent<Props, State> {
             <SecretFormField
               isConfigured={(secureJsonFields && secureJsonFields.secretKey) as boolean}
               value={secureJsonData.secretKey || ''}
-              label="Secret key"
+              label="Secret Key"
               labelWidth={10}
               inputWidth={20}
               placeholder={'XXXXX-XXXXXXXXX-XXXXX'}

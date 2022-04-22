@@ -4,6 +4,7 @@ import { BMCDataSourceOptions } from 'types';
 import { CloudSecurityDataSourceQuery } from './CloudSecurityTypes';
 import { CloudSecurityQueryBuilder } from './CloudSecurityQueryBuilder';
 import { CSRquestHandlerFactory } from './handlers/CSRequestHandlerFactory';
+import { Observable } from 'rxjs';
 
 export class CloudSecurityDatasource extends DataSourceApi<CloudSecurityDataSourceQuery, BMCDataSourceOptions> {
   private static instance: CloudSecurityDatasource;
@@ -11,7 +12,6 @@ export class CloudSecurityDatasource extends DataSourceApi<CloudSecurityDataSour
   dsName!: string;
   queryBuilder!: CloudSecurityQueryBuilder;
 
-  /** @ngInject */
   private constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
     public templateSrv: any,
@@ -42,7 +42,7 @@ export class CloudSecurityDatasource extends DataSourceApi<CloudSecurityDataSour
     return CloudSecurityDatasource.instance;
   }
 
-  query(options: DataQueryRequest<CloudSecurityDataSourceQuery>): Promise<DataQueryResponse> {
+  query(options: DataQueryRequest<CloudSecurityDataSourceQuery>): Observable<DataQueryResponse> {
     const targets = _.cloneDeep(options.targets);
     let targetObj: any;
     let csQueryType = '';

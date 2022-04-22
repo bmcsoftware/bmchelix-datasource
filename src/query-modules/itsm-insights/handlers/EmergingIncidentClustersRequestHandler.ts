@@ -4,6 +4,8 @@ import { ItsmInsightsConstants } from '../ItsmInsightsConstants';
 import { AbstItsmInsightsRequestHandler } from './AbstItsmInsightsRequestHandler';
 import { ItsmInsightsResponseParser } from './ItsmInsightsResponseParser';
 import { MOCK_JSON_TOP_EMERGING_CLUSTERS } from '../itsm-insights-mock-data';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 export class EmergingIncidentClustersRequestHandler extends AbstItsmInsightsRequestHandler {
   private static instance: EmergingIncidentClustersRequestHandler;
@@ -18,36 +20,30 @@ export class EmergingIncidentClustersRequestHandler extends AbstItsmInsightsRequ
     return EmergingIncidentClustersRequestHandler.instance;
   }
 
-  async handleRequest(ds: any, options: DataQueryRequest<BMCDataSourceQuery>, target: any): Promise<DataQueryResponse> {
-    let result: any;
+  handleRequest(ds: any, options: DataQueryRequest<BMCDataSourceQuery>, target: any): Observable<DataQueryResponse> {
     let requestBody = ds.queryBuilder.buildEmergingClustersRequest(options);
     const requestBodyJson = JSON.stringify(requestBody);
 
     if (!ItsmInsightsConstants.MOCK_EMERGING_CLUSTERS) {
-      result = this.post(ds, ItsmInsightsConstants.EMERGING_CLUSTERS_URL, requestBodyJson).then(
-        (response: any) => {
+      return this.post(ds, ItsmInsightsConstants.EMERGING_CLUSTERS_URL, requestBodyJson).pipe(
+        map((response: any) => {
           try {
             return new ItsmInsightsResponseParser(response, target.refId).parseEmergingClustersResult(target);
           } catch (err) {
             console.log(err);
             throw { message: ItsmInsightsConstants.ITSM_INSIGHTS_RESPONSE_ERROR };
           }
-        },
-        (err: any) => {
+        }),
+        catchError((err: any) => {
           if (err.status === ItsmInsightsConstants.STATUS_FORBIDDEN) {
             throw { message: ItsmInsightsConstants.ITSM_INSIGHTS_FORBIDDEN_ERROR };
           }
-        }
+          throw err;
+        })
       );
     } else {
       // const data: any[] = [];
-      result = { data: MOCK_JSON_TOP_EMERGING_CLUSTERS }; //new ItsmInsightsResponseParser(MOCK_JSON_TOP_EMERGING_CLUSTERS, target.refId).parseEmergingClustersResult(target);
-    }
-
-    if (result) {
-      return result;
-    } else {
-      return Promise.resolve({ data: [] });
+      return of({ data: MOCK_JSON_TOP_EMERGING_CLUSTERS }); //new ItsmInsightsResponseParser(MOCK_JSON_TOP_EMERGING_CLUSTERS, target.refId).parseEmergingClustersResult(target);
     }
   }
 }

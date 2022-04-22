@@ -18,13 +18,13 @@ export class ADEAuthHelper extends AuthHelper {
     return this.getJWTTokenFromContext(backendSrv);
   }
 
-  async getToken(tokenObj: any) {
+  getToken(tokenObj: any) {
     // do nothing
   }
 
   private getJWTTokenFromContext(backendSrv: any) {
-	  let imsJWTTokenObj: any = { adeJWTToken: ''};
-    imsJWTTokenObj.adeJWTToken =  "JWT PLACEHOLDER";
+    let imsJWTTokenObj: any = { adeJWTToken: '' };
+    imsJWTTokenObj.adeJWTToken = 'JWT PLACEHOLDER';
     return imsJWTTokenObj;
   }
 }

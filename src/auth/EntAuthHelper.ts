@@ -1,8 +1,9 @@
 import { JWT_TOKEN_STORAGE_KEY } from './../Constants';
 import * as Constants from 'Constants';
-import { from, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { JWTTokenResponse } from 'TokenModel';
 import { AuthHelper } from './AuthHelper';
+import { map, catchError } from 'rxjs/operators';
 
 export class EntAuthHelper extends AuthHelper {
   private static instance: EntAuthHelper;
@@ -18,11 +19,11 @@ export class EntAuthHelper extends AuthHelper {
     return EntAuthHelper.instance;
   }
 
-  async initToken(instSettings: any) {
+  initToken(instSettings: any) {
     return this.getToken(instSettings);
   }
 
-  async getToken(instSettings: any) {
+  getToken(instSettings: any) {
     let tokenObject = new JWTTokenResponse();
     const localStorageObject = localStorage.getItem(JWT_TOKEN_STORAGE_KEY);
     if (localStorageObject) {
@@ -31,40 +32,39 @@ export class EntAuthHelper extends AuthHelper {
     if (!tokenObject || !tokenObject.adeJWTToken || tokenObject.expiry <= new Date().getTime()) {
       return this.refreshToken(instSettings);
     }
-    return tokenObject;
+    return of(tokenObject);
   }
 
-  private async refreshToken(instSettings: any) {
+  private refreshToken(instSettings: any): Observable<JWTTokenResponse> {
     let payload = {
       access_key: instSettings.jsonData.accessKey,
       access_secret_key: instSettings.jsonData.secretKey,
       tenant_id: instSettings.jsonData.tenantId,
     };
     const requestJson = JSON.stringify(payload);
-    const tokenResponse = await this.getJWTToken(instSettings.url, requestJson).toPromise();
-    localStorage.setItem(JWT_TOKEN_STORAGE_KEY, JSON.stringify(tokenResponse));
-    return tokenResponse;
+    return this.getJWTToken('/api/datasources/' + instSettings.id + '/resources', requestJson).pipe(
+      map((tokenResponse: any) => {
+        localStorage.setItem(JWT_TOKEN_STORAGE_KEY, JSON.stringify(tokenResponse));
+        return tokenResponse;
+      })
+    );
   }
 
   private getJWTToken(url: any, payload: any): Observable<JWTTokenResponse> {
-    return from(
-      new Promise<JWTTokenResponse>(resolve => {
-        const jwtToken = new JWTTokenResponse();
-        this.post(url, Constants.JWT_TOKEN_GEN_URL, payload).then(
-          (response: any) => {
-            jwtToken.status = response.status;
-            if (response && response.status === 200) {
-              jwtToken.adeJWTToken = response.data.json_web_token;
-              let currentTime = new Date();
-              jwtToken.expiry = currentTime.setMinutes(currentTime.getMinutes() + 5);
-            }
-            resolve(jwtToken);
-          },
-          (errorResponse: any) => {
-            jwtToken.status = errorResponse.error;
-            resolve(jwtToken);
-          }
-        );
+    const jwtToken = new JWTTokenResponse();
+    return this.post(url, Constants.JWT_TOKEN_GEN_URL, payload).pipe(
+      map((response: any) => {
+        jwtToken.status = response.status;
+        if (response && response.status === 200) {
+          jwtToken.adeJWTToken = response.data.json_web_token;
+          let currentTime = new Date();
+          jwtToken.expiry = currentTime.setMinutes(currentTime.getMinutes() + 5);
+        }
+        return jwtToken;
+      }),
+      catchError((err: any) => {
+        jwtToken.status = err.error;
+        return of(jwtToken);
       })
     );
   }

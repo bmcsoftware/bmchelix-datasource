@@ -10,10 +10,14 @@
   <ng-include src="ctrl.constants.EVENT_ANNOTATION_EDITOR_URL"></ng-include>
 </div>
 
-<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_METRIC"">
-  <ng-include src="ctrl.constants.METRIC_ANNOTATION_EDITOR_URL"></ng-include>
+<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_METRIC">
+  <ng-include src=" ctrl.constants.METRIC_ANNOTATION_EDITOR_URL">
+  </ng-include>
 </div>
 
 <div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_LOG">
   <ng-include src="ctrl.constants.LOG_ANNOTATION_EDITOR_URL"></ng-include>
+</div>
+<div ng-if="ctrl.annotation.selectedType == ctrl.constants.SOURCE_TYPE_REMEDY">
+  <ng-include src="ctrl.constants.REMEDY_ANNOTATION_EDITOR_URL"></ng-include>
 </div>

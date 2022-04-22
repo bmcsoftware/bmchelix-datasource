@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "BMC Helix",
   "id": "bmchelix-ade-datasource",
@@ -19,8 +20,8 @@
     },
     "links": [],
     "screenshots": [],
-    "version": "2.0.0",
-    "updated": "2022-02-16"
+    "version": "3.0.0",
+    "updated": "2022-04-22"
   },
   "dependencies": {
     "grafanaDependency": ">=7.3.1",

@@ -9,7 +9,7 @@ import MetricQlSyntax, { FUNCTIONS, RATE_RANGES } from '../metric//MetricQl';
 import { MetricEntityDatasource } from './MetricEntityDatasource';
 import { EntityDataSourceQuery, MetricsMetadata } from './entityTypes';
 
-import { BMCDataSource } from '../../DataSource';
+import { BMCDataSource } from '../../datasource';
 
 const HISTORY_ITEM_COUNT = 5;
 const HISTORY_COUNT_CUTOFF = 1000 * 60 * 60 * 24; // 24h
@@ -24,7 +24,7 @@ const setFunctionKind = (suggestion: CompletionItem): CompletionItem => {
 
 export function addHistoryMetadata(item: CompletionItem, history: any[]): CompletionItem {
   const cutoffTs = Date.now() - HISTORY_COUNT_CUTOFF;
-  const historyForItem = history.filter(h => h.ts > cutoffTs && h.query === item.label);
+  const historyForItem = history.filter((h) => h.ts > cutoffTs && h.query === item.label);
   const count = historyForItem.length;
   const recent = historyForItem[0];
   let hint = `Queried ${count} times in the last 24h.`;
@@ -86,10 +86,7 @@ export default class EntityQlLanguageProvider extends LanguageProvider {
     const parts = s.split(PREFIX_DELIMITER_REGEX);
     const last: string | undefined = parts.pop();
     if (last) {
-      return last
-        .trimLeft()
-        .replace(/"$/, '')
-        .replace(/^"/, '');
+      return last.trimLeft().replace(/"$/, '').replace(/^"/, '');
     } else {
       return '';
     }
@@ -102,7 +99,7 @@ export default class EntityQlLanguageProvider extends LanguageProvider {
   request = async (url: string, defaultValue: any): Promise<any> => {
     try {
       const res = await this.metadataRequest('GET', url);
-      const body = await (res.data || res.json());
+      const body = await res.data;
 
       return body.data;
     } catch (error) {
@@ -217,12 +214,12 @@ export default class EntityQlLanguageProvider extends LanguageProvider {
 
     if (history && history.length) {
       const historyItems = _.chain(history)
-        .map(h => h.query.sourceQuery.expr)
+        .map((h) => h.query.sourceQuery.expr)
         .filter()
         .uniq()
         .take(HISTORY_ITEM_COUNT)
         .map(wrapLabel)
-        .map(item => addHistoryMetadata(item, history))
+        .map((item) => addHistoryMetadata(item, history))
         .value();
 
       suggestions.push({
@@ -249,7 +246,7 @@ export default class EntityQlLanguageProvider extends LanguageProvider {
     if (metrics && metrics.length) {
       suggestions.push({
         label: 'Metrics',
-        items: metrics.map(m => addMetricsMetadata(m, metricsMetadata)),
+        items: metrics.map((m) => addMetricsMetadata(m, metricsMetadata)),
       });
     }
 
@@ -278,5 +275,4 @@ export default class EntityQlLanguageProvider extends LanguageProvider {
    * @param name
    * @param withName
    */
- 
 }

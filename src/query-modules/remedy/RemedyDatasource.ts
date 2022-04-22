@@ -1,5 +1,5 @@
 import angular from 'angular';
-import * as queryDef from './remedy_query_def';
+import * as queryDef from '../../modules/remedy/utilities/remedy_query_def';
 import _ from 'lodash';
 import {
   AnnotationEvent,
@@ -12,8 +12,8 @@ import {
 
 import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSourceOptions } from 'types';
-import { HeaderList, RemedyRequestBody, RemedyDataSourceQuery } from './RemedyTypes';
-import { RemedyQueryBuilder } from './remedy_query_builder';
+import { HeaderList, RemedyRequestBody, RemedyDataSourceQuery } from '../../modules/remedy/utilities/RemedyTypes';
+import { RemedyQueryBuilder } from '../../modules/remedy/utilities/remedy_query_builder';
 import { RemedyResponse } from './remedy_response';
 import { RemedyConstants } from './RemedyConstants';
 import {
@@ -28,8 +28,10 @@ import {
   TABLE,
   NEWLINE,
   DEFAULT_DATE_TIME_FORMAT,
-} from './remedy_literal_string';
-import { BMCDataSource } from 'DataSource';
+} from '../../modules/remedy/utilities/remedy_literal_string';
+import { BMCDataSource } from '../../datasource';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDataSourceOptions> {
   private static instance: RemedyDatasource;
@@ -44,8 +46,6 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
   queryBuilder!: RemedyQueryBuilder;
   platformQueue!: string;
 
-  /*-- End --*/
-  /** @ngInject */
   private constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
     private templateSrv: any,
@@ -96,11 +96,11 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     ) {
       loginId = this.backendSrv.dependencies.contextSrv.user.Login;
       // Set User timezone
-      //Commenting This code to fix DRJ71-2892 - Grafana panle is already converting TZ before rendering hence we dont need explicit conversion
+      // Commenting This code to fix DRJ71-2892 - Grafana panle is already converting TZ before rendering hence we dont need explicit conversion
       // options.headers[queryDef.HeaderFunctions.Timezone.arKey] =
       //   this.backendSrv.dependencies.contextSrv.user.timezone === 'browser'
       //     ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      //    : this.backendSrv.dependencies.contextSrv.user.timezone;    
+      //     : this.backendSrv.dependencies.contextSrv.user.timezone;
       // Check/Set User locale against remedy locales
       options.headers[queryDef.HeaderFunctions.Locale.arKey] = queryDef.getRemedyLocale(
         this.backendSrv.dependencies.contextSrv.user.locale
@@ -133,27 +133,36 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
         'X-Requested-By': loginId,
       };
     }
-    return getBackendSrv().datasourceRequest(options);
+    return getBackendSrv().fetch(options);
   }
 
   private get(url: string) {
-    return this.request('GET', url)
-      .then((results: any) => {
+    return this.request('GET', url).pipe(
+      map((results: any) => {
         results.data.$$config = results.config;
         return results.data;
-      })
-      .catch((err: any) => {
+      }),
+      catchError((err: any) => {
         throw err;
-      });
+      })
+    );
+    // .toPromise()
+    // .then((results: any) => {
+    //   results.data.$$config = results.config;
+    //   return results.data;
+    // })
+    // .catch((err: any) => {
+    //   throw err;
+    // });
   }
 
   private post(url: string, data: any, header?: Array<{ key: string; value: string }>) {
-    return this.request('POST', url, data, header)
-      .then((results: any) => {
+    return this.request('POST', url, data, header).pipe(
+      map((results: any) => {
         results.data.$$config = results.config;
         return results.data;
-      })
-      .catch((err: any) => {
+      }),
+      catchError((err: any) => {
         if (err.data[0] && err.data[0].messageNumber && err.data[0].messageText) {
           throw {
             message:
@@ -165,9 +174,29 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
             error: err.data[0].messageNumber,
           };
         }
-
         throw err;
-      });
+      })
+    );
+    // .toPromise()
+    // .then((results: any) => {
+    //   results.data.$$config = results.config;
+    //   return results.data;
+    // })
+    // .catch((err: any) => {
+    //   if (err.data[0] && err.data[0].messageNumber && err.data[0].messageText) {
+    //     throw {
+    //       message:
+    //         err.data[0].messageNumber +
+    //         COLON +
+    //         SPACE +
+    //         err.data[0].messageText +
+    //         (err.data[0].messageAppendedText ? COMMA + SPACE + err.data[0].messageAppendedText : DOT),
+    //       error: err.data[0].messageNumber,
+    //     };
+    //   }
+
+    //   throw err;
+    // });
   }
 
   async annotationQuery(options: any): Promise<any> {
@@ -193,61 +222,66 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     // Support: Variables
     let payload = this.variableSupport(esQuery, options);
 
-    return this.post(RemedyConstants.REMEDY_QUERY_URL, payload).then((response: any) => {
-      const getFieldIndexFromColumn = (columns: any, fieldName: any) => {
-        for (let i = 0; i < columns.length; i++) {
-          if (columns[i].text === fieldName) {
-            return i;
+    return this.post(RemedyConstants.REMEDY_QUERY_URL, payload)
+      .toPromise()
+      .then((response: any) => {
+        const getFieldIndexFromColumn = (columns: any, fieldName: any) => {
+          for (let i = 0; i < columns.length; i++) {
+            if (columns[i].text === fieldName) {
+              return i;
+            }
           }
-        }
-        return -1;
-      };
+          return -1;
+        };
 
-      const eventList: AnnotationEvent[] = [];
-      const res = new RemedyResponse(response).getTableData('A').data[0];
-      const rows = res.rows;
-      const columns = res.columns;
-      for (let i = 0; i < rows.length; i++) {
-        let event: AnnotationEvent = {};
-        event.annotation = annotation;
-        if (timeField !== EMPTY) {
-          let index = getFieldIndexFromColumn(columns, timeField);
-          event.time = rows[i][index] ? rows[i][index] : EMPTY;
-        }
-        if (timeEndField !== EMPTY) {
-          let index = getFieldIndexFromColumn(columns, timeEndField);
-          event.timeEnd = rows[i][index] ? rows[i][index] : EMPTY;
-        }
-        if (titleField !== EMPTY) {
-          let index = getFieldIndexFromColumn(columns, titleField);
-          event.text = rows[i][index] ? rows[i][index] : EMPTY;
-        }
-        if (textField !== EMPTY) {
-          let index = getFieldIndexFromColumn(columns, textField);
-          // Add description as second line
-          event.text = rows[i][index] ? event.text + NEWLINE + rows[i][index] : event.text;
-        }
-        if (tagsField !== EMPTY) {
-          let index = getFieldIndexFromColumn(columns, tagsField);
-          let data: string = EMPTY + rows[i][index];
-          if (data) {
-            event.tags = data.indexOf(COMMA) > -1 ? data.split(COMMA) : [data];
+        const eventList: AnnotationEvent[] = [];
+        const res = new RemedyResponse(response).getTableData('A').data[0];
+        const rows = res.rows;
+        const columns = res.columns;
+        for (let i = 0; i < rows.length; i++) {
+          let event: AnnotationEvent = {};
+          event.annotation = annotation;
+          if (timeField !== EMPTY) {
+            let index = getFieldIndexFromColumn(columns, timeField);
+            event.time = rows[i][index] ? rows[i][index] : EMPTY;
           }
+          if (timeEndField !== EMPTY) {
+            let index = getFieldIndexFromColumn(columns, timeEndField);
+            event.timeEnd = rows[i][index] ? rows[i][index] : EMPTY;
+          }
+          if (titleField !== EMPTY) {
+            let index = getFieldIndexFromColumn(columns, titleField);
+            event.text = rows[i][index] ? rows[i][index] : EMPTY;
+          }
+          if (textField !== EMPTY) {
+            let index = getFieldIndexFromColumn(columns, textField);
+            // Add description as second line
+            event.text = rows[i][index] ? event.text + NEWLINE + rows[i][index] : event.text;
+          }
+          if (tagsField !== EMPTY) {
+            let index = getFieldIndexFromColumn(columns, tagsField);
+            let data: string = EMPTY + rows[i][index];
+            if (data) {
+              event.tags = data.indexOf(COMMA) > -1 ? data.split(COMMA) : [data];
+            }
+          }
+          eventList.push(event);
         }
-        eventList.push(event);
-      }
-      return eventList;
-    });
+        return eventList;
+      });
   }
 
-  interpolateVariablesInQueries(queries: RemedyDataSourceQuery[], scopedVars: ScopedVars): RemedyDataSourceQuery[] {
-    let expandedQueries = queries;
+  interpolateVariablesInQueries(queries: RemedyDataSourceQuery[], scopedVars: ScopedVars): any[] {
+    let expandedQueries: any = queries;
     if (queries && queries.length > 0) {
       expandedQueries = queries.map((query) => {
         const expandedQuery = {
           ...query,
           datasource: this.name,
-          query: this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, this.interpolateVariable),
+          sourceQuery: {
+            ...query.sourceQuery,
+            rawQuery: this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, this.interpolateVariable),
+          },
         };
         return expandedQuery;
       });
@@ -255,7 +289,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     return expandedQueries;
   }
 
-  async query(options: DataQueryRequest<RemedyDataSourceQuery>): Promise<DataQueryResponse> {
+  query(options: DataQueryRequest<RemedyDataSourceQuery>): Observable<DataQueryResponse> {
     const targets: RemedyDataSourceQuery[] = _.cloneDeep(options.targets);
 
     // add global adhoc filters to timeFilter
@@ -294,23 +328,52 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     // Backward compatibility: Support server w/o new api
     if (data.length === 1) {
       // Support: Variables
-      let payload = this.variableSupport(angular.toJson(data[0]), options);
-      return this.post(RemedyConstants.REMEDY_QUERY_URL, payload, remedyHeaderFirst).then((response: any) => {
-        const res = new RemedyResponse(response);
-        let returnData = res.getData();
-        return returnData;
-      });
+      let payload = this.variableSupport(angular.toJson(data[0]), options.scopedVars);
+      return this.post(RemedyConstants.REMEDY_QUERY_URL, payload, remedyHeaderFirst).pipe(
+        map((response: any) => {
+          const res = new RemedyResponse(response);
+          let returnData = res.getData();
+          return returnData as DataQueryResponse;
+        })
+      );
     } else if (data.length >= 2) {
       // Support: Variables
-      let payload = this.variableSupport(angular.toJson(data), options);
-      return this.post(RemedyConstants.REMEDY_QUERIES_URL, payload, remedyHeaderFirst).then((response: any) => {
-        const res = new RemedyResponse(response);
-        let returnData = res.getData();
-        return returnData;
-      });
+      let payload = this.variableSupport(angular.toJson(data), options.scopedVars);
+      return this.post(RemedyConstants.REMEDY_QUERIES_URL, payload, remedyHeaderFirst).pipe(
+        map((response: any) => {
+          const res = new RemedyResponse(response);
+          let returnData = res.getData();
+          return returnData;
+        })
+      );
     } else {
-      return Promise.resolve({ data: [] });
+      return of({ data: [] });
     }
+  }
+
+  getArslSqlPayload(target: RemedyDataSourceQuery, scopedVars: any) {
+    const adhocFilters = this.templateSrv.getAdhocFilters(this.name);
+    if (!target.hide) {
+      let remedyBody = new RemedyRequestBody(
+        DEFAULT_DATE_FORMAT,
+        DEFAULT_DATE_TIME_FORMAT,
+        target.sourceQuery.formatAs,
+        ''
+      );
+      let remedyHeader: Array<{ key: string; value: string }> | undefined = [];
+      if (
+        target.sourceQuery.header !== undefined &&
+        target.sourceQuery.header.hideHeader !== undefined &&
+        !target.sourceQuery.header.hideHeader
+      ) {
+        // Process/Split header values
+        [remedyBody, remedyHeader] = this.processHeaderList(target.sourceQuery.header.headerList);
+      }
+      // Build Request body
+      let queryObj = this.queryBuilder.build(target, remedyBody, adhocFilters);
+      return JSON.parse(this.variableSupport(JSON.stringify({ ...queryObj, headers: remedyHeader }), scopedVars));
+    }
+    return {};
   }
 
   quoteLiteral(value: any) {
@@ -344,17 +407,17 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     }
   };
 
-  private variableSupport(esQuery: string, options: DataQueryRequest<RemedyDataSourceQuery>) {
+  private variableSupport(esQuery: string, scopedVars: ScopedVars) {
     // Support: Variables
-    let payload = this.templateSrv.replace(esQuery, options.scopedVars, this.interpolateVariable);
+    let payload = this.templateSrv.replace(esQuery, scopedVars, this.interpolateVariable);
     // Support: Time Filter using regex match
     payload = payload.replace(/\$__/g, '$$');
     payload = payload.replace(/\$_/g, '$$');
     payload = payload.replace(/\$timeFilter\(([\w|\s|:|'|`|\.]*)\)/g, '$1 BETWEEN $timeFrom AND $timeTo');
     // Support: Millisecond epoch
-    payload = payload.replace(/\$timeFrom/g, options.range.from.valueOf().toString());
-    payload = payload.replace(/\$timeTo/g, options.range.to.valueOf().toString());
-    payload = this.templateSrv.replace(payload, options.scopedVars);
+    // payload = payload.replace(/\$timeFrom/g, options.range.from.valueOf().toString());
+    // payload = payload.replace(/\$timeTo/g, options.range.to.valueOf().toString());
+    payload = this.templateSrv.replace(payload, scopedVars);
     return payload;
   }
 
@@ -372,27 +435,31 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
   }
 
   getForms(query: any) {
-    let result = this.get(RemedyConstants.REMEDY_METRIC_FORM_URL).then((result: any) => {
-      let formNames: any[] = [];
-      _.each(result, (name) => {
-        formNames.push({ text: name, value: name });
+    let result = this.get(RemedyConstants.REMEDY_METRIC_FORM_URL)
+      .toPromise()
+      .then((result: any) => {
+        let formNames: any[] = [];
+        _.each(result, (name) => {
+          formNames.push({ text: name, value: name });
+        });
+        return formNames;
       });
-      return formNames;
-    });
     return result;
   }
 
   getColumns(query: any) {
     let url = RemedyConstants.REMEDY_METRIC_COLUMN_URL + query.name + RemedyConstants.REMEDY_METRIC_COLUMN_QUERY_PARAM;
-    let result = this.get(url).then((result: any) => {
-      let columnNames: any[] = [];
-      _.each(result, (column) => {
-        if (column && column.name && column.field_option !== 'DISPLAY') {
-          columnNames.push({ text: column.name, value: column.name });
-        }
+    let result = this.get(url)
+      .toPromise()
+      .then((result: any) => {
+        let columnNames: any[] = [];
+        _.each(result, (column) => {
+          if (column && column.name && column.field_option !== 'DISPLAY') {
+            columnNames.push({ text: column.name, value: column.name });
+          }
+        });
+        return columnNames;
       });
-      return columnNames;
-    });
     return result;
   }
 
@@ -407,10 +474,12 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
       };
       // Support: Variables
       let payload = this.templateSrv.replace(angular.toJson(queryObj), {}, this.interpolateVariable);
-      const returnData = this.post(RemedyConstants.REMEDY_QUERY_URL, payload).then((response: any) => {
-        const res = new RemedyResponse(response);
-        return res.getTableData('A');
-      });
+      const returnData = this.post(RemedyConstants.REMEDY_QUERY_URL, payload)
+        .toPromise()
+        .then((response: any) => {
+          const res = new RemedyResponse(response);
+          return res.getTableData('A');
+        });
       data.push(returnData);
       return Promise.all(data).then((values) => {
         const fields: any = {};

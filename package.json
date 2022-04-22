@@ -1,35 +1,51 @@
 {
   "name": "bmc-bmc-ade",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Datasource plugin by BMC to support various query types.",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
-    "watch": "grafana-toolkit plugin:dev --watch"
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "sign": "grafana-toolkit plugin:sign",
+    "start": "yarn watch"
   },
   "author": "BMC",
   "license": "Apache-2.0",
   "dependencies": {
-    "moment": "^2.27.0"
+    "@emotion/css": "11.1.3",
+    "@reduxjs/toolkit": "^1.7.0",
+    "debounce-promise": "3.1.2",
+    "moment": "^2.27.0",
+    "react-select": "^5.2.1",
+    "rxjs": "^6.6.3",
+    "slate": "0.47.8"
   },
   "devDependencies": {
-    "@grafana/data": "7.5.4",
-    "@grafana/toolkit": "7.5.4",
-    "@grafana/ui": "7.5.4",
-    "@grafana/runtime": "7.5.4",
-    "@types/lodash": "latest",
-    "@types/angular": "^1.7.0",
-    "@types/jquery": "3.3.38",
-    "@types/prismjs": "^1.5.1",
-    "@types/lru-cache": "5.1.0",
-    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@grafana/data": "8.3.2",
+    "@grafana/runtime": "8.3.2",
+    "@grafana/toolkit": "8.2.7",
+    "@grafana/ui": "8.3.2",
     "@testing-library/jest-dom": "5.4.0",
     "@testing-library/react": "^10.0.2",
+    "@types/angular": "^1.7.0",
+    "@types/debounce-promise": "3.1.3",
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@types/jquery": "3.3.38",
+    "@types/lodash": "latest",
+    "@types/lru-cache": "5.1.0",
+    "@types/prismjs": "^1.5.1",
+    "@types/react-window": "1.8.1",
+    "@types/slate": "0.47.2",
     "eslint-config-prettier": "6.10.0",
-    "eslint-plugin-prettier": "3.1.2"
+    "eslint-plugin-prettier": "3.1.2",
+    "tslib": "2.2.0"
+  },
+  "resolutions": {
+    "rxjs": "^6.6.3",
+    "@types/slate": "0.47.2"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   }
 }

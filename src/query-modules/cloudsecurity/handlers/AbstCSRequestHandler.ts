@@ -1,7 +1,9 @@
 import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSourceQuery } from '../../../types';
 import { DataQueryRequest, DataQueryResponse } from '@grafana/data';
-import { BMCDataSource } from '../../../DataSource';
+import { BMCDataSource } from '../../../datasource';
+import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 export abstract class AbstCSRequestHandler {
   headerSettings: any = { 'Content-Type': 'application/json' };
@@ -9,23 +11,23 @@ export abstract class AbstCSRequestHandler {
     ds: any,
     options: DataQueryRequest<BMCDataSourceQuery>,
     target: any
-  ): Promise<DataQueryResponse>;
+  ): Observable<DataQueryResponse>;
 
   post(ds: any, url: string, data: any) {
-    return this.request(ds, 'POST', url, data)
-      .then((results: any) => {
+    return this.request(ds, 'POST', url, data).pipe(
+      map((results: any) => {
         return results;
-      })
-      .catch((err: any) => {
+      }),
+      catchError((err: any) => {
         if (err.data && err.data.error) {
           throw {
             message: 'Error: ' + err.data.error.reason,
             error: err.data.error,
           };
         }
-
         throw err;
-      });
+      })
+    );
   }
 
   request(ds: any, method: string, url: string, data?: undefined) {
@@ -36,7 +38,7 @@ export abstract class AbstCSRequestHandler {
       headers: this.headerSettings,
     };
     this.appendJWTToken(ds, options);
-    return getBackendSrv().datasourceRequest(options);
+    return getBackendSrv().fetch(options);
   }
 
   appendJWTToken(ds: any, options: any) {

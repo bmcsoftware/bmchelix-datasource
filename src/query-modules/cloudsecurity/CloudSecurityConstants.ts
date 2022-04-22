@@ -18,4 +18,9 @@ export class CSConstants {
   public static readonly BUSINESS_SERVICE = 'BusinessService';
   public static readonly RESOURCE_POOL = 'ResourcePool';
   public static readonly CS_RESPONSE_ERROR = 'Error Parsing Cloud Secuirty Response';
+  public static readonly complianceTrendOptions = [
+    { label: 'Compliance', value: 'Compliance' },
+    { label: 'Non Compliance', value: 'Non Compliance' },
+    { label: 'Remediation', value: 'Remediation' },
+  ];
 }

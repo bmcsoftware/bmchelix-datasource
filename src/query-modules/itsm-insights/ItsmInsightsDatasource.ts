@@ -4,6 +4,7 @@ import { BMCDataSourceOptions } from 'types';
 import { ItsmInsightsRquestHandlerFactory } from './handlers/ItsmInsightsRequestHandlerFactory';
 import { ItsmInsightsQueryBuilder } from './ItsmInsightsQueryBuilder';
 import { ItsmInsightsDataSourceQuery } from './ItsmInsightsTypes';
+import { Observable } from 'rxjs';
 
 export class ItsmInsightsDatasource extends DataSourceApi<ItsmInsightsDataSourceQuery, BMCDataSourceOptions> {
   private static instance: ItsmInsightsDatasource;
@@ -11,7 +12,6 @@ export class ItsmInsightsDatasource extends DataSourceApi<ItsmInsightsDataSource
   dsName!: string;
   queryBuilder!: ItsmInsightsQueryBuilder;
 
-  /** @ngInject */
   private constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
     public templateSrv: any,
@@ -42,7 +42,7 @@ export class ItsmInsightsDatasource extends DataSourceApi<ItsmInsightsDataSource
     return ItsmInsightsDatasource.instance;
   }
 
-  query(options: DataQueryRequest<ItsmInsightsDataSourceQuery>): Promise<DataQueryResponse> {
+  query(options: DataQueryRequest<ItsmInsightsDataSourceQuery>): Observable<DataQueryResponse> {
     const targets = _.cloneDeep(options.targets);
     let targetObj: any;
     let itsmInsigntsQueryType = '';
@@ -54,7 +54,11 @@ export class ItsmInsightsDatasource extends DataSourceApi<ItsmInsightsDataSource
     }
     itsmInsigntsQueryType = targetObj.sourceQuery.itsmInsigntsQueryType;
 
-    return ItsmInsightsRquestHandlerFactory.getRequestHandler(itsmInsigntsQueryType).handleRequest(this, options, targetObj);
+    return ItsmInsightsRquestHandlerFactory.getRequestHandler(itsmInsigntsQueryType).handleRequest(
+      this,
+      options,
+      targetObj
+    );
   }
 
   testDatasource(): Promise<any> {

@@ -1,5 +1,22 @@
-import * as queryDef from './log_query_def';
-import { LogAggregation } from './logTypes';
+import { InternalTimeZones } from '@grafana/data';
+import {
+  Filters,
+  Histogram,
+  DateHistogram,
+  Terms,
+} from 'modules/event/components/QueryEditor/BucketAggregationsEditor/aggregations';
+import {
+  isMetricAggregationWithField,
+  isMetricAggregationWithSettings,
+  isMovingAverageWithModelSettings,
+  isPipelineAggregation,
+  isPipelineAggregationWithMultipleBucketPaths,
+  MetricAggregation,
+  MetricAggregationWithInlineScript,
+} from 'modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations';
+import { defaultBucketAgg, defaultMetricAgg, findMetricById, highlightTags } from './log_query_def';
+import { ElasticsearchQuery, LogQuery, TermsQuery } from './logTypes';
+import { convertOrderByToMetricId, getScriptValue } from 'modules/event/utilities/utils';
 
 export class LogQueryBuilder {
   timeField: string;
@@ -19,15 +36,16 @@ export class LogQueryBuilder {
     return filter;
   }
 
-  buildTermsAgg(aggDef: LogAggregation, queryNode: { terms?: any; aggs?: any }, target: { metrics: any[] }) {
-    let metricRef, metric, y;
+  buildTermsAgg(aggDef: Terms, queryNode: { terms?: any; aggs?: any }, target: LogQuery) {
     queryNode.terms = { field: aggDef.field };
 
     if (!aggDef.settings) {
       return queryNode;
     }
 
-    queryNode.terms.size = parseInt(aggDef.settings.size, 10) === 0 ? 5000 : parseInt(aggDef.settings.size, 10);
+    // TODO: This default should be somewhere else together with the one used in the UI
+    const size = aggDef.settings?.size ? parseInt(aggDef.settings.size, 10) : 5000;
+    queryNode.terms.size = size === 0 ? 5000 : size;
 
     if (aggDef.settings.orderBy !== void 0) {
       queryNode.terms.order = {};
@@ -38,14 +56,18 @@ export class LogQueryBuilder {
       }
 
       // if metric ref, look it up and add it to this agg level
-      metricRef = parseInt(aggDef.settings.orderBy, 10);
-      if (!isNaN(metricRef)) {
-        for (y = 0; y < target.metrics.length; y++) {
-          metric = target.metrics[y];
-          if (metric.id === aggDef.settings.orderBy) {
-            queryNode.aggs = {};
-            queryNode.aggs[metric.id] = {};
-            queryNode.aggs[metric.id][metric.type] = { field: metric.field };
+      const metricId = convertOrderByToMetricId(aggDef.settings.orderBy);
+      if (metricId) {
+        for (let metric of target.metrics || []) {
+          if (metric.id === metricId) {
+            if (metric.type === 'count') {
+              queryNode.terms.order = { _count: aggDef.settings.order };
+            } else if (isMetricAggregationWithField(metric)) {
+              queryNode.aggs = {};
+              queryNode.aggs[metric.id] = {
+                [metric.type]: { field: metric.field },
+              };
+            }
             break;
           }
         }
@@ -54,6 +76,10 @@ export class LogQueryBuilder {
 
     if (aggDef.settings.min_doc_count !== void 0) {
       queryNode.terms.min_doc_count = parseInt(aggDef.settings.min_doc_count, 10);
+
+      if (isNaN(queryNode.terms.min_doc_count)) {
+        queryNode.terms.min_doc_count = aggDef.settings.min_doc_count;
+      }
     }
 
     if (aggDef.settings.missing) {
@@ -63,50 +89,44 @@ export class LogQueryBuilder {
     return queryNode;
   }
 
-  getDateHistogramAgg(aggDef: LogAggregation) {
+  getDateHistogramAgg(aggDef: DateHistogram) {
     const esAgg: any = {};
     const settings = aggDef.settings || {};
-    esAgg.interval = settings.interval;
-    esAgg.field = this.timeField;
+
+    esAgg.field = aggDef.field || this.timeField;
     esAgg.min_doc_count = settings.min_doc_count || 0;
     esAgg.extended_bounds = { min: '$timeFrom', max: '$timeTo' };
     esAgg.format = 'epoch_millis';
+    if (settings.timeZone && settings.timeZone !== InternalTimeZones.utc) {
+      esAgg.time_zone = settings.timeZone;
+    }
 
     if (settings.offset !== '') {
       esAgg.offset = settings.offset;
     }
 
-    if (esAgg.interval === 'auto') {
-      esAgg.interval = '$__interval';
-    }
+    const interval = settings.interval === 'auto' ? '$__interval' : settings.interval;
 
-    if (settings.missing) {
-      esAgg.missing = settings.missing;
-    }
+    esAgg.interval = interval;
 
     return esAgg;
   }
 
-  getHistogramAgg(aggDef: LogAggregation) {
+  getHistogramAgg(aggDef: Histogram) {
     const esAgg: any = {};
     const settings = aggDef.settings || {};
     esAgg.interval = settings.interval;
     esAgg.field = aggDef.field;
     esAgg.min_doc_count = settings.min_doc_count || 0;
 
-    if (settings.missing) {
-      esAgg.missing = settings.missing;
-    }
     return esAgg;
   }
 
-  getFiltersAgg(aggDef: LogAggregation) {
-    const filterObj: any = {};
-    for (let i = 0; i < aggDef.settings.filters.length; i++) {
-      const query = aggDef.settings.filters[i].query;
-      let label = aggDef.settings.filters[i].label;
-      label = label === '' || label === undefined ? query : label;
-      filterObj[label] = {
+  getFiltersAgg(aggDef: Filters) {
+    const filterObj: Record<string, { query_string: { query: string; analyze_wildcard: boolean } }> = {};
+
+    for (let { query, label } of aggDef.settings?.filters || []) {
+      filterObj[label || query] = {
         query_string: {
           query: query,
           analyze_wildcard: true,
@@ -119,8 +139,14 @@ export class LogQueryBuilder {
 
   documentQuery(query: any, size: number) {
     query.size = size;
-    query.sort = {};
-    query.sort[this.timeField] = { order: 'desc', unmapped_type: 'boolean' };
+    query.sort = [
+      {
+        [this.timeField]: { order: 'desc', unmapped_type: 'boolean' },
+      },
+      {
+        _doc: { order: 'desc' },
+      },
+    ];
 
     query.script_fields = {};
     return query;
@@ -173,154 +199,225 @@ export class LogQueryBuilder {
     }
   }
 
-  build(target: any, adhocFilters?: any, queryString?: string) {
+  build(target: LogQuery, adhocFilters?: any) {
     // make sure query has defaults;
-    target.metrics = target.metrics || [queryDef.defaultMetricAgg()];
-    target.bucketAggs = target.bucketAggs || [queryDef.defaultBucketAgg()];
-    target.timeField = this.timeField;
+    if (target) {
+      target.metrics = target.metrics || [defaultMetricAgg()];
+      target.bucketAggs = target.bucketAggs || [defaultBucketAgg()];
+      target.timeField = this.timeField;
+      let metric: MetricAggregation;
 
-    let i, j, pv, nestedAggs, metric;
-    const query = {
-      size: 0,
-      query: {
-        bool: {
-          filter: [
-            { range: this.getRangeFilter() },
-            {
-              query_string: {
-                analyze_wildcard: true,
-                query: queryString,
-              },
-            },
-          ],
+      let i, j, pv, nestedAggs;
+      const query: any = {
+        size: 0,
+        query: {
+          bool: {
+            filter: [{ range: this.getRangeFilter() }],
+          },
         },
-      },
-    };
+      };
 
-    this.addAdhocFilters(query, adhocFilters);
-
-    // If target doesn't have bucketAggs and type is not raw_document, it is invalid query.
-    if (target.bucketAggs.length === 0) {
-      metric = target.metrics[0];
-      if (!metric || metric.type !== 'raw_document') {
-        throw { message: 'Invalid query' };
+      if (target.query && target.query !== '') {
+        query.query.bool.filter = [
+          ...query.query.bool.filter,
+          {
+            query_string: {
+              analyze_wildcard: true,
+              query: target.query,
+            },
+          },
+        ];
       }
-    }
 
-    /* Handle document query:
-     * Check if metric type is raw_document. If metric doesn't have size (or size is 0), update size to 500.
-     * Otherwise it will not be a valid query and error will be thrown.
-     */
-    if (target.metrics?.[0]?.type === 'raw_document' || target.metrics?.[0]?.type === 'raw_data') {
-      metric = target.metrics[0];
-      const size = (metric.settings && metric.settings.size !== 0 && metric.settings.size) || 500;
-      return this.documentQuery(query, size);
-    }
+      this.addAdhocFilters(query, adhocFilters);
 
-    nestedAggs = query;
-
-    for (i = 0; i < target.bucketAggs.length; i++) {
-      const aggDef: any = target.bucketAggs[i];
-      const esAgg: any = {};
-
-      switch (aggDef.type) {
-        case 'date_histogram': {
-          esAgg['date_histogram'] = this.getDateHistogramAgg(aggDef);
-          break;
-        }
-        case 'histogram': {
-          esAgg['histogram'] = this.getHistogramAgg(aggDef);
-          break;
-        }
-        case 'filters': {
-          esAgg['filters'] = { filters: this.getFiltersAgg(aggDef) };
-          break;
-        }
-        case 'terms': {
-          this.buildTermsAgg(aggDef, esAgg, target);
-          break;
-        }
-        case 'geohash_grid': {
-          esAgg['geohash_grid'] = {
-            field: aggDef.field,
-            precision: aggDef.settings.precision,
-          };
-          break;
+      // If target doesn't have bucketAggs and type is not raw_document, it is invalid query.
+      if (target.bucketAggs.length === 0) {
+        metric = target.metrics[0];
+        if (!metric || !(metric.type === 'raw_document' || metric.type === 'raw_data')) {
+          throw { message: 'Invalid query' };
         }
       }
 
-      nestedAggs.aggs = nestedAggs.aggs || {};
-      nestedAggs.aggs[aggDef.id] = esAgg;
-      nestedAggs = esAgg;
-    }
-
-    nestedAggs.aggs = {};
-
-    for (i = 0; i < target.metrics.length; i++) {
-      metric = target.metrics[i];
-      if (metric.type === 'count') {
-        continue;
+      /* Handle document query:
+       * Check if metric type is raw_document. If metric doesn't have size (or size is 0), update size to 500.
+       * Otherwise it will not be a valid query and error will be thrown.
+       */
+      if (target.metrics?.[0]?.type === 'raw_document' || target.metrics?.[0]?.type === 'raw_data') {
+        metric = target.metrics[0];
+        // TODO: This default should be somewhere else together with the one used in the UI
+        const size = metric.settings?.size ? parseInt(metric.settings.size, 10) : 5000;
+        return this.documentQuery(query, size || 5000);
       }
 
-      const aggField: any = {};
-      let metricAgg: any = null;
+      nestedAggs = query;
 
-      if (queryDef.isPipelineAgg(metric.type)) {
-        if (queryDef.isPipelineAggWithMultipleBucketPaths(metric.type)) {
-          if (metric.pipelineVariables) {
-            metricAgg = {
-              buckets_path: {},
+      for (i = 0; i < target.bucketAggs.length; i++) {
+        const aggDef: any = target.bucketAggs[i];
+        const esAgg: any = {};
+
+        switch (aggDef.type) {
+          case 'date_histogram': {
+            esAgg['date_histogram'] = this.getDateHistogramAgg(aggDef);
+            break;
+          }
+          case 'histogram': {
+            esAgg['histogram'] = this.getHistogramAgg(aggDef);
+            break;
+          }
+          case 'filters': {
+            esAgg['filters'] = { filters: this.getFiltersAgg(aggDef) };
+            break;
+          }
+          case 'terms': {
+            this.buildTermsAgg(aggDef, esAgg, target);
+            break;
+          }
+          case 'geohash_grid': {
+            esAgg['geohash_grid'] = {
+              field: aggDef.field,
+              precision: aggDef.settings?.precision,
             };
+            break;
+          }
+        }
 
-            for (j = 0; j < metric.pipelineVariables.length; j++) {
-              pv = metric.pipelineVariables[j];
+        nestedAggs.aggs = nestedAggs.aggs || {};
+        nestedAggs.aggs[aggDef.id] = esAgg;
+        nestedAggs = esAgg;
+      }
 
-              if (pv.name && pv.pipelineAgg && /^\d*$/.test(pv.pipelineAgg)) {
-                const appliedAgg = queryDef.findMetricById(target.metrics, pv.pipelineAgg);
-                if (appliedAgg) {
-                  if (appliedAgg.type === 'count') {
-                    metricAgg.buckets_path[pv.name] = '_count';
-                  } else {
-                    metricAgg.buckets_path[pv.name] = pv.pipelineAgg;
+      nestedAggs.aggs = {};
+
+      for (i = 0; i < target.metrics.length; i++) {
+        metric = target.metrics[i];
+        if (metric.type === 'count') {
+          continue;
+        }
+
+        const aggField: any = {};
+        let metricAgg: any = {};
+
+        if (isPipelineAggregation(metric)) {
+          if (isPipelineAggregationWithMultipleBucketPaths(metric)) {
+            if (metric.pipelineVariables) {
+              metricAgg = {
+                buckets_path: {},
+              };
+
+              for (j = 0; j < metric.pipelineVariables.length; j++) {
+                pv = metric.pipelineVariables[j];
+
+                if (pv.name && pv.pipelineAgg && /^\d*$/.test(pv.pipelineAgg)) {
+                  const appliedAgg = findMetricById(target.metrics, pv.pipelineAgg);
+                  if (appliedAgg) {
+                    if (appliedAgg.type === 'count') {
+                      metricAgg.buckets_path[pv.name] = '_count';
+                    } else {
+                      metricAgg.buckets_path[pv.name] = pv.pipelineAgg;
+                    }
                   }
                 }
               }
+            } else {
+              continue;
             }
           } else {
-            continue;
-          }
-        } else {
-          if (metric.pipelineAgg && /^\d*$/.test(metric.pipelineAgg)) {
-            const appliedAgg = queryDef.findMetricById(target.metrics, metric.pipelineAgg);
-            if (appliedAgg) {
-              if (appliedAgg.type === 'count') {
-                metricAgg = { buckets_path: '_count' };
-              } else {
-                metricAgg = { buckets_path: metric.pipelineAgg };
+            if (metric.field && /^\d*$/.test(metric.field)) {
+              const appliedAgg = findMetricById(target.metrics, metric.field);
+              if (appliedAgg) {
+                if (appliedAgg.type === 'count') {
+                  metricAgg = { buckets_path: '_count' };
+                } else {
+                  metricAgg = { buckets_path: metric.field };
+                }
               }
+            } else {
+              continue;
             }
-          } else {
-            continue;
+          }
+        } else if (isMetricAggregationWithField(metric)) {
+          metricAgg = { field: metric.field };
+        }
+
+        if (isMetricAggregationWithSettings(metric)) {
+          Object.entries(metric.settings || {})
+            .filter(([_, v]) => v !== null)
+            .forEach(([k, v]) => {
+              metricAgg[k] =
+                k === 'script' ? this.buildScript(getScriptValue(metric as MetricAggregationWithInlineScript)) : v;
+            });
+
+          // Elasticsearch isn't generally too picky about the data types in the request body,
+          // however some fields are required to be numeric.
+          // Users might have already created some of those with before, where the values were numbers.
+          switch (metric.type) {
+            case 'moving_avg':
+              metricAgg = {
+                ...metricAgg,
+                ...(metricAgg?.window !== undefined && { window: this.toNumber(metricAgg.window) }),
+                ...(metricAgg?.predict !== undefined && { predict: this.toNumber(metricAgg.predict) }),
+                ...(isMovingAverageWithModelSettings(metric) && {
+                  settings: {
+                    ...metricAgg.settings,
+                    ...Object.fromEntries(
+                      Object.entries(metricAgg.settings || {})
+                        // Only format properties that are required to be numbers
+                        .filter(([settingName]) => ['alpha', 'beta', 'gamma', 'period'].includes(settingName))
+                        // omitting undefined
+                        .filter(([_, stringValue]) => stringValue !== undefined)
+                        .map(([_, stringValue]) => [_, this.toNumber(stringValue)])
+                    ),
+                  },
+                }),
+              };
+              break;
+
+            case 'serial_diff':
+              metricAgg = {
+                ...metricAgg,
+                ...(metricAgg.lag !== undefined && {
+                  lag: this.toNumber(metricAgg.lag),
+                }),
+              };
+              break;
+
+            case 'top_metrics':
+              metricAgg = {
+                metrics: metric.settings?.metrics?.map((field) => ({ field })),
+                size: 1,
+              };
+
+              if (metric.settings?.orderBy) {
+                metricAgg.sort = [{ [metric.settings?.orderBy]: metric.settings?.order }];
+              }
+              break;
           }
         }
-      } else {
-        metricAgg = { field: metric.field };
+
+        aggField[metric.type] = metricAgg;
+        nestedAggs.aggs[metric.id] = aggField;
       }
 
-      for (const prop in metric.settings) {
-        if (metric.settings.hasOwnProperty(prop) && metric.settings[prop] !== null) {
-          metricAgg[prop] = metric.settings[prop];
-        }
-      }
-
-      aggField[metric.type] = metricAgg;
-      nestedAggs.aggs[metric.id] = aggField;
+      return query;
     }
-
-    return query;
   }
 
-  getTermsQuery(queryDef: any) {
+  private buildScript(script: string) {
+    return {
+      inline: script,
+    };
+  }
+
+  private toNumber(stringValue: unknown): unknown | number {
+    const parsedValue = parseFloat(`${stringValue}`);
+    if (isNaN(parsedValue)) {
+      return stringValue;
+    }
+
+    return parsedValue;
+  }
+  getTermsQuery(queryDef: TermsQuery) {
     const query: any = {
       size: 0,
       query: {
@@ -353,7 +450,6 @@ export class LogQueryBuilder {
       },
     };
 
-
     // Default behaviour is to order results by { _key: asc }
     // queryDef.order allows selection of asc/desc
     // queryDef.orderBy allows selection of doc_count ordering (defaults desc)
@@ -380,7 +476,7 @@ export class LogQueryBuilder {
     return query;
   }
 
-  getLogsQuery(target: any, adhocFilters?: any, querystring?: string) {
+  getLogsQuery(target: ElasticsearchQuery, limit: number, adhocFilters?: any) {
     let query: any = {
       size: 0,
       query: {
@@ -396,7 +492,7 @@ export class LogQueryBuilder {
       query.query.bool.filter.push({
         query_string: {
           analyze_wildcard: true,
-          query: querystring,
+          query: target.query,
         },
       });
     }
@@ -405,7 +501,15 @@ export class LogQueryBuilder {
 
     return {
       ...query,
-      aggs: this.build(target, null, querystring).aggs,
+      aggs: this.build(target, null).aggs,
+      highlight: {
+        fields: {
+          '*': {},
+        },
+        pre_tags: [highlightTags.pre],
+        post_tags: [highlightTags.post],
+        fragment_size: 2147483647,
+      },
     };
   }
 }

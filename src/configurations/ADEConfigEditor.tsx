@@ -42,6 +42,18 @@ export class ADEConfigEditor extends PureComponent<Props, State> {
             </div>
           </div>
         </div>
+        <div className="gf-form-inline">
+          <div className="gf-form">
+            <InlineFormLabel className="width-10">Platform Queue</InlineFormLabel>
+            <div className="width-20">
+              <Input
+                className="width-20"
+                value={options.jsonData.platformQueue || ''}
+                onChange={onUpdateDatasourceJsonDataOption(this.props, 'platformQueue')}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

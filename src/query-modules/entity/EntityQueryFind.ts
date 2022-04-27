@@ -29,7 +29,7 @@ export default class EntityQueryFind {
 
     const get_entity_ids = this.query.match(getEntityIdsRegex);
     if (get_entity_ids) {
-      return this.get_entity_ids(get_entity_ids[1], get_entity_ids[2],get_entity_ids[3]);
+      return this.get_entity_ids(get_entity_ids[1], get_entity_ids[2], get_entity_ids[3]);
     }
 
     // if query contains full metric name, return metric name and label list
@@ -78,9 +78,9 @@ export default class EntityQueryFind {
         entityType: type,
         tagInformation: JSON.parse(tag_information)
       };
-
+  
       const requestOptions = {method: 'POST', headers: {'Content-Type': 'application/json'}} as RequestOptions;
-
+  
       return this.datasource._request(url, requestData, requestOptions).then((result: any) => {
         return _.map(result.data, value => {
           return { text: value };

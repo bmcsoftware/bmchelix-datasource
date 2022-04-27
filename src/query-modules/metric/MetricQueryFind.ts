@@ -1,7 +1,8 @@
-import _ from 'lodash';
-import { DataQueryResponse, dateMath, DateTime, TimeRange } from '@grafana/data';
+import { chain, map as _map, uniq } from 'lodash';
+import { map } from 'rxjs/operators';
+import { dateMath, DateTime, MetricFindValue, TimeRange } from '@grafana/data';
 import { MetricDatasource } from './MetricDatasource';
-import { MetricQueryRequest } from './metricTypes';
+import { MetricQueryRequest } from '../../modules/metric/utilities/metricTypes';
 import { MetricConstants } from './MetricConstants';
 
 export default class MetricQueryFind {
@@ -13,7 +14,7 @@ export default class MetricQueryFind {
     this.range = this.timeSrv.timeRange();
   }
 
-  process() {
+  process(): Promise<MetricFindValue[]> {
     const labelNamesRegex = /^label_names\(\)\s*$/;
     const labelValuesRegex = /^label_values\((?:(.+),\s*)?([a-zA-Z_][a-zA-Z0-9_]*)\)\s*$/;
     const metricNamesRegex = /^metrics\((.+)\)\s*$/;
@@ -28,7 +29,7 @@ export default class MetricQueryFind {
       if (labelValuesQuery[1]) {
         return this.labelValuesQuery(labelValuesQuery[2], labelValuesQuery[1]);
       } else {
-        return this.labelValuesQuery(labelValuesQuery[2], undefined);
+        return this.labelValuesQuery(labelValuesQuery[2]);
       }
     }
 
@@ -39,7 +40,7 @@ export default class MetricQueryFind {
 
     const queryResultQuery = this.query.match(queryResultRegex);
     if (queryResultQuery) {
-      return this.queryResultQuery(queryResultQuery[1]);
+      return this.queryResultQuery(queryResultQuery[1]).toPromise();
     }
 
     // if query contains full metric name, return metric name and label list
@@ -49,7 +50,7 @@ export default class MetricQueryFind {
   labelNamesQuery() {
     const url = MetricConstants.METRIC_LABELS_URL;
     return this.datasource.metadataRequest(url).then((result: any) => {
-      return _.map(result.data.data, value => {
+      return _map(result.data.data, (value) => {
         return { text: value };
       });
     });
@@ -63,7 +64,7 @@ export default class MetricQueryFind {
       url = MetricConstants.METRIC_LABEL_URL + label + '/values';
 
       return this.datasource.metadataRequest(url).then((result: any) => {
-        return _.map(result.data.data, value => {
+        return _map(result.data.data, (value) => {
           return { text: value };
         });
       });
@@ -78,13 +79,13 @@ export default class MetricQueryFind {
       url = MetricConstants.METRIC_SERIES_URL + `?${params.toString()}`;
 
       return this.datasource.metadataRequest(url).then((result: any) => {
-        const _labels = _.map(result.data.data, metric => {
+        const _labels = _map(result.data.data, (metric) => {
           return metric[label] || '';
-        }).filter(label => {
+        }).filter((label) => {
           return label !== '';
         });
 
-        return _.uniq(_labels).map(metric => {
+        return uniq(_labels).map((metric) => {
           return {
             text: metric,
             expandable: true,
@@ -98,12 +99,12 @@ export default class MetricQueryFind {
     const url = MetricConstants.METRIC_LABEL_NAME_VALUES_URL;
 
     return this.datasource.metadataRequest(url).then((result: any) => {
-      return _.chain(result.data.data)
-        .filter(metricName => {
+      return chain(result.data.data)
+        .filter((metricName) => {
           const r = new RegExp(metricFilterPattern);
           return r.test(metricName);
         })
-        .map(matchedMetricName => {
+        .map((matchedMetricName) => {
           return {
             text: matchedMetricName,
             expandable: true,
@@ -125,25 +126,27 @@ export default class MetricQueryFind {
   queryResultQuery(query: string) {
     const end = this.getPrometheusTime(this.range.to, true);
     const instantQuery: MetricQueryRequest = { sourceQuery: { expr: query } } as MetricQueryRequest;
-    return this.datasource.performInstantQuery(instantQuery, end).then((result: DataQueryResponse) => {
-      // @ts-ignore
-      return _.map(result.data.data.result, metricData => {
-        let text = metricData.metric.__name__ || '';
-        delete metricData.metric.__name__;
-        text +=
-          '{' +
-          _.map(metricData.metric, (v, k) => {
-            return k + '="' + v + '"';
-          }).join(',') +
-          '}';
-        text += ' ' + metricData.value[1] + ' ' + metricData.value[0] * 1000;
+    return this.datasource.performInstantQuery(instantQuery, end).pipe(
+      map((result) => {
+        // @ts-ignore
+        return _map(result.data.data.result, (metricData) => {
+          let text = metricData.metric.__name__ || '';
+          delete metricData.metric.__name__;
+          text +=
+            '{' +
+            _map(metricData.metric, (v, k) => {
+              return k + '="' + v + '"';
+            }).join(',') +
+            '}';
+          text += ' ' + metricData.value[1] + ' ' + metricData.value[0] * 1000;
 
-        return {
-          text: text,
-          expandable: true,
-        };
-      });
-    });
+          return {
+            text: text,
+            expandable: true,
+          };
+        });
+      })
+    );
   }
 
   metricNameAndLabelsQuery(query: string) {
@@ -157,9 +160,9 @@ export default class MetricQueryFind {
     const url = MetricConstants.METRIC_SERIES_URL + `?${params.toString()}`;
 
     const self = this;
-    return this.datasource.metadataRequest(url).then((result: DataQueryResponse) => {
+    return this.datasource.metadataRequest(url).then((result: any) => {
       // @ts-ignore
-      return _.map(result.data.data, (metric: { [key: string]: string }) => {
+      return _map(result.data.data, (metric: { [key: string]: string }) => {
         return {
           text: self.datasource.getOriginalMetricName(metric),
           expandable: true,

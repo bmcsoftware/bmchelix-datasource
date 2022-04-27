@@ -18,7 +18,7 @@ import EntityLanguageProvider from './EntityQlLanguageProvider';
 import EntityQueryFind from './EntityQueryFind';
 import { EntityDataSourceQuery } from './entityTypes';
 
-import { BMCDataSource } from '../../DataSource';
+import { BMCDataSource } from '../../datasource';
 
 export interface MetriDataQueryResponse {
   data: {
@@ -129,15 +129,15 @@ export class MetricEntityDatasource extends DataSourceApi<EntityDataSourceQuery,
       return prometheusSpecialRegexEscape(value);
     }
 
-    const escapedValues = value.map(val => prometheusSpecialRegexEscape(val));
+    const escapedValues = value.map((val) => prometheusSpecialRegexEscape(val));
     return escapedValues.join('|');
   }
 
   async query(options: DataQueryRequest<EntityDataSourceQuery>): Promise<DataQueryResponse> {
-    const res = new Promise<DataQueryResponse | void>((resolve) => {        
-      resolve();    
-    });      
-    return res as DataQueryResponseData;
+    const res = new Promise<DataQueryResponse | void>((resolve) => {
+      resolve();
+    });
+    return res as DataQueryResponseData;
   }
 
   getDashboardTime(date: any, roundUp: boolean) {

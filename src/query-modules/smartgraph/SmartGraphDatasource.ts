@@ -7,16 +7,13 @@ import {
   DataSourceApi,
   rangeUtil,
   TimeRange,
-
 } from '@grafana/data';
-
-
 
 import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSourceOptions } from 'types';
 import { SmartGraphConstants } from './SmartGraphConstants';
 import { SmartGraphDataSourceQuery } from './SmartGraphTypes';
-import { BMCDataSource } from 'DataSource';
+import { BMCDataSource } from 'datasource';
 
 class ServiceDetails {
   name: string;
@@ -48,8 +45,6 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
   serviceDetailsArray: ServiceDetails[] = [];
   serviceDetailsArray1: ServiceDetails[] = [];
 
-  /*-- End --*/
-  /** @ngInject */
   private constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
     private templateSrv: any,
@@ -75,7 +70,7 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
   public static getInstance(
     instSet: DataSourceInstanceSettings<BMCDataSourceOptions>,
     templateSrv: any,
-    timeSrv: any,
+    timeSrv: any
   ): SmartGraphDatasource {
     if (!SmartGraphDatasource.instance) {
       SmartGraphDatasource.instance = new SmartGraphDatasource(instSet, templateSrv, timeSrv);
@@ -135,11 +130,10 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
     });
   }
 
-
-  interpolateVariablesInQueries(queries: SmartGraphDataSourceQuery[], scopedVars: ScopedVars): SmartGraphDataSourceQuery[] {
-    let expandedQueries = queries;
+  interpolateVariablesInQueries(queries: SmartGraphDataSourceQuery[], scopedVars: ScopedVars): any[] {
+    let expandedQueries: any = queries;
     if (queries && queries.length > 0) {
-      expandedQueries = queries.map(query => {
+      expandedQueries = queries.map((query) => {
         const expandedQuery = {
           ...query,
           datasource: this.name,
@@ -151,19 +145,17 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
     return expandedQueries;
   }
 
-
-
   async getServiceNames() {
     return this.get(SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL).then((result: any) => {
       var name = 'name';
       var id = '#id';
-      var nameArray = Object(result[0])["results"];
+      var nameArray = Object(result[0])['results'];
       var i: number = 0;
       for (var val of nameArray) {
         this.serviceDetailsArray[i] = new ServiceDetails(val[name], val[id]);
         i++;
       }
-      return _.map(this.serviceDetailsArray, value => {
+      return _.map(this.serviceDetailsArray, (value) => {
         return { text: value.name };
       });
     });
@@ -177,26 +169,23 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
       ...this.getRangeScopedVars(this.timeSrv.timeRange()),
     };
     const interpolated = this.templateSrv.replace(query, scopedVars, this.interpolateQueryExpr);
-    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf("servicename") > 0) {
+    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
       return this.getServiceID(interpolated);
     } else {
-
       return this.getServiceNames();
     }
-
   }
   async getServiceID(interpolated: string) {
     var servicename: string;
-    servicename = interpolated.substring(interpolated.indexOf("servicename") + 13, interpolated.indexOf("}") - 1);
+    servicename = interpolated.substring(interpolated.indexOf('servicename') + 13, interpolated.indexOf('}') - 1);
     this.serviceDetailsArray.forEach((value) => {
       if (value.name === servicename) {
         this.serviceDetailsArray1[0] = new ServiceDetails(value.name, value.id);
       }
     });
-    return _.map(this.serviceDetailsArray1, value => {
+    return _.map(this.serviceDetailsArray1, (value) => {
       return { text: value.id };
     });
-
   }
   testDatasource(): Promise<any> {
     throw new Error('Method not implemented.');
@@ -222,18 +211,16 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
     if (!variable.multi && !variable.includeAll) {
       return this.prometheusRegularEscape(value);
     }
-    const escapedValues = value.map(val => this.prometheusSpecialRegexEscape(val));
+    const escapedValues = value.map((val) => this.prometheusSpecialRegexEscape(val));
     return escapedValues.join('|');
   }
 
   prometheusRegularEscape(value: any) {
-    return typeof value === 'string' ? value : "";
+    return typeof value === 'string' ? value : '';
   }
 
   //removed . in replace for fixing devicename having issues
   prometheusSpecialRegexEscape(value: any) {
-    return typeof value === 'string'
-      ? value : "";
+    return typeof value === 'string' ? value : '';
   }
-
 }

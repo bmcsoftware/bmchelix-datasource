@@ -18,5 +18,14 @@ export class BMCAnnotationsQueryCtrl {
 
   onqueryTypeSelection() {
     console.log('Selected Query type in Annotation: ' + this.annotation.selectedType);
+
+    // Force add default query to load code editor
+    if (
+      this.annotation.selectedType === Constants.SOURCE_TYPE_REMEDY &&
+      (this.annotation.query === undefined || this.annotation.query === '')
+    ) {
+      this.annotation.query = 'SELECT';
+    }
   }
 }
+

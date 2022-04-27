@@ -1,4 +1,3 @@
-
 # BMC Helix Datasource
 
 This is a Grafana datasource for fetching Metrics, Events & logs from Helix Monitor, Helix Remediate & Helix Optimize products
@@ -12,7 +11,7 @@ BMC Helix v21.02+ license/subscription is required
 ## Features
 
 - Supports Lucene queries to fetch Events & Logs
-- Supports Promql & Metricql to fetch Metrics data 
+- Supports Promql & Metricql to fetch Metrics data
 - Utilizes BMC Helix REST API's
 - Secured authentication via access key and secret key
 
@@ -60,8 +59,7 @@ This query type requires the following data:
 | **Query Type** | Use this field to select the query type |
 | **Query** | Use one of the following queries to build a panel. The options for each query type are different **Asset Compliance**, **Policy Compliance** , **Compliance Trend**, **Risk Account**, **Operations**, **Resource Pool** |
 
-
-### **Events**
+### **Events** / **Log**
 
 The following image displays the Events query type:
 
@@ -72,7 +70,7 @@ This query type requires the following data:
 | Field | Description |
 |------|-------|
 | **Query Type** | Use this field to select the query type |
-| **Query** | Use a Lucene query syntax here |
+| **Query** | Use a Lucene query syntax here, and it also supports typeahead  |
 | **Metric** | Click this field to select a metric for the query. For example, Average, Min, Max, and so on |
 | **Group by** | Select a clause to group your data in the panel. |
 
@@ -87,7 +85,7 @@ The following image displays the Metric query type:
 | Field | Description |
 |------|-------|
 | **Query Type** | Use this field to select the query type |
-| **Metrics** | Add a metrics query to this field.  You can also select an available query form the list. Click the **Metrics** field to view a list of available queries. |
+| **Metrics** | Add a metrics query to this field. You can also form your metric query through query builder. Click the **Metrics Browser** field to access the query builder. |
 | **Legend** |Add a legend to appear in the panel. You can use a variable here. For example, the value of the {{hostname}} variable is replaced with the host name in the panel. |
 | **Min step** | Add a threshold for a lower limit of the Prometheus query. This setting is absolute, and cannot be changed by the value in the **Resolution** field.|
 | **Resolution** | Sets the parameter for each pixel to correspond to one data point of a Prometheus range query. Use lower resolutions for better performance.|

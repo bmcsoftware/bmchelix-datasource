@@ -1,24 +1,30 @@
-import _ from 'lodash';
+import { once, chain, difference } from 'lodash';
 import LRU from 'lru-cache';
 import { Value } from 'slate';
 
 import { dateTime, LanguageProvider, HistoryItem } from '@grafana/data';
-import { getBackendSrv } from '@grafana/runtime';
-import { CompletionItem, TypeaheadOutput, CompletionItemGroup, TypeaheadInput } from '@grafana/ui';
+import { CompletionItem, CompletionItemGroup, SearchFunctionType, TypeaheadInput, TypeaheadOutput } from '@grafana/ui';
 
-import { processHistogramLabels, parseSelector, processLabels, fixSummariesMetadata } from './MetricLanguageUtils';
+import {
+  processHistogramMetrics,
+  parseSelector,
+  processLabels,
+  fixSummariesMetadata,
+  roundSecToMin,
+  addLimitInfo,
+} from './MetricLanguageUtils';
 import MetricQlSyntax, { FUNCTIONS, RATE_RANGES } from './MetricQl';
 
 import { MetricDatasource } from './MetricDatasource';
-import { MetricDataSourceQuery, MetricsMetadata } from './metricTypes';
+import { MetricDataSourceQuery, MetricsMetadata } from '../../modules/metric/utilities/metricTypes';
 import { MetricConstants } from './MetricConstants';
-import { BMCDataSource } from '../../DataSource';
 
 const DEFAULT_KEYS = ['job', 'instance'];
 const EMPTY_SELECTOR = '{}';
 const HISTORY_ITEM_COUNT = 5;
 const HISTORY_COUNT_CUTOFF = 1000 * 60 * 60 * 24; // 24h
 export const DEFAULT_LOOKUP_METRICS_THRESHOLD = 10000; // number of metrics defining an installation that's too big
+export const SUGGESTIONS_LIMIT = 10000;
 
 const wrapLabel = (label: string): CompletionItem => ({ label });
 
@@ -29,7 +35,7 @@ const setFunctionKind = (suggestion: CompletionItem): CompletionItem => {
 
 export function addHistoryMetadata(item: CompletionItem, history: any[]): CompletionItem {
   const cutoffTs = Date.now() - HISTORY_COUNT_CUTOFF;
-  const historyForItem = history.filter(h => h.ts > cutoffTs && h.query === item.label);
+  const historyForItem = history.filter((h) => h.ts > cutoffTs && h.query === item.label);
   const count = historyForItem.length;
   const recent = historyForItem[0];
   let hint = `Queried ${count} times in the last 24h.`;
@@ -48,14 +54,18 @@ export function addHistoryMetadata(item: CompletionItem, history: any[]): Comple
 function addMetricsMetadata(metric: string, metadata?: MetricsMetadata): CompletionItem {
   const item: CompletionItem = { label: metric };
   if (metadata && metadata[metric]) {
-    const { type, help } = metadata[metric][0];
+    const { type, help } = metadata[metric];
     item.documentation = `${type.toUpperCase()}: ${help}`;
   }
   return item;
 }
 
-const PREFIX_DELIMITER_REGEX = /(="|!="|=~"|!~"|\{|\[|\(|\+|-|\/|\*|%|\^|\band\b|\bor\b|\bunless\b|==|>=|!=|<=|>|<|=|~|,)/;
+const PREFIX_DELIMITER_REGEX =
+  /(="|!="|=~"|!~"|\{|\[|\(|\+|-|\/|\*|%|\^|\band\b|\bor\b|\bunless\b|==|>=|!=|<=|>|<|=|~|,)/;
 
+interface AutocompleteContext {
+  history?: Array<HistoryItem<MetricDataSourceQuery>>;
+}
 export default class MetricQlLanguageProvider extends LanguageProvider {
   histogramMetrics: string[];
   timeRange?: { start: number; end: number };
@@ -63,6 +73,8 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
   metricsMetadata?: MetricsMetadata;
   // startTask: Promise<any>;
   datasource: MetricDatasource;
+  labelKeys: string[] = [];
+  declare labelFetchTs: number;
   lookupMetricsThreshold: number;
   lookupsDisabled: boolean; // Dynamically set to true for big/slow instances
 
@@ -92,10 +104,7 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     const parts = s.split(PREFIX_DELIMITER_REGEX);
     const last: string | undefined = parts.pop();
     if (last) {
-      return last
-        .trimLeft()
-        .replace(/"$/, '')
-        .replace(/^"/, '');
+      return last.trimStart().replace(/"$/, '').replace(/^"/, '');
     } else {
       return '';
     }
@@ -107,82 +116,48 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
 
   request = async (url: string, defaultValue: any): Promise<any> => {
     try {
-      const res = await this.metadataRequest('GET', url);
-      const body = await (res.data || res.json());
-
-      return body.data;
+      const res: any = await this.datasource.metadataRequest(url);
+      return res.data.data;
     } catch (error) {
       console.error(error);
     }
-
     return defaultValue;
   };
-
-  private metadataRequest(method: string, url: string, data?: undefined) {
-    const options: any = {
-      url: this.datasource.metricUrl + '/' + url,
-      method: method,
-      data: data,
-      headers: { Authorization: '' },
-    };
-
-    let imsJWTToken: string = BMCDataSource.tokenObj.adeJWTToken;
-
-    if (imsJWTToken !== undefined) {
-      options.headers['Authorization'] = 'Bearer ' + imsJWTToken;
-    }
-
-    // if (this.basicAuth || this.withCredentials) {
-    //   options.withCredentials = true;
-    // }
-    // if (this.basicAuth) {
-    //   options.headers = {
-    //     Authorization: this.basicAuth,
-    //   };
-    // }
-
-    return getBackendSrv().datasourceRequest(options);
-  }
 
   start = async (): Promise<any[]> => {
     if (this.datasource.lookupsDisabled) {
       return [];
     }
 
-    this.metrics = await this.request(MetricConstants.METRIC_LABEL_NAME_VALUES_URL, []);
-    this.datasource.languageProvider.metrics = this.metrics;
-    this.lookupsDisabled = this.metrics.length > this.lookupMetricsThreshold;
+    // TODO #33976: make those requests parallel
+    await this.fetchLabels();
+    this.metrics = (await this.fetchLabelValues('__name__')) || [];
     this.metricsMetadata = fixSummariesMetadata({});
-    this.processHistogramMetrics(this.metrics);
-
+    this.histogramMetrics = processHistogramMetrics(this.metrics).sort();
+    this.lookupsDisabled = true;
     return [];
   };
 
-  processHistogramMetrics = (data: string[]) => {
-    const { values } = processHistogramLabels(data);
-
-    if (values && values['__name__']) {
-      this.histogramMetrics = values['__name__'].slice().sort();
-    }
-  };
+  getLabelKeys(): string[] {
+    return this.labelKeys;
+  }
 
   provideCompletionItems = async (
     { prefix, text, value, labelKey, wrapperClasses }: TypeaheadInput,
-    context: { history: Array<HistoryItem<MetricDataSourceQuery>> } = { history: [] }
+    context: AutocompleteContext = {}
   ): Promise<TypeaheadOutput> => {
-    // Local text properties
-    let empty: any;
-    let selectedLines: any;
-    let currentLine: any;
+    const emptyResult: TypeaheadOutput = { suggestions: [] };
 
-    let nextCharacter: any;
-    if (value) {
-      empty = value.document.text.length === 0;
-      selectedLines = value.document.getTextsAtRange(value.selection);
-      currentLine = selectedLines.size === 1 ? selectedLines.first().getText() : null;
-
-      nextCharacter = currentLine ? currentLine[value.selection.anchor.offset] : null;
+    if (!value) {
+      return emptyResult;
     }
+
+    // Local text properties
+    const empty = value.document.text.length === 0;
+    const selectedLines = value.document.getTextsAtRange(value.selection);
+    const currentLine = selectedLines.size === 1 ? selectedLines.first().getText() : null;
+
+    const nextCharacter = currentLine ? currentLine[value.selection.anchor.offset] : null;
 
     // Syntax spans have 3 classes by default. More indicate a recognized token
     const tokenRecognized = wrapperClasses.length > 3;
@@ -206,7 +181,7 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     } else if (wrapperClasses.includes('context-labels')) {
       // Suggestions for metric{|} and metric{foo=|}, as well as metric-independent label queries like {|}
       return this.getLabelCompletionItems({ prefix, text, value, labelKey, wrapperClasses });
-    } else if (wrapperClasses.includes('context-aggregation') && value) {
+    } else if (wrapperClasses.includes('context-aggregation')) {
       // Suggestions for sum(metric) by (|)
       return this.getAggregationCompletionItems(value);
     } else if (empty) {
@@ -220,33 +195,31 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
       return this.getTermCompletionItems();
     }
 
-    return {
-      suggestions: [],
-    };
+    return emptyResult;
   };
 
-  getBeginningCompletionItems = (context: { history: Array<HistoryItem<MetricDataSourceQuery>> }): TypeaheadOutput => {
+  getBeginningCompletionItems = (context: AutocompleteContext): TypeaheadOutput => {
     return {
       suggestions: [...this.getEmptyCompletionItems(context).suggestions, ...this.getTermCompletionItems().suggestions],
     };
   };
 
-  getEmptyCompletionItems = (context: { history: Array<HistoryItem<MetricDataSourceQuery>> }): TypeaheadOutput => {
+  getEmptyCompletionItems = (context: AutocompleteContext): TypeaheadOutput => {
     const { history } = context;
-    const suggestions = [];
+    const suggestions: CompletionItemGroup[] = [];
 
     if (history && history.length) {
-      const historyItems = _.chain(history)
-        .map(h => h.query.sourceQuery.expr)
+      const historyItems = chain(history)
+        .map((h) => h.query.sourceQuery.expr)
         .filter()
         .uniq()
         .take(HISTORY_ITEM_COUNT)
         .map(wrapLabel)
-        .map(item => addHistoryMetadata(item, history))
+        .map((item) => addHistoryMetadata(item, history))
         .value();
 
       suggestions.push({
-        prefixMatch: true,
+        searchFunctionType: SearchFunctionType.Prefix,
         skipSort: true,
         label: 'History',
         items: historyItems,
@@ -258,10 +231,10 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
 
   getTermCompletionItems = (): TypeaheadOutput => {
     const { metrics, metricsMetadata } = this;
-    const suggestions = [];
+    const suggestions: CompletionItemGroup[] = [];
 
     suggestions.push({
-      prefixMatch: true,
+      searchFunctionType: SearchFunctionType.Prefix,
       label: 'Functions',
       items: FUNCTIONS.map(setFunctionKind),
     });
@@ -269,7 +242,8 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     if (metrics && metrics.length) {
       suggestions.push({
         label: 'Metrics',
-        items: metrics.map(m => addMetricsMetadata(m, metricsMetadata)),
+        items: metrics.map((m) => addMetricsMetadata(m, metricsMetadata)),
+        searchFunctionType: SearchFunctionType.Fuzzy,
       });
     }
 
@@ -293,8 +267,16 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
 
     // Stitch all query lines together to support multi-line queries
     let queryOffset;
-    const queryText = value.document.getBlocks().reduce((text: any, block: any) => {
-      const blockText = block.getText();
+    const queryText = value.document.getBlocks().reduce((text, block) => {
+      if (text === undefined) {
+        return '';
+      }
+      if (!block) {
+        return text;
+      }
+
+      const blockText = block?.getText();
+
       if (value.anchorBlock.key === block.key) {
         // Newline characters are not accounted for but this is irrelevant
         // for the purpose of extracting the selector string
@@ -333,9 +315,15 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
 
     const selector = parseSelector(selectorString, selectorString.length - 2).selector;
 
-    const labelValues = await this.getLabelValues(selector);
-    if (labelValues) {
-      suggestions.push({ label: 'Labels', items: Object.keys(labelValues).map(wrapLabel) });
+    const series = await this.getSeries(selector);
+    const labelKeys = Object.keys(series);
+    if (labelKeys.length > 0) {
+      const limitInfo = addLimitInfo(labelKeys);
+      suggestions.push({
+        label: `Labels${limitInfo}`,
+        items: labelKeys.map(wrapLabel),
+        searchFunctionType: SearchFunctionType.Fuzzy,
+      });
     }
     return result;
   };
@@ -346,21 +334,21 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     labelKey,
     value,
   }: TypeaheadInput): Promise<TypeaheadOutput> => {
-    const suggestions: CompletionItemGroup[] = [];
-    let line: any;
-    let cursorOffset: any;
-    if (value) {
-      line = value.anchorBlock.getText();
-      cursorOffset = value.selection.anchor.offset;
+    if (!value) {
+      return { suggestions: [] };
     }
+
+    const suggestions: CompletionItemGroup[] = [];
+    const line = value.anchorBlock.getText();
+    const cursorOffset = value.selection.anchor.offset;
     const suffix = line.substr(cursorOffset);
     const prefix = line.substr(0, cursorOffset);
     const isValueStart = text.match(/^(=|=~|!=|!~)/);
-    const isValueEnd = suffix.match(/^"?[,}]/);
-    // detect cursor in front of value, e.g., {key=|"}
+    const isValueEnd = suffix.match(/^"?[,}]|$/);
+    // Detect cursor in front of value, e.g., {key=|"}
     const isPreValue = prefix.match(/(=|=~|!=|!~)$/) && suffix.match(/^"/);
 
-    // Don't suggestq anything at the beginning or inside a value
+    // Don't suggest anything at the beginning or inside a value
     const isValueEmpty = isValueStart && isValueEnd;
     const hasValuePrefix = isValueEnd && !isValueStart;
     if ((!isValueEmpty && !hasValuePrefix) || isPreValue) {
@@ -380,37 +368,45 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     const containsMetric = selector.includes('__name__=');
     const existingKeys = parsedSelector ? parsedSelector.labelKeys : [];
 
-    let labelValues;
+    let series: Record<string, string[]> = {};
     // Query labels for selector
     if (selector) {
-      labelValues = await this.getLabelValues(selector, !containsMetric);
+      series = await this.getSeries(selector, !containsMetric);
     }
 
-    if (!labelValues) {
+    if (Object.keys(series).length === 0) {
       console.warn(`Server did not return any values for selector = ${selector}`);
       return { suggestions };
     }
 
-    let context!: string;
+    let context: string | undefined;
+
     if ((text && isValueStart) || wrapperClasses.includes('attr-value')) {
       // Label values
-      if (labelKey && labelValues[labelKey]) {
+      if (labelKey && series[labelKey]) {
         context = 'context-label-values';
+        const limitInfo = addLimitInfo(series[labelKey]);
         suggestions.push({
-          label: `Label values for "${labelKey}"`,
-          items: labelValues[labelKey].map(wrapLabel),
+          label: `Label values for "${labelKey}"${limitInfo}`,
+          items: series[labelKey].map(wrapLabel),
+          searchFunctionType: SearchFunctionType.Fuzzy,
         });
       }
     } else {
       // Label keys
-      const labelKeys = labelValues ? Object.keys(labelValues) : containsMetric ? null : DEFAULT_KEYS;
+      const labelKeys = series ? Object.keys(series) : containsMetric ? null : DEFAULT_KEYS;
 
       if (labelKeys) {
-        const possibleKeys = _.difference(labelKeys, existingKeys);
+        const possibleKeys = difference(labelKeys, existingKeys);
         if (possibleKeys.length) {
           context = 'context-labels';
-          const newItems = possibleKeys.map(key => ({ label: key }));
-          const newSuggestion: CompletionItemGroup = { label: `Labels`, items: newItems };
+          const newItems = possibleKeys.map((key) => ({ label: key }));
+          const limitInfo = addLimitInfo(newItems);
+          const newSuggestion: CompletionItemGroup = {
+            label: `Labels${limitInfo}`,
+            items: newItems,
+            searchFunctionType: SearchFunctionType.Fuzzy,
+          };
           suggestions.push(newSuggestion);
         }
       }
@@ -419,27 +415,47 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     return { context, suggestions };
   };
 
-  async getLabelValues(selector: string, withName?: boolean) {
-    if (this.lookupsDisabled) {
-      return undefined;
+  async getSeries(selector: string, withName?: boolean): Promise<Record<string, string[]>> {
+    if (this.datasource.lookupsDisabled) {
+      return {};
     }
     try {
       if (selector === EMPTY_SELECTOR) {
-        return await this.fetchDefaultLabels();
+        return await this.fetchDefaultSeries();
       } else {
         return await this.fetchSeriesLabels(selector, withName);
       }
     } catch (error) {
       // TODO: better error handling
       console.error(error);
-      return undefined;
+      return {};
     }
   }
 
-  fetchLabelValues = async (key: string): Promise<Record<string, string[]>> => {
-    const data = await this.request(MetricConstants.METRIC_LABEL_URL + `/${key}/values`, []);
-    return { [key]: data };
+  fetchLabelValues = async (key: string): Promise<string[]> => {
+    const data = await this.request(MetricConstants.METRIC_LABEL_URL + `${key}/values`, []);
+    return data;
   };
+
+  async getLabelValues(key: string): Promise<string[]> {
+    return await this.fetchLabelValues(key);
+  }
+
+  /**
+   * Fetches all label keys
+   */
+  async fetchLabels(): Promise<string[]> {
+    const url = MetricConstants.METRIC_LABELS_URL;
+    // const params = this.datasource.getTimeRangeParams();
+    this.labelFetchTs = Date.now().valueOf();
+
+    const res = await this.request(url, []);
+    if (Array.isArray(res)) {
+      this.labelKeys = res.slice().sort();
+    }
+
+    return [];
+  }
 
   roundToMinutes(seconds: number): number {
     return Math.floor(seconds / 60);
@@ -463,8 +479,8 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
     // The rounding may seem strange but makes relative intervals like now-1h less prone to need separate request every
     // millisecond while still actually getting all the keys for the correct interval. This still can create problems
     // when user does not the newest values for a minute if already cached.
-    params.set('start', this.roundToMinutes(tRange['start']).toString());
-    params.set('end', this.roundToMinutes(tRange['end']).toString());
+    params.set('start', roundSecToMin(parseInt(tRange.start.toString(), 10)).toString());
+    params.set('end', roundSecToMin(parseInt(tRange.end.toString(), 10)).toString());
     params.append('withName', withName ? 'true' : 'false');
     const cacheKey = MetricConstants.METRIC_SERIES_URL + `?${params.toString()}`;
     let value = this.labelsCache.get(cacheKey);
@@ -478,12 +494,31 @@ export default class MetricQlLanguageProvider extends LanguageProvider {
   };
 
   /**
+   * Fetch series for a selector. Use this for raw results. Use fetchSeriesLabels() to get labels.
+   * @param match
+   */
+  fetchSeries = async (match: string): Promise<Array<Record<string, string>>> => {
+    const url = MetricConstants.METRIC_SERIES_URL;
+    // BMC Code Starts
+    // const range = this.datasource.getTimeRangeParams();
+    // const params = { ...range, 'match[]': match };
+    const tRange = this.datasource.getTimeRange();
+    const params = new URLSearchParams({
+      'match[]': match,
+      start: tRange['start'].toString(),
+      end: tRange['end'].toString(),
+    });
+    // BMC Code Ends
+    return await this.request(url + `?${params.toString()}`, {});
+  };
+
+  /**
    * Fetch this only one as we assume this won't change over time. This is cached differently from fetchSeriesLabels
    * because we can cache more aggressively here and also we do not want to invalidate this cache the same way as in
    * fetchSeriesLabels.
    */
-  fetchDefaultLabels = _.once(async () => {
-    const values = await Promise.all(DEFAULT_KEYS.map(key => this.fetchLabelValues(key)));
-    return values.reduce((acc, value) => ({ ...acc, ...value }), {});
+  fetchDefaultSeries = once(async () => {
+    const values = await Promise.all(DEFAULT_KEYS.map((key) => this.fetchLabelValues(key)));
+    return DEFAULT_KEYS.reduce((acc, key, i) => ({ ...acc, [key]: values[i] }), {});
   });
 }

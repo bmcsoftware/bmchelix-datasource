@@ -1,8 +1,16 @@
-import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/data';
-import { config } from '@grafana/runtime';
+import {
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceApi,
+  DataSourceInstanceSettings,
+  ScopedVars,
+} from '@grafana/data';
+import { config, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { QueryHandlerFactory } from 'QueryHandlerFactory';
+import { Observable, forkJoin, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { ADEAuthHelper } from './auth/ADEAuthHelper';
 import { EntAuthHelper } from './auth/EntAuthHelper';
 import { BMCDataSourceOptions, BMCDataSourceQuery, InstancePlatform, validQueryType } from './types';
@@ -29,7 +37,7 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
 
   constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
-    private templateSrv: any,
+    private templateSrv: TemplateSrv = getTemplateSrv(),
     private timeSrv: any,
     private backendSrv: any
   ) {
@@ -58,15 +66,20 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
     }
   }
 
-  async validateToken() {
+  validateToken() {
     if (this.instPlatform === InstancePlatform.ENTERPRISE) {
-      const token = await BMCDataSource.authHelper.getToken(this.instSet);
-      BMCDataSource.tokenObj = token;
+      return BMCDataSource.authHelper.getToken(this.instSet)?.pipe(
+        map((token: any) => {
+          BMCDataSource.tokenObj = token;
+          return token;
+        })
+      );
     }
+    return of([]);
   }
 
-  async query(options: DataQueryRequest<BMCDataSourceQuery>): Promise<DataQueryResponse> {
-    await this.validateToken();
+  query(options: DataQueryRequest<BMCDataSourceQuery>): Observable<DataQueryResponse> {
+    const tokenObservable = this.validateToken() || of([]);
 
     const targetsMapping: { [sourceType: string]: BMCDataSourceQuery[] } = groupBy(
       options.targets,
@@ -76,7 +89,7 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
     const mixed: BatchedQueries[] = [];
     for (const sourceType in targetsMapping) {
       if (sourceType === undefined || !validQueryType(sourceType)) {
-        return Promise.resolve({ data: [] });
+        return of({ data: [] });
       }
 
       const query_options = cloneDeep(options);
@@ -90,22 +103,35 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
       mixed.push(type);
     }
 
-    return this.batchQueries(mixed);
+    return tokenObservable.pipe(
+      mergeMap((tokenResponse: any) => {
+        const batchQueriesObservable = this.batchQueries(mixed);
+        return batchQueriesObservable.pipe(
+          map((response: any) => {
+            return response;
+          })
+        );
+      })
+    );
   }
 
-  batchQueries(queries: BatchedQueries[]): DataQueryResponse | PromiseLike<DataQueryResponse> {
-    let results: any[] = [];
-    const queryPromises = queries.map(async query => {
-      const queryResponse = await query.instance.query(query.optionsVal);
-      queryResponse.data.forEach((item: any) => {
-        results.push(item);
-      });
-
-      return queryResponse;
+  batchQueries(queries: BatchedQueries[]): Observable<DataQueryResponse> {
+    const finalResult: any[] = [];
+    const queryObservables = queries.map((query) => {
+      return query.instance.query(query.optionsVal).pipe(
+        map((queryResponse: any) => {
+          return queryResponse?.data.forEach((item: any) => {
+            finalResult.push(item);
+            return item;
+          });
+        })
+      );
     });
-    return Promise.all(queryPromises).then((responses: any) => {
-      return Promise.resolve({ data: results });
-    });
+    return forkJoin(queryObservables).pipe(
+      map((responseArr: any) => {
+        return { data: finalResult };
+      })
+    );
   }
 
   getQueryHandlerInstance(queryType: string): any {
@@ -135,7 +161,7 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
       return Promise.reject({ status: this.CONST_FAIL, message: this.EMPTY_QUERY });
     }
 
-    await this.validateToken();
+    await this.validateToken()?.toPromise();
 
     const queryHandlerInstance = this.getQueryHandlerInstance(queryType);
     return queryHandlerInstance.metricFindQuery(queryString);
@@ -143,13 +169,22 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
 
   async annotationQuery(options: any): Promise<any> {
     if (options.annotation.selectedType) {
-      await this.validateToken();
+      await this.validateToken()?.toPromise();
       const queryHandlerInstance = this.getQueryHandlerInstance(options.annotation.selectedType);
       return queryHandlerInstance.annotationQuery(options);
     } else {
       console.log('options.annotation: ' + options.annotation);
       throw new Error('selectedType not present.');
     }
+  }
+
+  interpolateVariablesInQueries(queries: BMCDataSourceQuery[], scopedVars: ScopedVars): BMCDataSourceQuery[] {
+    return queries.map((query: BMCDataSourceQuery) => {
+      const queryHandlerInstance = this.getQueryHandlerInstance(query[this.CONST_SOURCE_TYPE]);
+      return queryHandlerInstance.interpolateVariablesInQueries
+        ? queryHandlerInstance.interpolateVariablesInQueries([query], scopedVars)[0]
+        : query;
+    });
   }
 
   async testDatasource() {

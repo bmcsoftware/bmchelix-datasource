@@ -12,6 +12,7 @@ import { CloudSecurityQueryEditor } from './modules/cloudSecurity/components/Clo
 import { QueryEditor as ElasticQueryEditor } from 'modules/event/components/QueryEditor';
 import { ItsmInsightsQueryEditor } from 'modules/itsm-insight/components/ItsmInsightQueryEditor';
 import { AuditQueryEditor } from 'modules/audit/components/AuditQueryEditor';
+import { DatamartsQueryEditor } from 'modules/datamarts/components/DatamartsQueryEditor'
 
 type Props = QueryEditorProps<BMCDataSource, BMCDataSourceQuery, BMCDataSourceOptions>;
 
@@ -87,6 +88,13 @@ export class QueryEditor extends PureComponent<Props> {
         ) : null}
         {sourceType === Constants.SOURCE_TYPE_AUDIT ? (
           <AuditQueryEditor target={query} onQueryUpdate={this.onQueryUpdate} datasource={this.props.datasource} />
+        ) : null}
+        {sourceType === Constants.SOURCE_TYPE_DATAMART ? (
+          <DatamartsQueryEditor
+            datasource={this.props.datasource.getQueryHandlerInstance(sourceType)}
+            onQueryUpdate={this.onQueryUpdate}
+            target={query}
+          />
         ) : null}
       </div>
     );

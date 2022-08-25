@@ -280,7 +280,12 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
           datasource: this.name,
           sourceQuery: {
             ...query.sourceQuery,
-            rawQuery: this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, this.interpolateVariable),
+            rawQuery: this.templateSrv.replace(
+              query.sourceQuery.rawQuery,
+              scopedVars,
+              this.interpolateVariable,
+              `'${RemedyConstants.REMEDY_SPECIFIC_QUALIFICATION_PARAM}'`
+            ),
           },
         };
         return expandedQuery;
@@ -401,7 +406,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
         }
         return v;
       });
-      return quotedValues.join(',');
+      return quotedValues.length ? quotedValues.join(',') : "''";
     } else {
       return value;
     }
@@ -409,7 +414,12 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
 
   private variableSupport(esQuery: string, scopedVars: ScopedVars) {
     // Support: Variables
-    let payload = this.templateSrv.replace(esQuery, scopedVars, this.interpolateVariable);
+    let payload = this.templateSrv.replace(
+      esQuery,
+      scopedVars,
+      this.interpolateVariable,
+      `'${RemedyConstants.REMEDY_SPECIFIC_QUALIFICATION_PARAM}'`
+    );
     // Support: Time Filter using regex match
     payload = payload.replace(/\$__/g, '$$');
     payload = payload.replace(/\$_/g, '$$');
@@ -473,7 +483,12 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
         sql,
       };
       // Support: Variables
-      let payload = this.templateSrv.replace(angular.toJson(queryObj), {}, this.interpolateVariable);
+      let payload = this.templateSrv.replace(
+        angular.toJson(queryObj),
+        {},
+        this.interpolateVariable,
+        `'${RemedyConstants.REMEDY_SPECIFIC_QUALIFICATION_PARAM}'`
+      );
       const returnData = this.post(RemedyConstants.REMEDY_QUERY_URL, payload)
         .toPromise()
         .then((response: any) => {

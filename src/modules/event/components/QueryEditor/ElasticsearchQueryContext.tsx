@@ -1,12 +1,14 @@
 import React, { Context, createContext, PropsWithChildren, useCallback, useContext } from 'react';
-import { EventDatasource } from '../../../../query-modules/event/EventDatasource';
-import { ElasticsearchQuery } from '../../../../query-modules/event/eventTypes';
-import { combineReducers, useStatelessReducer, DispatchContext } from '../../hooks/useStatelessReducer';
 
-import { reducer as metricsReducer } from './MetricAggregationsEditor/state/reducer';
-import { createReducer as createBucketAggsReducer } from './BucketAggregationsEditor/state/reducer';
-import { aliasPatternReducer, queryReducer, initQuery } from './state';
 import { TimeRange } from '@grafana/data';
+
+import { EventDatasource } from '../../../../query-modules/event/EventDatasource';
+import { combineReducers, useStatelessReducer, DispatchContext } from '../../hooks/useStatelessReducer';
+import { ElasticsearchQuery } from '../../../../query-modules/event/eventTypes';
+
+import { createReducer as createBucketAggsReducer } from './BucketAggregationsEditor/state/reducer';
+import { reducer as metricsReducer } from './MetricAggregationsEditor/state/reducer';
+import { aliasPatternReducer, queryReducer, initQuery } from './state';
 
 const DatasourceContext = createContext<EventDatasource | undefined>(undefined);
 const QueryContext = createContext<ElasticsearchQuery | undefined>(undefined);
@@ -43,13 +45,13 @@ export const ElasticsearchProvider = ({ children, onChange, query, datasource, r
 
   // This initializes the query by dispatching an init action to each reducer.
   // useStatelessReducer will then call `onChange` with the newly generated query
-  React.useEffect(() => {
-    if (!query.metrics || !query.bucketAggs || query.query === undefined) {
-      dispatch(initQuery());
-    }
-  }, []);
+  if (!query.metrics || !query.bucketAggs || query.query === undefined) {
+    dispatch(initQuery());
 
-  return !(!query.metrics || !query.bucketAggs || query.query === undefined) ? (
+    return null;
+  }
+
+  return (
     <DatasourceContext.Provider value={datasource}>
       <QueryContext.Provider value={query}>
         <RangeContext.Provider value={range}>
@@ -57,7 +59,7 @@ export const ElasticsearchProvider = ({ children, onChange, query, datasource, r
         </RangeContext.Provider>
       </QueryContext.Provider>
     </DatasourceContext.Provider>
-  ) : null;
+  );
 };
 
 interface GetHook {

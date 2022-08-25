@@ -206,11 +206,19 @@ export class LeftOperand {
   fieldAlias: string | null;
   fieldName: any;
   fieldSourceAlias: string;
-  constructor($fieldType: string, $fieldAlias: string | null, $fieldName: any, $fieldSourceAlias: string) {
+  isCalcField: boolean;
+  constructor(
+    $fieldType: string,
+    $fieldAlias: string | null,
+    $fieldName: any,
+    $fieldSourceAlias: string,
+    $isCalcField: boolean
+  ) {
     this.fieldType = $fieldType;
     this.fieldAlias = $fieldAlias;
     this.fieldName = $fieldName;
     this.fieldSourceAlias = $fieldSourceAlias;
+    this.isCalcField = $isCalcField;
   }
 }
 

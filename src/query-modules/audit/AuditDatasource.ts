@@ -6,15 +6,14 @@ import { DataSourceInstanceSettings, DataQueryRequest, DataQueryResponse, DataSo
 import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSource } from '../../datasource';
 import TableModel from './table_model';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 export class AuditDatasource extends DataSourceApi<AuditDataSourceQuery, BMCDataSourceOptions> {
   private static instance: AuditDatasource;
   auditUrl!: string;
   dsName!: string;
 
-  
   private constructor(
     instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
     public templateSrv: any,
@@ -170,12 +169,12 @@ export class AuditDatasource extends DataSourceApi<AuditDataSourceQuery, BMCData
     return this.request('POST', url, data).pipe(
       catchError((err: any) => {
         if (err.data && err.data.error) {
-          return throwError({
+          throw {
             message: 'Error: ' + err.data.error.reason,
             error: err.data.error,
             status: err.status,
             statusText: err.statusText,
-          });
+          };
         }
         throw err;
       })
@@ -234,7 +233,7 @@ export class AuditDatasource extends DataSourceApi<AuditDataSourceQuery, BMCData
         }
         return v;
       });
-      return quotedValues.join(',');
+      return quotedValues.length ? quotedValues.join(',') : "''";
     } else {
       return value;
     }

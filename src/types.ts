@@ -58,6 +58,12 @@ if (config.bootData.settings.EnvType) {
     value: 'remedy',
     label: 'Service Management',
   });
+  queryTypeOptions.push({
+    sourceType: Constants.SOURCE_TYPE_DATAMART,
+    text: 'Optimize Datamarts',
+    value: 'datamarts',
+    label: 'Optimize Datamarts',
+  });
   queryTypeOptions.push({ sourceType: Constants.SOURCE_TYPE_AUDIT, text: 'Audit', value: 'audit', label: 'Audit' });
   queryTypeOptions.push({
     sourceType: Constants.SOURCE_TYPE_ITSM_INSIGHTS,
@@ -80,6 +86,7 @@ export function validQueryType(queryType: string): boolean {
     case Constants.SOURCE_TYPE_AUDIT:
     case Constants.SOURCE_TYPE_ENTITY:
     case Constants.SOURCE_TYPE_ITSM_INSIGHTS:
+    case Constants.SOURCE_TYPE_DATAMART:
       return true;
     default:
       return false;

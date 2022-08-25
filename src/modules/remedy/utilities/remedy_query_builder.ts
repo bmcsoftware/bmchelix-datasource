@@ -513,7 +513,7 @@ export class RemedyQueryBuilder {
   buildFullSql(inputForm: RemedyForm): string {
     let sql = EMPTY;
     sql += this.buildColumnSql(inputForm.selectionList, inputForm.useDistinct, inputForm.calculatedFieldList);
-    if (inputForm.calculatedFieldList !== undefined) {
+    if (inputForm.calculatedFieldList instanceof Array) {
       sql += this.buildCalculatedFieldSql(inputForm.calculatedFieldList);
     }
     sql += this.buildFormSql(inputForm.sourceList);
@@ -565,7 +565,7 @@ export class RemedyQueryBuilder {
       sql += SQL_AS + SPACE + caller.replaceSpaceWithUnderscore(column.selectionAlias);
       if (index !== inputList.length - 1) {
         sql += COMMA;
-      } else if (calculatedFieldList !== undefined) {
+      } else if (calculatedFieldList instanceof Array) {
         let addComma = false;
         calculatedFieldList.forEach((item: any) => {
           if (!item.hideCalculatedField) {

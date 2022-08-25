@@ -207,7 +207,7 @@ const RenderSourceList: React.FC<any> = ({
         />
         {sourceList.sourceHideClause ? (
           <InlineIconButton
-            label="Join Cluase"
+            label="Join Clause"
             onClick={() => {
               setShowClause(!showClause);
             }}
@@ -322,7 +322,8 @@ const getDefaultJoinClause: Function = () => {
     COLUMN_TYPE_FIELD,
     null,
     COLUMN_TYPE_SELECT_COLUMN_NAME,
-    EMPTY
+    EMPTY,
+    false
   );
   const defaulJoinClauseRightOperand: RightOperand = new RightOperand(
     COLUMN_TYPE_FIELD,

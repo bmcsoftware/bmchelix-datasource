@@ -1,6 +1,6 @@
 {
   "name": "bmc-bmc-ade",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Datasource plugin by BMC to support various query types.",
   "scripts": {
     "build": "grafana-toolkit plugin:build",

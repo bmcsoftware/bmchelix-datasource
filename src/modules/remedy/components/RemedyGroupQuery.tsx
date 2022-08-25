@@ -19,7 +19,14 @@ import {
 } from '../utilities/remedy_literal_string';
 import { SelectionList, SourceList } from '../utilities/RemedyTypes';
 import { isDBFunctionsAggregate } from '../utilities/remedy_query_def';
-import { isEqual as _isEqual, cloneDeep as _cloneDeep, fill as _fill, each as _each, find as _find } from 'lodash';
+import {
+  isEqual as _isEqual,
+  cloneDeep as _cloneDeep,
+  fill as _fill,
+  each as _each,
+  find as _find,
+  findIndex as _findIndex,
+} from 'lodash';
 import { InlineFieldWrapper } from 'modules/common/InlineFieldWrapper';
 import { InlineIconButton } from 'modules/common/InlineIconButton';
 
@@ -82,7 +89,10 @@ class RemedyGroupQueryWrap extends PureComponent<WrappedProps, any> {
     const inputSelectionList = this.props.target.form.selectionList;
     const inputCalculatedFieldList = this.props.target.form.calculatedFieldList;
     const showGroupBy = !this.props.target.form.calculatedFieldList?.find((calculatedField: any) => {
-      return calculatedField.selectionAggregation;
+      return (
+        calculatedField.selectionAggregation ||
+        (!calculatedField.selectionAggregation && !this.props.target.form.hideGroupBy)
+      );
     });
     const metaGroupNames: any[] = [];
     if (!showGroupBy) {
@@ -96,16 +106,25 @@ class RemedyGroupQueryWrap extends PureComponent<WrappedProps, any> {
 
       if (inputCalculatedFieldList !== undefined) {
         _each(inputCalculatedFieldList, (field) => {
-          if (field.selectionCalculatedFields !== CALCULATED_FIELD) {
+          if (field.selectionCalculatedFields !== CALCULATED_FIELD && !field.hideCalculatedField) {
             let form: SourceList = inputSourceList[0];
             _find(inputSourceList, function (f) {
               if (field.selectionAlias.includes(f.sourceFormName)) {
                 form = f;
               }
             });
+            const tempColumnName = replaceSpaceWithUnderscore(field.selectionAlias);
             if (!field.selectionAggregation) {
-              const tempColumnName = replaceSpaceWithUnderscore(field.selectionAlias);
               metaGroupNames.push(new SelectionList('Field', tempColumnName, 'Calculated Field', form.sourceAlias));
+            } else {
+              const spliceIndex = _findIndex(inputGroupList, (val: SelectionList) => {
+                return (
+                  val.selectionSrcAlias === 'Calculated Field' && val.selectionColumnName.indexOf(tempColumnName) > -1
+                );
+              });
+              if (spliceIndex > -1) {
+                inputGroupList.splice(spliceIndex, 1);
+              }
             }
           }
         });
@@ -122,13 +141,16 @@ class RemedyGroupQueryWrap extends PureComponent<WrappedProps, any> {
         }
       });
       if (metaGroupNames.length > inputGroupList.length) {
-        const defaultGroupByField: SelectionList = new SelectionList(
-          COLUMN_TYPE_FIELD,
-          COLUMN_TYPE_SELECT_COLUMN_NAME,
-          EMPTY,
-          EMPTY
-        );
-        inputGroupList.push(..._fill(Array(metaGroupNames.length - inputGroupList.length), defaultGroupByField));
+        const requiredLength = metaGroupNames.length - inputGroupList.length;
+        for (let i = 0; i < requiredLength; i++) {
+          const defaultGroupByField: SelectionList = new SelectionList(
+            COLUMN_TYPE_FIELD,
+            COLUMN_TYPE_SELECT_COLUMN_NAME,
+            EMPTY,
+            EMPTY
+          );
+          inputGroupList.push(defaultGroupByField);
+        }
       }
       metaGroupNames.forEach((column: any, index: any) => {
         inputGroupList[index].selectionColumnName = column.selectionType + ARROW + column.selectionColumnName;
@@ -281,6 +303,7 @@ const GroupQuery: React.FC<any> = ({
             {
               ...group,
               selectionColumnName: selectedVal.value.columnName,
+              selectionType: selectedVal.value.selectionType,
             },
             keyIndex,
             true

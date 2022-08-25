@@ -8,11 +8,11 @@ Hash: SHA512
   "signedByOrg": "bmchelix",
   "signedByOrgName": "BMC Software",
   "plugin": "bmchelix-ade-datasource",
-  "version": "3.0.0",
-  "time": 1650609532984,
+  "version": "3.0.1",
+  "time": 1661418318709,
   "keyId": "7e4d0c6a708866e7",
   "files": {
-    "CHANGELOG.md": "3df4f55078ba2afc89023fe2e594687f683e3016742da0ff29950abccb9138e6",
+    "CHANGELOG.md": "7b89fd6ef36de897686bf587201e6ba87ec0a40c4c2365d705df71520927c3fa",
     "gpx_bmchelix-ade-datasource_darwin_amd64": "c2797ddc251c0d847dca25d9104efccbd9d140349ae6c62982c5771ba90ed9a9",
     "gpx_bmchelix-ade-datasource_darwin_arm64": "daab2303f81bbf9116aa96f718e29463414b4a260110adf440a8dc997204c0c3",
     "gpx_bmchelix-ade-datasource_linux_amd64": "60a98db586c9a48ac6051c078e508dea04fe9470c542ca8d2834bb89347a555d",
@@ -21,22 +21,22 @@ Hash: SHA512
     "gpx_bmchelix-ade-datasource_windows_amd64.exe": "2dbbec296c49459217d543f9170a887b7e6438c77e59c82ef48c0f34cc113cfe",
     "img/grafana_icon.svg": "e892b49dbbef13736ddd8eec6e020e7bd4ca4437923c7890ed6113d3cbe58b78",
     "img/logo.svg": "387f3012fc0590e3c5c599b24d6ed0ebf169afda5e718cb7aed52b8216939d5a",
-    "LICENSE": "3876e8dd643c2a02b69f771ffb4a48fbe122552731814525a0d2361f66e2beb9",
-    "module.js": "8f550be3a0321481126f2fb174cd211a3e1df3ee90248c48954b8365cbd9b564",
-    "module.js.map": "35a878a61fde94c0688b628ecf578dcc77054d47562e053df3d718542b0a65b1",
+    "LICENSE": "2e2fe007304853ac72ab4389a8c72bb86b9337e6f17f90b392b79ce2e5b480d4",
+    "module.js": "374c03adee4a27be6189cc131c42155b02b2e2b4bc55207abaee0fad12223022",
+    "module.js.map": "02b8a03a562a5563ca4e3f20d4b67dc8a4841c2acfcd84e7582a64f15ef8cbe8",
     "partials/annotations.editor.html": "8ebf3cea46433c19bbe423364250890bdd59a15d405d443494dd70cb0c3354c2",
-    "plugin.json": "eba41bc144cfa3827661d06460deda0205acddf9dd6919b09745d6c928781eb3",
-    "README.md": "ebd46206687107b2ce66c391499d34d2f97b1d26455f7a39b7edcb48a32d056a"
+    "plugin.json": "81b3bea61aef8a890625b1e80fc07df8c8c3a6865f6ae0a370bf48532b55c533",
+    "README.md": "6753db0d1a7364210551ff7c34baa4a6fda362b634d3e43fda9e37c445c30038"
   }
 }
 -----BEGIN PGP SIGNATURE-----
 Version: OpenPGP.js v4.10.10
 Comment: https://openpgpjs.org
 
-wrkEARMKAAYFAmJiTX0AIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
-cIhm5/tOAgkBxHUiyPXw+h4NBVfeTftW37bhYSVxRndC2wpOgh/iUaa4LIOB
-4KlWvPgRnhcc+dtLY0GNpRPy2N0OHuUCISoPOOUCCQEJcRCtjQwl5Iu1rQlo
-AKTm9IqM03siz0F5yNzFwv/YPvlLM6i31GhcKDqMl+6KTY4c0V0bcU4Qq9I1
-HzYAnYntBA==
-=SlO5
+wrcEARMKAAYFAmMHO04AIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm56YtAgj+5l6qiyXepZk+I9SMaDhJL/ZgpYrfzVRZtHWaT60m4DemQxgk
+olMKDD4U8X8aLA3xDkgm4Zg/v+gGUBa0bGhzlQIHaUXCAvzEP590aK29eGIN
+TNvmsjPZqqlnbqMdh4x1qDBoyGSKt8WDpFHaoVqB6AGuW6OyHGjYVxyTyzyP
+DsCQuaM=
+=Ta9r
 -----END PGP SIGNATURE-----

@@ -23,7 +23,7 @@ import {
   OPERATOR_EQUAL,
 } from '../utilities/remedy_literal_string';
 import { LeftOperand, RightOperand, Qualification } from '../utilities/RemedyTypes';
-import { getMetaHavingNames } from '../utilities/utility';
+import { getMetaWhereNames, getMetaHavingNames } from '../utilities/utility';
 import { cloneDeep, isEqual } from 'lodash';
 import { InlineFieldWrapper } from 'modules/common/InlineFieldWrapper';
 import { InlineIconButton } from 'modules/common/InlineIconButton';
@@ -152,13 +152,33 @@ WithContext.displayName = 'WithContext';
 
 export const RemedyHavingQuery = WithContext(RemedyHavingQueryWrap);
 
-export class RemedyWhereQuery extends Component<Props, any> {
+class RemedyWhereQueryWrap extends Component<Props, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       collapseGroup: true,
       qualType: 'Where',
     };
+  }
+
+  static getDerivedStateFromProps(props: WrappedProps, state: any) {
+    console.log(props, 'props\n', state, 'state\n');
+    const derivedState = {
+      inputSourceList: props.target.form.sourceList,
+      inputCalculatedFieldList: props.target.form.calculatedFieldList,
+      columnNames: props.autoCompleteContext?.inputAutoComplete?.[props.target.guid]?.metaColumnNames || [],
+    };
+    if (!isEqual(derivedState, state.derivedState)) {
+      const metaWhereNames = getMetaWhereNames({
+        ...derivedState,
+      });
+      props.autoCompleteContext.dispatch({
+        type: UPDATE_InputAutoComplete,
+        guid: props.target.guid,
+        value: { metaWhereNames },
+      });
+    }
+    return { derivedState };
   }
 
   toggleHideQual = () => {
@@ -230,6 +250,8 @@ export class RemedyWhereQuery extends Component<Props, any> {
   }
 }
 
+export const RemedyWhereQuery = WithContext(RemedyWhereQueryWrap);
+
 const RemedyQualQuery: React.FC<any> = ({
   keyIndex,
   collapseGroup,
@@ -259,10 +281,10 @@ const RemedyQualQuery: React.FC<any> = ({
 
   const columnFullNameOptions = useMemo(() => {
     return qualType === 'Where'
-      ? autoCompleteContext.inputAutoComplete[guid].metaColumnNames
+      ? autoCompleteContext.inputAutoComplete[guid].metaWhereNames
       : autoCompleteContext.inputAutoComplete[guid].metaHavingNames;
   }, [
-    autoCompleteContext.inputAutoComplete[guid]?.metaColumnNames,
+    autoCompleteContext.inputAutoComplete[guid]?.metaWhereNames,
     autoCompleteContext.inputAutoComplete[guid]?.metaHavingNames,
   ]);
 
@@ -307,7 +329,7 @@ const RemedyQualQuery: React.FC<any> = ({
     qualificationClone.logicalOperator = OPERATOR_AND;
     const addIndex = keyIndex + 1;
 
-    let leftOperand = new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
+    let leftOperand = new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY, false);
     let rightOperand = new RightOperand(VALUE, null, CHAR, EMPTY, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
     let relationalQualification = new Qualification(
       true,
@@ -384,7 +406,7 @@ const RemedyQualQuery: React.FC<any> = ({
         </InlineLabel>
       </InlineField>
       <Seg
-        disabled={hideQual}
+        disabled={hideQual || qualification.leftOperand.isCalcField}
         value="+"
         loadOptions={async () => {
           return fieldTypeOptions;
@@ -417,8 +439,9 @@ const RemedyQualQuery: React.FC<any> = ({
         onChange={(selectedVal: any) => {
           const qualificationClone = cloneDeep(qualification);
           if (qualificationClone.leftOperand) {
-            if (qualificationClone.leftOperand.fieldName.isCalculatedField === true) {
+            if (selectedVal.value.isCalculatedField === true) {
               qualificationClone.leftOperand.fieldName = selectedVal.value.columnName;
+              qualificationClone.leftOperand.isCalcField = true;
             } else {
               qualificationClone.leftOperand.fieldName = selectedVal.text;
             }
@@ -557,4 +580,5 @@ const RemedyQualQuery: React.FC<any> = ({
     </InlineFieldRow>
   ) : null;
 };
+
 RemedyQualQuery.displayName = 'RemedyQualQuery';

@@ -99,7 +99,7 @@ export const getMetaHavingNames = ({
   });
   if (inputCalculatedFieldList !== undefined) {
     _each(inputCalculatedFieldList, (field) => {
-      if (field.selectionCalculatedFields !== CALCULATED_FIELD) {
+      if (field.selectionCalculatedFields !== CALCULATED_FIELD && field.selectionAggregation) {
         let form: SourceList = inputSourceList[0];
         _find(inputSourceList, function (f) {
           if (field.selectionAlias.includes(f.sourceFormName)) {
@@ -146,6 +146,7 @@ export const getMetaGroupNames = ({
           formName: form.sourceFormName,
           formAlias: form.sourceAlias,
           columnName: column.selectionType + ARROW + column.selectionColumnName,
+          selectionType: column.selectionType,
         },
       });
     }
@@ -184,4 +185,40 @@ export const getDistinctFormNames = (sourceList: SourceList[]) => {
     distinctSourceList.add(form.sourceFormName);
   });
   return [...distinctSourceList];
+};
+
+export const getMetaWhereNames = ({
+  columnNames,
+  inputSourceList,
+  inputCalculatedFieldList,
+}: {
+  columnNames: any[];
+  inputSourceList: SourceList[];
+  inputCalculatedFieldList: CalculatedFieldList[];
+}) => {
+  let metaWhereNames = [...columnNames];
+  if (inputCalculatedFieldList !== undefined) {
+    _each(inputCalculatedFieldList, (field) => {
+      if (field.selectionCalculatedFields !== CALCULATED_FIELD && !field.selectionAggregation) {
+        let form: SourceList = inputSourceList[0];
+        _find(inputSourceList, function (f) {
+          if (field.selectionAlias.includes(f.sourceFormName)) {
+            form = f;
+          }
+        });
+        let tempColumnName = replaceSpaceWithUnderscore(field.selectionAlias);
+        metaWhereNames.push({
+          text: field.selectionAlias,
+          label: field.selectionAlias,
+          value: {
+            formName: form.sourceFormName,
+            formAlias: form.sourceAlias,
+            columnName: tempColumnName,
+            isCalculatedField: true,
+          },
+        });
+      }
+    });
+  }
+  return metaWhereNames;
 };

@@ -1,5 +1,5 @@
 import { cloneDeep, first as _first, isNumber, isObject, isString, map as _map } from 'lodash';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { getBackendSrv } from '@grafana/runtime';
@@ -149,14 +149,12 @@ export class EventDatasource extends DataSourceApi<EventDataSourceQuery, BMCData
       catchError((err) => {
         if (err.data) {
           const message = err.data.error?.root_cause?.reason ? err.data.error.root_cause.reason : 'Unknown error';
-
-          return throwError({
+          throw {
             message: 'Elasticsearch error: ' + message,
             error: err.data.error,
-          });
+          };
         }
-
-        return throwError(err);
+        throw err;
       })
     );
   }
@@ -304,7 +302,7 @@ export class EventDatasource extends DataSourceApi<EventDataSourceQuery, BMCData
   }
 
   private interpolateLuceneQuery(queryString: string, scopedVars?: ScopedVars) {
-    return this.templateSrv.replace(queryString, scopedVars, 'lucene');
+    return this.templateSrv.replace(queryString, scopedVars, 'lucene', '""');
   }
 
   interpolateVariablesInQueries(queries: EventDataSourceQuery[], scopedVars: ScopedVars): EventDataSourceQuery[] {
@@ -582,7 +580,7 @@ export class EventDatasource extends DataSourceApi<EventDataSourceQuery, BMCData
 
     for (const key of Object.keys(obj)) {
       if (this.isPrimitive(obj[key])) {
-        if (this.templateSrv.variableExists(obj[key])) {
+        if (this.templateSrv.containsTemplate(obj[key])) {
           return true;
         }
       } else if (Array.isArray(obj[key])) {

@@ -32477,7 +32477,7 @@ function () {
 /*!**********************!*\
   !*** ./Constants.ts ***!
   \**********************/
-/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, REMEDY_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_ENTITY, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_ITSM_INSIGHTS, SOURCE_TYPE_AUDIT, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES, OPTIMIZE_SELECTION */
+/*! exports provided: QUERY_EDITOR_BASE_URL, TEMPLATE_BASE_URL, ANNOTATION_EDITOR_BASE_URL, EVENT_ANNOTATION_EDITOR_URL, LOG_ANNOTATION_EDITOR_URL, METRIC_ANNOTATION_EDITOR_URL, REMEDY_ANNOTATION_EDITOR_URL, SOURCE_TYPE_EVENT, SOURCE_TYPE_METRIC, SOURCE_TYPE_ENTITY, SOURCE_TYPE_CLOUD_SECURITY, SOURCE_TYPE_SMARTGRAPH, SOURCE_TYPE_ITSM_INSIGHTS, SOURCE_TYPE_AUDIT, SOURCE_TYPE_DATAMART, SOURCE_TYPE_REMEDY, SOURCE_TYPE_LOG, JWT_TOKEN_REFRESH_URL, JWT_TOKEN_GEN_URL, JWT_TOKEN_STORAGE_KEY, ENABLED_FEATURES, OPTIMIZE_SELECTION */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32496,6 +32496,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_SMARTGRAPH", function() { return SOURCE_TYPE_SMARTGRAPH; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_ITSM_INSIGHTS", function() { return SOURCE_TYPE_ITSM_INSIGHTS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_AUDIT", function() { return SOURCE_TYPE_AUDIT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_DATAMART", function() { return SOURCE_TYPE_DATAMART; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_REMEDY", function() { return SOURCE_TYPE_REMEDY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SOURCE_TYPE_LOG", function() { return SOURCE_TYPE_LOG; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JWT_TOKEN_REFRESH_URL", function() { return JWT_TOKEN_REFRESH_URL; });
@@ -32521,6 +32522,7 @@ var SOURCE_TYPE_CLOUD_SECURITY = 'cloudsecurity';
 var SOURCE_TYPE_SMARTGRAPH = 'smartgraph';
 var SOURCE_TYPE_ITSM_INSIGHTS = 'itsm-insights';
 var SOURCE_TYPE_AUDIT = 'audit';
+var SOURCE_TYPE_DATAMART = 'datamarts';
 var SOURCE_TYPE_REMEDY = 'remedy';
 var SOURCE_TYPE_LOG = 'log';
 var JWT_TOKEN_REFRESH_URL = 'dashboards/ims/refresh-jwt';
@@ -32557,6 +32559,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var modules_event_components_QueryEditor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! modules/event/components/QueryEditor */ "./modules/event/components/QueryEditor/index.tsx");
 /* harmony import */ var modules_itsm_insight_components_ItsmInsightQueryEditor__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! modules/itsm-insight/components/ItsmInsightQueryEditor */ "./modules/itsm-insight/components/ItsmInsightQueryEditor.tsx");
 /* harmony import */ var modules_audit_components_AuditQueryEditor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! modules/audit/components/AuditQueryEditor */ "./modules/audit/components/AuditQueryEditor.tsx");
+/* harmony import */ var modules_datamarts_components_DatamartsQueryEditor__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! modules/datamarts/components/DatamartsQueryEditor */ "./modules/datamarts/components/DatamartsQueryEditor.tsx");
+
 
 
 
@@ -32655,6 +32659,10 @@ function (_super) {
       target: query,
       onQueryUpdate: this.onQueryUpdate,
       datasource: this.props.datasource
+    }) : null, sourceType === _Constants__WEBPACK_IMPORTED_MODULE_5__["SOURCE_TYPE_DATAMART"] ? react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(modules_datamarts_components_DatamartsQueryEditor__WEBPACK_IMPORTED_MODULE_13__["DatamartsQueryEditor"], {
+      datasource: this.props.datasource.getQueryHandlerInstance(sourceType),
+      onQueryUpdate: this.onQueryUpdate,
+      target: query
     }) : null);
   };
 
@@ -32675,16 +32683,18 @@ function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryHandlerFactory", function() { return QueryHandlerFactory; });
-/* harmony import */ var query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! query-modules/event/EventDatasource */ "./query-modules/event/EventDatasource.ts");
-/* harmony import */ var query_modules_metric_MetricDatasource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! query-modules/metric/MetricDatasource */ "./query-modules/metric/MetricDatasource.ts");
-/* harmony import */ var query_modules_entity_MetricEntityDatasource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! query-modules/entity/MetricEntityDatasource */ "./query-modules/entity/MetricEntityDatasource.ts");
-/* harmony import */ var query_modules_log_LogDatasource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! query-modules/log/LogDatasource */ "./query-modules/log/LogDatasource.ts");
-/* harmony import */ var query_modules_cloudsecurity_CloudSecurityDatasource__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! query-modules/cloudsecurity/CloudSecurityDatasource */ "./query-modules/cloudsecurity/CloudSecurityDatasource.ts");
-/* harmony import */ var query_modules_itsm_insights_ItsmInsightsDatasource__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! query-modules/itsm-insights/ItsmInsightsDatasource */ "./query-modules/itsm-insights/ItsmInsightsDatasource.ts");
-/* harmony import */ var query_modules_audit_AuditDatasource__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! query-modules/audit/AuditDatasource */ "./query-modules/audit/AuditDatasource.ts");
-/* harmony import */ var query_modules_remedy_RemedyDatasource__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! query-modules/remedy/RemedyDatasource */ "./query-modules/remedy/RemedyDatasource.ts");
-/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+/* harmony import */ var Constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! Constants */ "./Constants.ts");
+/* harmony import */ var query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! query-modules/event/EventDatasource */ "./query-modules/event/EventDatasource.ts");
+/* harmony import */ var query_modules_metric_MetricDatasource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! query-modules/metric/MetricDatasource */ "./query-modules/metric/MetricDatasource.ts");
+/* harmony import */ var query_modules_entity_MetricEntityDatasource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! query-modules/entity/MetricEntityDatasource */ "./query-modules/entity/MetricEntityDatasource.ts");
+/* harmony import */ var query_modules_log_LogDatasource__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! query-modules/log/LogDatasource */ "./query-modules/log/LogDatasource.ts");
+/* harmony import */ var query_modules_cloudsecurity_CloudSecurityDatasource__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! query-modules/cloudsecurity/CloudSecurityDatasource */ "./query-modules/cloudsecurity/CloudSecurityDatasource.ts");
+/* harmony import */ var query_modules_itsm_insights_ItsmInsightsDatasource__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! query-modules/itsm-insights/ItsmInsightsDatasource */ "./query-modules/itsm-insights/ItsmInsightsDatasource.ts");
+/* harmony import */ var query_modules_audit_AuditDatasource__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! query-modules/audit/AuditDatasource */ "./query-modules/audit/AuditDatasource.ts");
+/* harmony import */ var query_modules_remedy_RemedyDatasource__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! query-modules/remedy/RemedyDatasource */ "./query-modules/remedy/RemedyDatasource.ts");
 /* harmony import */ var query_modules_smartgraph_SmartGraphDatasource__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! query-modules/smartgraph/SmartGraphDatasource */ "./query-modules/smartgraph/SmartGraphDatasource.ts");
+/* harmony import */ var query_modules_datamarts_DataMartsDatasource__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! query-modules/datamarts/DataMartsDatasource */ "./query-modules/datamarts/DataMartsDatasource.ts");
+
 
 
 
@@ -32702,38 +32712,39 @@ function () {
   function QueryHandlerFactory() {}
 
   QueryHandlerFactory.getDatasource = function (type, instanceSettings, templateSrv, timeSrv, backendSrv) {
-    console.log('query type', type);
-
     switch (type) {
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_EVENT"]:
-        return query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_0__["EventDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_EVENT"]:
+        return query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_1__["EventDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_METRIC"]:
-        return query_modules_metric_MetricDatasource__WEBPACK_IMPORTED_MODULE_1__["MetricDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_METRIC"]:
+        return query_modules_metric_MetricDatasource__WEBPACK_IMPORTED_MODULE_2__["MetricDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_ENTITY"]:
-        return query_modules_entity_MetricEntityDatasource__WEBPACK_IMPORTED_MODULE_2__["MetricEntityDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_ENTITY"]:
+        return query_modules_entity_MetricEntityDatasource__WEBPACK_IMPORTED_MODULE_3__["MetricEntityDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_LOG"]:
-        return query_modules_log_LogDatasource__WEBPACK_IMPORTED_MODULE_3__["LogDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_LOG"]:
+        return query_modules_log_LogDatasource__WEBPACK_IMPORTED_MODULE_4__["LogDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_CLOUD_SECURITY"]:
-        return query_modules_cloudsecurity_CloudSecurityDatasource__WEBPACK_IMPORTED_MODULE_4__["CloudSecurityDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_CLOUD_SECURITY"]:
+        return query_modules_cloudsecurity_CloudSecurityDatasource__WEBPACK_IMPORTED_MODULE_5__["CloudSecurityDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_SMARTGRAPH"]:
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_SMARTGRAPH"]:
         return query_modules_smartgraph_SmartGraphDatasource__WEBPACK_IMPORTED_MODULE_9__["SmartGraphDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_REMEDY"]:
-        return query_modules_remedy_RemedyDatasource__WEBPACK_IMPORTED_MODULE_7__["RemedyDatasource"].getInstance(instanceSettings, templateSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_REMEDY"]:
+        return query_modules_remedy_RemedyDatasource__WEBPACK_IMPORTED_MODULE_8__["RemedyDatasource"].getInstance(instanceSettings, templateSrv, backendSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_ITSM_INSIGHTS"]:
-        return query_modules_itsm_insights_ItsmInsightsDatasource__WEBPACK_IMPORTED_MODULE_5__["ItsmInsightsDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_ITSM_INSIGHTS"]:
+        return query_modules_itsm_insights_ItsmInsightsDatasource__WEBPACK_IMPORTED_MODULE_6__["ItsmInsightsDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
 
-      case Constants__WEBPACK_IMPORTED_MODULE_8__["SOURCE_TYPE_AUDIT"]:
-        return query_modules_audit_AuditDatasource__WEBPACK_IMPORTED_MODULE_6__["AuditDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_AUDIT"]:
+        return query_modules_audit_AuditDatasource__WEBPACK_IMPORTED_MODULE_7__["AuditDatasource"].getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+
+      case Constants__WEBPACK_IMPORTED_MODULE_0__["SOURCE_TYPE_DATAMART"]:
+        return query_modules_datamarts_DataMartsDatasource__WEBPACK_IMPORTED_MODULE_10__["DatamartsDatasource"].getInstance(instanceSettings, templateSrv);
 
       default:
-        return query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_0__["EventDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
+        return query_modules_event_EventDatasource__WEBPACK_IMPORTED_MODULE_1__["EventDatasource"].getInstance(instanceSettings, templateSrv, timeSrv);
     }
   };
 
@@ -33321,45 +33332,58 @@ function (_super) {
     var _a;
 
     if (this.instPlatform === _types__WEBPACK_IMPORTED_MODULE_10__["InstancePlatform"].ENTERPRISE) {
-      return (_a = BMCDataSource.authHelper.getToken(this.instSet)) === null || _a === void 0 ? void 0 : _a.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])(function (token) {
+      return ((_a = BMCDataSource.authHelper.getToken(this.instSet)) === null || _a === void 0 ? void 0 : _a.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])(function (token) {
         BMCDataSource.tokenObj = token;
         return token;
-      }));
+      }))) || Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])({});
     }
 
-    return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])([]);
+    return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])({});
   };
 
   BMCDataSource.prototype.query = function (options) {
-    var _this = this;
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
+      var targetsMapping, mixed, sourceType, query_options, type, batchQueriesObservable;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            return [4
+            /*yield*/
+            , this.validateToken().toPromise()];
 
-    var tokenObservable = this.validateToken() || Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])([]);
-    var targetsMapping = lodash_groupBy__WEBPACK_IMPORTED_MODULE_4___default()(options.targets, this.CONST_SOURCE_TYPE);
-    var mixed = [];
+          case 1:
+            _a.sent();
 
-    for (var sourceType in targetsMapping) {
-      if (sourceType === undefined || !Object(_types__WEBPACK_IMPORTED_MODULE_10__["validQueryType"])(sourceType)) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])({
-          data: []
-        });
-      }
+            targetsMapping = lodash_groupBy__WEBPACK_IMPORTED_MODULE_4___default()(options.targets, this.CONST_SOURCE_TYPE);
+            mixed = [];
 
-      var query_options = lodash_cloneDeep__WEBPACK_IMPORTED_MODULE_3___default()(options);
-      query_options.targets = targetsMapping[sourceType];
-      var type = {
-        instance: this.getQueryHandlerInstance(sourceType),
-        optionsVal: query_options
-      };
-      mixed.push(type);
-    }
+            for (sourceType in targetsMapping) {
+              if (sourceType === undefined || !Object(_types__WEBPACK_IMPORTED_MODULE_10__["validQueryType"])(sourceType)) {
+                return [2
+                /*return*/
+                , Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])({
+                  data: []
+                }).toPromise()];
+              }
 
-    return tokenObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["mergeMap"])(function (tokenResponse) {
-      var batchQueriesObservable = _this.batchQueries(mixed);
+              query_options = lodash_cloneDeep__WEBPACK_IMPORTED_MODULE_3___default()(options);
+              query_options.targets = targetsMapping[sourceType];
+              type = {
+                instance: this.getQueryHandlerInstance(sourceType),
+                optionsVal: query_options
+              };
+              mixed.push(type);
+            }
 
-      return batchQueriesObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])(function (response) {
-        return response;
-      }));
-    }));
+            batchQueriesObservable = this.batchQueries(mixed);
+            return [2
+            /*return*/
+            , batchQueriesObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])(function (response) {
+              return response;
+            })).toPromise()];
+        }
+      });
+    });
   };
 
   BMCDataSource.prototype.batchQueries = function (queries) {
@@ -34382,6 +34406,336 @@ var Seg = function Seg(_a) {
 
 /***/ }),
 
+/***/ "./modules/common/components/list-item/ListItem.tsx":
+/*!**********************************************************!*\
+  !*** ./modules/common/components/list-item/ListItem.tsx ***!
+  \**********************************************************/
+/*! exports provided: ListItem */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ListItem", function() { return ListItem; });
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var ListItem = function ListItem(props) {
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_0__["HorizontalGroup"], {
+    justify: "space-between"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_0__["Label"], {
+    description: props.item.description
+  }, props.item.label), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_0__["Icon"], {
+    name: props.iconName,
+    title: props.iconTooltip,
+    onClick: function onClick() {
+      return props.onClick(props.item);
+    },
+    style: {
+      cursor: 'pointer'
+    }
+  })));
+};
+
+/***/ }),
+
+/***/ "./modules/common/components/search-result/SearchResult.tsx":
+/*!******************************************************************!*\
+  !*** ./modules/common/components/search-result/SearchResult.tsx ***!
+  \******************************************************************/
+/*! exports provided: SearchResult */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchResult", function() { return SearchResult; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _selectable_list_group_SelectableListGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../selectable-list-group/SelectableListGroup */ "./modules/common/components/selectable-list-group/SelectableListGroup.tsx");
+
+
+
+
+var SearchResult = function SearchResult(props) {
+  var _a, _b, _c, _d, _e, _f;
+
+  var _g = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(''), 2),
+      queryValue = _g[0],
+      setQueryValue = _g[1];
+
+  var onQueryChange = function onQueryChange(value) {
+    setQueryValue(value);
+  };
+
+  var onSearchClicked = function onSearchClicked(e) {
+    e.preventDefault();
+    props.onSearch(queryValue);
+  };
+
+  var onSearchKeyPressed = function onSearchKeyPressed(keyboardEvent) {
+    if (keyboardEvent.key === 'Enter' && queryValue) {
+      props.onSearch(queryValue);
+    }
+  };
+
+  var resultContainer;
+
+  if (props.loading) {
+    resultContainer = react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["LoadingPlaceholder"], {
+      text: "Searching..."
+    });
+  } else {
+    resultContainer = ((_a = props.resultItems) === null || _a === void 0 ? void 0 : _a.length) > 0 ? react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_selectable_list_group_SelectableListGroup__WEBPACK_IMPORTED_MODULE_3__["SelectableListGroup"], {
+      listItem: (_c = (_b = props.config) === null || _b === void 0 ? void 0 : _b.listItem) !== null && _c !== void 0 ? _c : {
+        iconName: 'plus-circle'
+      },
+      items: props.resultItems,
+      onClick: props.onItemSelected
+    }) : react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["EmptySearchResult"], null, ((_d = props.config) === null || _d === void 0 ? void 0 : _d.emptyResultMsg) || 'No items');
+  }
+
+  var prefixIcon = react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+    name: "search"
+  });
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["VerticalGroup"], {
+    className: props.containerClassName,
+    width: props.width
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["HorizontalGroup"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+    prefix: prefixIcon,
+    width: props.searchInputWidth,
+    placeholder: ((_e = props.config) === null || _e === void 0 ? void 0 : _e.searchPlaceholder) || 'Type to search',
+    value: queryValue,
+    onChange: function onChange(elm) {
+      return onQueryChange(elm.currentTarget.value);
+    },
+    onKeyPress: onSearchKeyPressed
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+    variant: 'secondary',
+    size: 'md',
+    onClick: onSearchClicked,
+    disabled: !queryValue
+  }, ((_f = props.config) === null || _f === void 0 ? void 0 : _f.searchButton) || 'Search')), resultContainer));
+};
+
+/***/ }),
+
+/***/ "./modules/common/components/seleactable-list/SelectableList.tsx":
+/*!***********************************************************************!*\
+  !*** ./modules/common/components/seleactable-list/SelectableList.tsx ***!
+  \***********************************************************************/
+/*! exports provided: SelectableList */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectableList", function() { return SelectableList; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _list_item_ListItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../list-item/ListItem */ "./modules/common/components/list-item/ListItem.tsx");
+
+
+
+
+
+var SelectableList = function SelectableList(props) {
+  var _a;
+
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["useTheme2"])();
+  var styles = getResultsItemStyles(theme);
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: styles.container
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["VerticalGroup"], null, (_a = props.items) === null || _a === void 0 ? void 0 : _a.map(function (item, idx) {
+    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_list_item_ListItem__WEBPACK_IMPORTED_MODULE_4__["ListItem"], {
+      iconTooltip: props.listItem.iconTooltip,
+      iconName: props.listItem.iconName,
+      item: item,
+      onClick: props.onClick,
+      key: props.group
+    });
+  }))));
+};
+var getResultsItemStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["stylesFactory"])(function (theme) {
+  return {
+    container: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin-bottom: 0px;\n    background-color: ", ";\n    width: 100%;\n    padding: 12px;\n  "], ["\n    margin-bottom: 0px;\n    background-color: ", ";\n    width: 100%;\n    padding: 12px;\n  "])), theme.colors.background.primary)
+  };
+});
+var templateObject_1;
+
+/***/ }),
+
+/***/ "./modules/common/components/selectable-list-group/SelectableListGroup.tsx":
+/*!*********************************************************************************!*\
+  !*** ./modules/common/components/selectable-list-group/SelectableListGroup.tsx ***!
+  \*********************************************************************************/
+/*! exports provided: SelectableListGroup */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectableListGroup", function() { return SelectableListGroup; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _seleactable_list_SelectableList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../seleactable-list/SelectableList */ "./modules/common/components/seleactable-list/SelectableList.tsx");
+
+
+
+
+
+var SelectableListGroup = function SelectableListGroup(props) {
+  var _a = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])([]), 2),
+      groupedItems = _a[0],
+      setGroupedItems = _a[1];
+
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false), 2),
+      displayCollapse = _b[0],
+      setDisplayCollapse = _b[1];
+
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["useTheme2"])();
+  var styles = getResultsItemStyles(theme);
+  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
+    var groupMap = props.items.reduce(function (acc, curr) {
+      var group = curr.group || '';
+      var groupItem = acc.get(group);
+
+      if (!groupItem) {
+        groupItem = {
+          items: [],
+          group: group
+        };
+        acc.set(group, groupItem);
+      }
+
+      groupItem.items.push(curr);
+      return acc;
+    }, new Map());
+    setGroupedItems(Array.from(groupMap.values()));
+    var groupKeys = Array.from(groupMap.keys());
+    var oneGroupNoName = groupKeys.length === 1 && groupKeys[0] === '';
+    setDisplayCollapse(!oneGroupNoName);
+  }, [props.items]);
+
+  if (groupedItems.length === 0) {
+    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null);
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    style: {
+      backgroundColor: theme.colors.background.primary,
+      width: '100%'
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["VerticalGroup"], null, displayCollapse ? groupedItems.map(function (group, indx) {
+    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["ControlledCollapse"], {
+      label: group.group,
+      key: indx,
+      isOpen: indx === 0,
+      className: styles.container
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      style: {
+        marginLeft: '12px'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_seleactable_list_SelectableList__WEBPACK_IMPORTED_MODULE_4__["SelectableList"], {
+      listItem: props.listItem,
+      items: group.items,
+      group: group.group,
+      onClick: props.onClick
+    })));
+  }) : groupedItems.map(function (group, indx) {
+    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_seleactable_list_SelectableList__WEBPACK_IMPORTED_MODULE_4__["SelectableList"], {
+      listItem: props.listItem,
+      items: group.items,
+      group: group.group,
+      key: indx,
+      onClick: props.onClick
+    });
+  }))));
+};
+var getResultsItemStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["stylesFactory"])(function (theme) {
+  return {
+    container: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin-bottom: 0px;\n  "], ["\n    margin-bottom: 0px;\n  "])))
+  };
+});
+var templateObject_1;
+
+/***/ }),
+
+/***/ "./modules/common/components/tag-list/TagList.tsx":
+/*!********************************************************!*\
+  !*** ./modules/common/components/tag-list/TagList.tsx ***!
+  \********************************************************/
+/*! exports provided: TagList */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TagList", function() { return TagList; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var TagList = function TagList(props) {
+  var _a;
+
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+  var styles = getResultsItemStyles(theme);
+
+  var onRemoveItem = function onRemoveItem(removeItem) {
+    var newItems = props.tags.filter(function (item) {
+      return item !== removeItem;
+    });
+    props.onRemove(newItems);
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["HorizontalGroup"], null, ((_a = props.tags) === null || _a === void 0 ? void 0 : _a.length) > 0 && props.tags.map(function (item) {
+    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      key: item.value,
+      className: styles.itemContainer
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+      title: props.getTooltip(item),
+      className: styles.label
+    }, props.getTitle(item)), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+      name: "times",
+      onClick: function onClick() {
+        return onRemoveItem(item);
+      },
+      style: {
+        cursor: 'pointer'
+      },
+      title: "Remove item"
+    }));
+  })));
+};
+var getResultsItemStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["stylesFactory"])(function (theme) {
+  return {
+    label: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n  "], ["\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n  "]))),
+    itemContainer: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    color: ", ";\n    font-size: ", ";\n    line-height: ", ";\n    max-width: fit-content;\n    position: relative;\n    height: 24px;\n    line-height: 22px;\n    background-color: ", ";\n    border: 1px solid ", ";\n    border-radius: 3px;\n    padding: 0 4px;\n    margin-right: 3px;\n    white-space: nowrap;\n    text-shadow: none;\n    font-weight: 500;\n    display: flex;\n    justify-content: space-between;\n    max-width: 120px;\n  "], ["\n    color: ", ";\n    font-size: ", ";\n    line-height: ", ";\n    max-width: fit-content;\n    position: relative;\n    height: 24px;\n    line-height: 22px;\n    background-color: ", ";\n    border: 1px solid ", ";\n    border-radius: 3px;\n    padding: 0 4px;\n    margin-right: 3px;\n    white-space: nowrap;\n    text-shadow: none;\n    font-weight: 500;\n    display: flex;\n    justify-content: space-between;\n    max-width: 120px;\n  "])), theme.colors.text.primary, theme.typography.size.base, theme.typography.bodySmall.lineHeight, theme.colors.background.primary, theme.colors.border.medium)
+  };
+});
+var templateObject_1, templateObject_2;
+
+/***/ }),
+
 /***/ "./modules/common/useShadowedState.tsx":
 /*!*********************************************!*\
   !*** ./modules/common/useShadowedState.tsx ***!
@@ -34415,6 +34769,1301 @@ function useShadowedState(outsideVal) {
   }, [outsideVal, currentVal, prevOutsideVal]);
   return [currentVal, setCurrentVal];
 }
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/DatamartExtraInfo.tsx":
+/*!************************************************************!*\
+  !*** ./modules/datamarts/components/DatamartExtraInfo.tsx ***!
+  \************************************************************/
+/*! exports provided: DatamartExtraInfo */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartExtraInfo", function() { return DatamartExtraInfo; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var DatamartExtraInfo = function DatamartExtraInfo(_a) {
+  var item = _a.item;
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+  var styles = getStyles(theme);
+  var extraInfo = item ? [{
+    label: 'Name',
+    value: item.name
+  }, {
+    label: 'Description',
+    value: item.description ? item === null || item === void 0 ? void 0 : item.description : undefined
+  }, {
+    label: 'Id',
+    value: item.erid
+  }, {
+    label: 'Physical name',
+    value: item.physname
+  }, {
+    label: 'Type',
+    value: item.ertypeid
+  }, {
+    label: 'Status',
+    value: getStatusLabel(item.statusid),
+    descStyle: getStatusStyle(item.statusid, theme)
+  } // { label: 'Creation date', value: item.creationdate },
+  // { label: 'Update date', value: item.updatedate }
+  ] : [];
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    "aria-label": (item === null || item === void 0 ? void 0 : item.name) + ' extra info',
+    className: styles.wrapper
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: styles.infoContent
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+    className: styles.title
+  }, "Datamart info:")), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: styles.itemsContent
+  }, extraInfo.map(function (item) {
+    return item.value && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      className: styles.item,
+      key: item.label + " advanced info"
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+      className: styles.label
+    }, item.label), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+      className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.description, item.descStyle ? item.descStyle : '')
+    }, item.value));
+  }))));
+};
+
+var getStatusLabel = function getStatusLabel(status) {
+  switch (status) {
+    // warning
+    case 52:
+      {
+        return 'Warning';
+      }
+    // error
+
+    case 53:
+      {
+        return 'Error';
+      }
+    // ok
+
+    case 1:
+      {
+        return 'OK';
+      }
+
+    default:
+      {
+        return '';
+      }
+  }
+};
+
+var getStatusStyle = function getStatusStyle(status, theme) {
+  switch (status) {
+    // warning
+    case 52:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.warning.text);
+      }
+    // error
+
+    case 53:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.error.text);
+      }
+    // ok
+
+    case 1:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.success.text);
+      }
+
+    default:
+      {
+        return '';
+      }
+  }
+};
+
+var getStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["stylesFactory"])(function (theme) {
+  return {
+    wrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_4 || (templateObject_4 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin: 30px 50px;\n  "], ["\n    margin: 30px 50px;\n  "]))),
+    infoContent: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_5 || (templateObject_5 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin: 10px;\n  "], ["\n    margin: 10px;\n  "]))),
+    title: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_6 || (templateObject_6 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    font-size: ", ";\n  "], ["\n    font-size: ", ";\n  "])), theme.typography.size.lg),
+    itemsContent: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_7 || (templateObject_7 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin-top: 15px;\n    display: flex-wrap;\n    align-items: right;\n  "], ["\n    margin-top: 15px;\n    display: flex-wrap;\n    align-items: right;\n  "]))),
+    item: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_8 || (templateObject_8 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin-bottom: 15px;\n    &:last-child {\n      margin-bottom: 0;\n    }\n  "], ["\n    margin-bottom: 15px;\n    &:last-child {\n      margin-bottom: 0;\n    }\n  "]))),
+    label: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_9 || (templateObject_9 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    label: Label;\n    font-size: ", ";\n    font-weight: ", ";\n    line-height: 1.25;\n    max-width: 480px;\n  "], ["\n    label: Label;\n    font-size: ", ";\n    font-weight: ", ";\n    line-height: 1.25;\n    max-width: 480px;\n  "])), theme.typography.size.sm, theme.typography.fontWeightMedium),
+    description: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_10 || (templateObject_10 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    label: Label-description;\n    font-size: ", ";\n    display: block;\n  "], ["\n    label: Label-description;\n    font-size: ", ";\n    display: block;\n  "])), theme.typography.size.sm)
+  };
+});
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10;
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/DatamartItem.tsx":
+/*!*******************************************************!*\
+  !*** ./modules/datamarts/components/DatamartItem.tsx ***!
+  \*******************************************************/
+/*! exports provided: DatamartItem */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartItem", function() { return DatamartItem; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var DatamartItem = function DatamartItem(_a) {
+  var item = _a.item,
+      onSelect = _a.onSelect,
+      onShowInfo = _a.onShowInfo;
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+  var styles = getResultsItemStyles(theme);
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    "aria-label": item.name,
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.wrapper)
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    style: {
+      width: '90%'
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: styles.body,
+    onClick: function onClick() {
+      return onSelect(item);
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+    className: styles.label,
+    style: {
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      width: '100%'
+    }
+  }, item.name), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+    className: styles.description,
+    style: {
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      width: '100%'
+    }
+  }, item.description))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    style: {
+      fontWeight: 400,
+      fontSize: 'smaller',
+      width: '10%',
+      padding: '0 12px'
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+    name: item.statusid === 53 ? 'shield-exclamation' : item.statusid === 52 ? 'exclamation-triangle' : 'info-circle',
+    size: 'lg',
+    title: 'Show Datamart extra info',
+    className: getStatusIconStyle(item.statusid, theme),
+    onClick: function onClick() {
+      return onShowInfo(item);
+    }
+  })));
+};
+
+var getStatusIconStyle = function getStatusIconStyle(status, theme) {
+  switch (status) {
+    // warning
+    case 52:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.warning.text);
+      }
+    // error
+
+    case 53:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.error.text);
+      }
+    // ok
+
+    case 1:
+      {
+        return Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.success.text);
+      }
+
+    default:
+      {
+        return '';
+      }
+  }
+};
+
+var getResultsItemStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["stylesFactory"])(function (theme) {
+  return {
+    wrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_4 || (templateObject_4 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    ", ";\n    height: 40px;\n    width: auto;\n    margin-bottom: 4px;\n    padding: 0 ", ";\n    &:last-child {\n      margin-bottom: 8px;\n    }\n    :hover {\n      cursor: pointer;\n    }\n    box-shadow: none;\n    display: -webkit-box;\n    box-sizing: content-box;\n    -webkit-align-items: center;\n    -webkit-box-align: center;\n  "], ["\n    ", ";\n    height: 40px;\n    width: auto;\n    margin-bottom: 4px;\n    padding: 0 ", ";\n    &:last-child {\n      margin-bottom: 8px;\n    }\n    :hover {\n      cursor: pointer;\n    }\n    box-shadow: none;\n    display: -webkit-box;\n    box-sizing: content-box;\n    -webkit-align-items: center;\n    -webkit-box-align: center;\n  "])), _grafana_ui__WEBPACK_IMPORTED_MODULE_1__["styleMixins"].listItem(theme), theme.spacing(2)),
+    selected: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_5 || (templateObject_5 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    ", ";\n  "], ["\n    ", ";\n  "])), _grafana_ui__WEBPACK_IMPORTED_MODULE_1__["styleMixins"].listItemSelected(theme)),
+    body: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_6 || (templateObject_6 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    align-items: start;\n    justify-content: center;\n    display: flex;\n    flex-flow: column;\n    overflow: hidden;\n    justify-content: space-between;\n  "], ["\n    align-items: start;\n    justify-content: center;\n    display: flex;\n    flex-flow: column;\n    overflow: hidden;\n    justify-content: space-between;\n  "]))),
+    label: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_7 || (templateObject_7 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    margin-right: 10px;\n  "], ["\n    margin-right: 10px;\n  "]))),
+    description: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_8 || (templateObject_8 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    color: ", ";\n    font-size: ", ";\n    line-height: ", ";\n    max-width: fit-content;\n    position: relative;\n  "], ["\n    color: ", ";\n    font-size: ", ";\n    line-height: ", ";\n    max-width: fit-content;\n    position: relative;\n  "])), theme.colors.text.maxContrast, theme.typography.size.xs, theme.typography.bodySmall.lineHeight)
+  };
+});
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8;
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/DatamartsBrowser.tsx":
+/*!***********************************************************!*\
+  !*** ./modules/datamarts/components/DatamartsBrowser.tsx ***!
+  \***********************************************************/
+/*! exports provided: UnthemedDatamartsBrowser, DatamartsBrowser */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UnthemedDatamartsBrowser", function() { return UnthemedDatamartsBrowser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartsBrowser", function() { return DatamartsBrowser; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_window__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-window */ "../node_modules/react-window/dist/index.esm.js");
+/* harmony import */ var _DatamartItem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./DatamartItem */ "./modules/datamarts/components/DatamartItem.tsx");
+/* harmony import */ var _DatamartExtraInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./DatamartExtraInfo */ "./modules/datamarts/components/DatamartExtraInfo.tsx");
+
+
+
+
+
+
+ // Hard limit on labels to render
+
+var LIST_ITEM_SIZE = 50;
+var getStyles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["stylesFactory"])(function (theme) {
+  return {
+    wrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_3__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    background-color: ", ";\n    padding: ", ";\n    width: 100%;\n  "], ["\n    background-color: ", ";\n    padding: ", ";\n    width: 100%;\n  "])), theme.colors.bg2, theme.spacing.sm),
+    section: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_3__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    & + & {\n      margin: ", " 0;\n    }\n    position: relative;\n  "], ["\n    & + & {\n      margin: ", " 0;\n    }\n    position: relative;\n  "])), theme.spacing.md),
+    valueListWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_3__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    border-left: 1px solid ", ";\n    margin: ", " 0;\n    padding: ", " 0 ", " ", ";\n  "], ["\n    border-left: 1px solid ", ";\n    margin: ", " 0;\n    padding: ", " 0 ", " ", ";\n  "])), theme.colors.border2, theme.spacing.sm, theme.spacing.sm, theme.spacing.sm, theme.spacing.sm)
+  };
+});
+
+var UnthemedDatamartsBrowser =
+/** @class */
+function (_super) {
+  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(UnthemedDatamartsBrowser, _super);
+
+  function UnthemedDatamartsBrowser() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.valueListsRef = react__WEBPACK_IMPORTED_MODULE_1___default.a.createRef();
+    _this.state = {
+      datamartSearchTerm: '',
+      showInfo: false,
+      item: null
+    };
+
+    _this.onChangeDatamartSearch = function (event) {
+      _this.setState({
+        datamartSearchTerm: event.target.value
+      });
+    };
+
+    _this.onClickDatamart = function (item) {
+      // Resetting search to prevent empty results
+      _this.setState({
+        datamartSearchTerm: ''
+      });
+
+      _this.props.onChange(item);
+    };
+
+    _this.onShowDatamartInfo = function (item) {
+      var datamarts = _this.props.datamarts;
+      var datamart = datamarts.values.find(function (l) {
+        return l.name === (item === null || item === void 0 ? void 0 : item.name);
+      });
+
+      if (!datamart) {
+        return;
+      }
+
+      _this.setState({
+        showInfo: true,
+        item: item
+      });
+    };
+
+    return _this;
+  }
+
+  UnthemedDatamartsBrowser.prototype.componentDidMount = function () {};
+
+  UnthemedDatamartsBrowser.prototype.render = function () {
+    var _this = this;
+
+    var _a, _b;
+
+    var _c = this.props,
+        theme = _c.theme,
+        datamarts = _c.datamarts;
+    var datamartSearchTerm = this.state.datamartSearchTerm;
+    var styles = getStyles(theme); // Filter datamarts
+
+    var filteredDatamarts = datamarts;
+
+    if (filteredDatamarts && datamartSearchTerm) {
+      filteredDatamarts = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, filteredDatamarts), {
+        values: (_a = filteredDatamarts.values) === null || _a === void 0 ? void 0 : _a.filter(function (value) {
+          return value.selected || value.name.toLowerCase().includes(datamartSearchTerm.toLowerCase());
+        })
+      });
+    }
+
+    var datamartsCount = ((_b = filteredDatamarts === null || filteredDatamarts === void 0 ? void 0 : filteredDatamarts.values) === null || _b === void 0 ? void 0 : _b.length) || 0;
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: styles.wrapper
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["HorizontalGroup"], {
+      align: "flex-start",
+      spacing: "lg"
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: styles.section
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      style: {
+        paddingLeft: 20,
+        width: 400
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Label"], {
+      description: ""
+    }, "Select a datamart"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+      onChange: this.onChangeDatamartSearch,
+      "aria-label": "Filter expression for datamart",
+      value: datamartSearchTerm
+    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      role: "list",
+      className: styles.valueListWrapper
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_window__WEBPACK_IMPORTED_MODULE_4__["FixedSizeList"], {
+      height: Math.min(450, datamartsCount * LIST_ITEM_SIZE),
+      itemCount: datamartsCount,
+      innerElementType: "ul",
+      itemSize: 44,
+      itemKey: function itemKey(i) {
+        return datamarts.values[i].name;
+      },
+      width: 600,
+      className: styles.wrapper
+    }, function (_a) {
+      var _b;
+
+      var index = _a.index,
+          style = _a.style;
+      var datamart = (_b = filteredDatamarts === null || filteredDatamarts === void 0 ? void 0 : filteredDatamarts.values) === null || _b === void 0 ? void 0 : _b[index];
+
+      if (!datamart) {
+        return null;
+      }
+
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        style: style
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_DatamartItem__WEBPACK_IMPORTED_MODULE_5__["DatamartItem"], {
+        item: datamart,
+        onSelect: function onSelect(item) {
+          return _this.onClickDatamart(item);
+        },
+        onShowInfo: function onShowInfo(item) {
+          return _this.onShowDatamartInfo(item);
+        }
+      }));
+    })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, this.state.showInfo ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_DatamartExtraInfo__WEBPACK_IMPORTED_MODULE_6__["DatamartExtraInfo"], {
+      item: this.state.item
+    }) : react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null))));
+  };
+
+  return UnthemedDatamartsBrowser;
+}(react__WEBPACK_IMPORTED_MODULE_1___default.a.Component);
+
+
+var DatamartsBrowser = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["withTheme"])(UnthemedDatamartsBrowser);
+var templateObject_1, templateObject_2, templateObject_3;
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/DatamartsQueryEditor.tsx":
+/*!***************************************************************!*\
+  !*** ./modules/datamarts/components/DatamartsQueryEditor.tsx ***!
+  \***************************************************************/
+/*! exports provided: DatamartsQueryEditor */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartsQueryEditor", function() { return DatamartsQueryEditor; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _DatamartsQueryField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DatamartsQueryField */ "./modules/datamarts/components/DatamartsQueryField.tsx");
+/* harmony import */ var modules_metric_components_MetricQueryEditor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! modules/metric/components/MetricQueryEditor */ "./modules/metric/components/MetricQueryEditor.tsx");
+
+
+
+
+
+var DatamartsQueryEditor =
+/** @class */
+function (_super) {
+  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DatamartsQueryEditor, _super);
+
+  function DatamartsQueryEditor(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.onFieldChange = function (query, override) {
+      _this.query.sourceQuery.erid = query.sourceQuery.erid;
+    };
+
+    _this.onRunQuery = function () {
+      _this.props.onQueryUpdate(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.props.target), {
+        sourceQuery: _this.query.sourceQuery
+      }), true);
+
+      _this.setState({});
+    };
+
+    var defaultQuery = {
+      erid: undefined,
+      datamartName: undefined
+    };
+    var query = Object.assign({}, defaultQuery, props.target.sourceQuery);
+    _this.query = {
+      sourceQuery: query,
+      sourceType: props.target.sourceType,
+      refId: props.target.refId
+    };
+    return _this;
+  }
+
+  DatamartsQueryEditor.prototype.componentDidMount = function () {};
+
+  DatamartsQueryEditor.prototype.render = function () {
+    var datasource = this.props.datasource;
+    var query = this.query;
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_DatamartsQueryField__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      datasource: datasource,
+      query: query,
+      onRunQuery: this.onRunQuery,
+      onChange: this.onFieldChange,
+      history: [],
+      "data-testid": modules_metric_components_MetricQueryEditor__WEBPACK_IMPORTED_MODULE_3__["testIds"].editor,
+      extraFieldElement: react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "gf-form-inline"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "gf-form"
+      }))
+    }));
+  };
+
+  return DatamartsQueryEditor;
+}(react__WEBPACK_IMPORTED_MODULE_1___default.a.Component);
+
+
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/DatamartsQueryField.tsx":
+/*!**************************************************************!*\
+  !*** ./modules/datamarts/components/DatamartsQueryField.tsx ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "rxjs");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ "../node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _utilities_datamartTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utilities/datamartTypes */ "./modules/datamarts/utilities/datamartTypes.ts");
+/* harmony import */ var _domain_filter_DomainFilter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./domain-filter/DomainFilter */ "./modules/datamarts/components/domain-filter/DomainFilter.tsx");
+/* harmony import */ var _DatamartsBrowser__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./DatamartsBrowser */ "./modules/datamarts/components/DatamartsBrowser.tsx");
+/* harmony import */ var _tag_filter_TagFilter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./tag-filter/TagFilter */ "./modules/datamarts/components/tag-filter/TagFilter.tsx");
+
+
+
+
+
+
+
+
+
+
+function getChooserText(DatamartsLookupDisabled, hasSyntax, hasDatamarts) {
+  if (DatamartsLookupDisabled) {
+    return '(Disabled)';
+  }
+
+  if (!hasSyntax) {
+    return 'Loading Datamarts...';
+  }
+
+  if (!hasDatamarts) {
+    return '(No Datamarts found)';
+  }
+
+  return 'Datamarts browser';
+}
+
+var TIME_FILTER_OPTIONS = [{
+  label: 'Last 1 Day',
+  value: 'D1'
+}, {
+  label: 'Last 7 Days',
+  value: 'D7'
+}, {
+  label: 'Last 30 Days',
+  value: 'D30'
+}];
+
+var DatamartQueryField =
+/** @class */
+function (_super) {
+  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DatamartQueryField, _super);
+
+  function DatamartQueryField(props, context) {
+    var _this = _super.call(this, props, context) || this;
+
+    _this.loadDatamarts = function (restoreState) {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
+        var datamartList, selectedDatamart, err_1;
+
+        var _this = this;
+
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              _a.trys.push([0, 2,, 3]);
+
+              return [4
+              /*yield*/
+              , this.props.datasource.getDatamarts()];
+
+            case 1:
+              datamartList = _a.sent();
+              this.setState({
+                syntaxLoaded: true,
+                datamarts: datamartList
+              });
+
+              if (restoreState && this.props.query.sourceQuery.erid) {
+                selectedDatamart = datamartList.values.find(function (d) {
+                  return d.erid === _this.props.query.sourceQuery.erid;
+                });
+
+                if (selectedDatamart) {
+                  this.fetchData(selectedDatamart);
+                  this.resolveFiltersAsync(selectedDatamart);
+                }
+              }
+
+              return [3
+              /*break*/
+              , 3];
+
+            case 2:
+              err_1 = _a.sent();
+
+              if (!err_1.isCanceled) {
+                throw err_1;
+              }
+
+              return [3
+              /*break*/
+              , 3];
+
+            case 3:
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
+    };
+
+    _this.loadTags = function (query) {
+      Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["from"])('start').pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () {
+        return _this.setState(function (state) {
+          return {
+            tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+              loading: true,
+              options: []
+            })
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function () {
+        return _this.props.datasource.searchTags(query);
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (tagTypes) {
+        return tagTypes.map(function (tagViewModel) {
+          return {
+            group: tagViewModel.tagTypeName,
+            label: tagViewModel.tagName,
+            value: tagViewModel.tagId,
+            description: tagViewModel.tagId
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function (e) {
+        _this.setState(function (state) {
+          return {
+            tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+              loading: false,
+              options: []
+            })
+          };
+        });
+
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["throwError"])(e);
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (tags) {
+        return _this.setState(function (state) {
+          return {
+            tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+              loading: false,
+              options: tags
+            })
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1)).subscribe();
+    };
+
+    _this.loadDomains = function (query) {
+      Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["from"])('start').pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () {
+        return _this.setState(function (state) {
+          return {
+            domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+              loading: true,
+              options: []
+            })
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function () {
+        return _this.props.datasource.searchDomains(query);
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (domains) {
+        return domains.map(function (domain) {
+          return {
+            label: domain.name,
+            value: domain.id,
+            description: domain.breadcrumb ? domain.breadcrumb.map(function (item) {
+              return item.name;
+            }).join('>') : ''
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function (e) {
+        _this.setState(function (state) {
+          return {
+            domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+              loading: false,
+              options: []
+            })
+          };
+        });
+
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["throwError"])(e);
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (options) {
+        _this.setState(function (state) {
+          return {
+            domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+              loading: false,
+              options: options
+            })
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1)).subscribe();
+    };
+
+    _this.onTimeFilterSelected = function (selected) {
+      var query = _this.props.query;
+      var sourceQuery = query.sourceQuery;
+      sourceQuery.timeFilter = {
+        name: 'timefilterlastxdays',
+        condition: 'EQUAL',
+        value: selected
+      };
+
+      _this.onChangeQuery(true);
+    };
+
+    _this.onChangeDatamartsBrowser = function (datamart) {
+      var query = _this.props.query;
+      query.sourceQuery.domainFilter = undefined;
+      query.sourceQuery.tagFilter = undefined;
+
+      _this.setState(function (state) {
+        return {
+          domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+            show: false,
+            selected: []
+          })
+        };
+      });
+
+      _this.setState(function (state) {
+        return {
+          tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+            show: false,
+            selected: []
+          })
+        };
+      });
+
+      _this.fetchData(datamart);
+
+      _this.resolveFiltersAsync(datamart);
+    };
+
+    _this.getTimeFilterLabel = function (timeFilter) {
+      switch (timeFilter.filtertype) {
+        case _utilities_datamartTypes__WEBPACK_IMPORTED_MODULE_5__["DatamartTimeFilterType"].LAST_X_DAYS:
+          {
+            return 'This datamart uses Last 1,7,30 days as time filters. The time filter selection available in the dashboard will not apply.';
+          }
+
+        case _utilities_datamartTypes__WEBPACK_IMPORTED_MODULE_5__["DatamartTimeFilterType"].FIXED:
+          {
+            return 'This datamart uses a pre-configured time filter of ' + timeFilter.label.toLowerCase() + '. The time filter selection available in the dashboard will not apply.';
+          }
+
+        default:
+          {
+            return '';
+          }
+      }
+    };
+
+    _this.getLastXTimeFilterValue = function () {
+      var _a;
+
+      var query = _this.props.query;
+      var sourceQuery = query.sourceQuery;
+      var val = ((_a = sourceQuery.timeFilter) === null || _a === void 0 ? void 0 : _a.value) || 'D30';
+      return TIME_FILTER_OPTIONS.find(function (v) {
+        return val === v.value;
+      }).value;
+    };
+
+    _this.onChangeQuery = function (override) {
+      var _a = _this.props,
+          query = _a.query,
+          onChange = _a.onChange,
+          onRunQuery = _a.onRunQuery;
+      var sourceQuery = query.sourceQuery;
+
+      if (onChange) {
+        var nextQuery = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+          sourceQuery: sourceQuery
+        });
+
+        onChange(nextQuery);
+
+        if (override && onRunQuery) {
+          onRunQuery();
+        }
+      }
+    };
+
+    _this.onClickChooserButton = function () {
+      _this.setState(function (state) {
+        return {
+          datamartsBrowserVisible: !state.datamartsBrowserVisible
+        };
+      });
+    };
+
+    _this.onTagFilterSelected = function (selected) {
+      var query = _this.props.query;
+
+      _this.setState(function (state) {
+        return {
+          tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+            selected: selected
+          })
+        };
+      });
+
+      if (selected.length === 0) {
+        query.sourceQuery.tagFilter = undefined;
+      } else {
+        query.sourceQuery.tagFilter = {
+          name: '@{tag}',
+          condition: 'EQUALS',
+          originalValues: selected
+        };
+
+        if (selected.length > 1) {
+          query.sourceQuery.tagFilter.values = selected.map(function (tag) {
+            return "" + tag.value;
+          });
+        } else {
+          query.sourceQuery.tagFilter.value = "" + selected[0].value;
+        }
+      }
+
+      _this.onChangeQuery(true);
+    };
+
+    _this.onDomainFilterSelected = function (selected) {
+      var query = _this.props.query;
+
+      _this.setState(function (state) {
+        return {
+          domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+            selected: selected
+          })
+        };
+      });
+
+      if (selected.length === 0) {
+        query.sourceQuery.domainFilter = undefined;
+      } else {
+        query.sourceQuery.domainFilter = {
+          name: '@{domain}',
+          condition: 'EQUALS',
+          originalValues: selected
+        };
+
+        if (selected.length > 1) {
+          query.sourceQuery.domainFilter.values = selected.map(function (domain) {
+            return "" + domain.value;
+          });
+        } else {
+          query.sourceQuery.domainFilter.value = "" + selected[0].value;
+        }
+      }
+
+      _this.onChangeQuery(true);
+    };
+
+    _this.state = {
+      datamarts: {
+        loading: false,
+        values: []
+      },
+      datamartsBrowserVisible: false,
+      datamartTimeFilter: {
+        showTimeFilter: false
+      },
+      syntaxLoaded: false,
+      hint: null,
+      tagsFilter: {
+        show: false,
+        options: [],
+        selected: [],
+        loading: false
+      },
+      domainsFilter: {
+        show: false,
+        options: [],
+        selected: [],
+        loading: false
+      }
+    };
+    return _this;
+  }
+
+  DatamartQueryField.prototype.componentDidMount = function () {
+    var _this = this;
+
+    this.loadDatamarts(true);
+    this.setState(function (state) {
+      var _a;
+
+      return {
+        tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+          selected: ((_a = _this.props.query.sourceQuery.tagFilter) === null || _a === void 0 ? void 0 : _a.originalValues) || []
+        })
+      };
+    });
+    this.setState(function (state) {
+      var _a;
+
+      return {
+        domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+          selected: ((_a = _this.props.query.sourceQuery.domainFilter) === null || _a === void 0 ? void 0 : _a.originalValues) || []
+        })
+      };
+    });
+  };
+
+  DatamartQueryField.prototype.componentWillUnmount = function () {};
+
+  DatamartQueryField.prototype.componentDidUpdate = function (prevProps) {};
+
+  DatamartQueryField.prototype.fetchData = function (datamart) {
+    var query = this.props.query;
+    var sourceQuery = query.sourceQuery;
+    sourceQuery.datamartName = datamart.name;
+    sourceQuery.erid = datamart.erid;
+    this.onChangeQuery(true);
+    this.setState({
+      datamartsBrowserVisible: false
+    });
+  };
+
+  DatamartQueryField.prototype.resolveFiltersAsync = function (datamart) {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
+      var res, showDomainFilter_1, showTagFilter_1, timeFilter;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            return [4
+            /*yield*/
+            , this.props.datasource.getDatamartMetadata(datamart.erid).toPromise()];
+
+          case 1:
+            res = _a.sent();
+
+            if (res === null || res === void 0 ? void 0 : res.standardfiltermetadata) {
+              showDomainFilter_1 = !!res.standardfiltermetadata.domainfilter;
+              showTagFilter_1 = !!res.standardfiltermetadata.tagfilter;
+              this.setState(function (state) {
+                return {
+                  domainsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.domainsFilter), {
+                    show: showDomainFilter_1
+                  })
+                };
+              });
+              this.setState(function (state) {
+                return {
+                  tagsFilter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, state.tagsFilter), {
+                    show: showTagFilter_1
+                  })
+                };
+              });
+              timeFilter = res.standardfiltermetadata.timefilter;
+              this.setState({
+                datamartTimeFilter: {
+                  showTimeFilter: true,
+                  type: timeFilter.filtertype,
+                  label: this.getTimeFilterLabel(timeFilter)
+                }
+              });
+            }
+
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  DatamartQueryField.prototype.render = function () {
+    var _this = this;
+
+    var _a;
+
+    var _b = this.props,
+        datasource = _b.datasource,
+        query = _b.query,
+        extraFieldElement = _b.extraFieldElement;
+    var _c = this.state,
+        tagsFilter = _c.tagsFilter,
+        domainsFilter = _c.domainsFilter,
+        datamarts = _c.datamarts,
+        datamartTimeFilter = _c.datamartTimeFilter,
+        labelBrowserVisible = _c.datamartsBrowserVisible,
+        syntaxLoaded = _c.syntaxLoaded;
+    var hasDatamarts = ((_a = datamarts === null || datamarts === void 0 ? void 0 : datamarts.values) === null || _a === void 0 ? void 0 : _a.length) > 0;
+    var chooserText = getChooserText(datasource.lookupsDisabled, syntaxLoaded, hasDatamarts);
+    var buttonDisabled = !(syntaxLoaded && hasDatamarts);
+    return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      className: "gf-form-inline gf-form-inline--xs-view-flex-column flex-grow-1",
+      "data-testid": this.props['data-testid']
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+      className: "gf-form-label query-keyword pointer",
+      onClick: this.onClickChooserButton,
+      disabled: buttonDisabled
+    }, chooserText, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+      name: labelBrowserVisible ? 'angle-down' : 'angle-right'
+    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      className: "gf-form gf-form--grow flex-shrink-1 min-width-15"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+      readOnly: true,
+      placeholder: 'No Datamart selected',
+      "aria-label": "selected-datamart",
+      value: query.sourceQuery.datamartName
+    }))), labelBrowserVisible && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      className: "gf-form"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_DatamartsBrowser__WEBPACK_IMPORTED_MODULE_7__["DatamartsBrowser"], {
+      datamarts: this.state.datamarts,
+      onChange: this.onChangeDatamartsBrowser
+    })), !labelBrowserVisible && datamartTimeFilter.showTimeFilter && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, datamartTimeFilter.label && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      className: "gf-form"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFormLabel"], {
+      className: "query-keyword",
+      width: 10
+    }, "Time Filter"), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+      readOnly: true,
+      "aria-label": "time-filter-label",
+      value: datamartTimeFilter.label
+    })), datamartTimeFilter.type === _utilities_datamartTypes__WEBPACK_IMPORTED_MODULE_5__["DatamartTimeFilterType"].LAST_X_DAYS && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      className: "gf-form"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFormLabel"], {
+      className: "query-keyword",
+      width: 10
+    }, "Select Time Filter"), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["RadioButtonGroup"], {
+      options: TIME_FILTER_OPTIONS,
+      value: this.getLastXTimeFilterValue(),
+      onChange: function onChange(value) {
+        _this.onTimeFilterSelected(value);
+      }
+    }))), domainsFilter.show && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_domain_filter_DomainFilter__WEBPACK_IMPORTED_MODULE_6__["DomainFilter"], {
+      loading: domainsFilter.loading,
+      selected: domainsFilter.selected,
+      resultItems: domainsFilter.options,
+      onSearch: this.loadDomains,
+      onDomainSelected: this.onDomainFilterSelected
+    }), tagsFilter.show && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_tag_filter_TagFilter__WEBPACK_IMPORTED_MODULE_8__["TagFilter"], {
+      resultItems: tagsFilter.options,
+      selected: tagsFilter.selected,
+      loading: tagsFilter.loading,
+      onSearch: this.loadTags,
+      onTagSelected: this.onTagFilterSelected
+    }), extraFieldElement);
+  };
+
+  return DatamartQueryField;
+}(react__WEBPACK_IMPORTED_MODULE_2___default.a.PureComponent);
+
+/* harmony default export */ __webpack_exports__["default"] = (DatamartQueryField);
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/domain-filter/DomainFilter.tsx":
+/*!*********************************************************************!*\
+  !*** ./modules/datamarts/components/domain-filter/DomainFilter.tsx ***!
+  \*********************************************************************/
+/*! exports provided: DomainFilter */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DomainFilter", function() { return DomainFilter; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var modules_common_components_search_result_SearchResult__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules/common/components/search-result/SearchResult */ "./modules/common/components/search-result/SearchResult.tsx");
+/* harmony import */ var modules_common_components_tag_list_TagList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! modules/common/components/tag-list/TagList */ "./modules/common/components/tag-list/TagList.tsx");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+var searchConfig = {
+  searchPlaceholder: 'Search',
+  listItem: {
+    iconName: 'plus-circle',
+    iconTooltip: 'Add item'
+  }
+};
+var DomainFilter = function DomainFilter(props) {
+  var _a = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_4__["useReducer"])(function (showSearch) {
+    return !showSearch;
+  }, false), 2),
+      showSearch = _a[0],
+      toggleSearch = _a[1];
+
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+
+  var onDomainSelected = function onDomainSelected(selected) {
+    if (props.selected.find(function (domain) {
+      return domain.value === selected.value;
+    })) {
+      return;
+    }
+
+    var domains = props.selected.concat([selected]);
+    props.onDomainSelected(domains);
+  };
+
+  var getDomainTitle = function getDomainTitle(item) {
+    return item.label;
+  };
+
+  var onItemRemoved = function onItemRemoved(items) {
+    props.onDomainSelected(items);
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_4___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    className: "gf-form-inline gf-form-inline--xs-view-flex-column flex-grow-1"
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
+    className: "gf-form-label query-keyword pointer",
+    onClick: toggleSearch
+  }, "Domain Filter", react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+    name: !showSearch ? 'angle-right' : 'angle-down'
+  })), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    className: "gf-form gf-form--grow flex-shrink-1 min-width-15 gf-form-label",
+    style: {
+      alignItems: 'center'
+    }
+  }, props.selected.length > 0 ? react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(modules_common_components_tag_list_TagList__WEBPACK_IMPORTED_MODULE_3__["TagList"], {
+    tags: props.selected,
+    getTooltip: getDomainTitle,
+    onRemove: onItemRemoved,
+    getTitle: getDomainTitle
+  }) : react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+    readOnly: true,
+    placeholder: "No filter selected"
+  }))), showSearch && react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    style: {
+      marginTop: '12px',
+      marginBottom: '12px',
+      backgroundColor: theme.colors.background.secondary,
+      padding: '8px'
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(modules_common_components_search_result_SearchResult__WEBPACK_IMPORTED_MODULE_2__["SearchResult"], {
+    resultItems: props.resultItems,
+    loading: props.loading,
+    searchInputWidth: 40,
+    onSearch: props.onSearch,
+    config: searchConfig,
+    width: "100%",
+    onItemSelected: onDomainSelected
+  })));
+};
+
+/***/ }),
+
+/***/ "./modules/datamarts/components/tag-filter/TagFilter.tsx":
+/*!***************************************************************!*\
+  !*** ./modules/datamarts/components/tag-filter/TagFilter.tsx ***!
+  \***************************************************************/
+/*! exports provided: TagFilter */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TagFilter", function() { return TagFilter; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var modules_common_components_search_result_SearchResult__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules/common/components/search-result/SearchResult */ "./modules/common/components/search-result/SearchResult.tsx");
+/* harmony import */ var modules_common_components_tag_list_TagList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! modules/common/components/tag-list/TagList */ "./modules/common/components/tag-list/TagList.tsx");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+var searchConfig = {
+  searchPlaceholder: 'Search',
+  listItem: {
+    iconName: 'plus-circle',
+    iconTooltip: 'Add item'
+  }
+};
+var TagFilter = function TagFilter(props) {
+  var _a = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_4__["useReducer"])(function (showSearch) {
+    return !showSearch;
+  }, false), 2),
+      showSearch = _a[0],
+      toggleSearch = _a[1];
+
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+
+  var onTagSelected = function onTagSelected(selected) {
+    if (props.selected.find(function (item) {
+      return item.value === selected.value;
+    })) {
+      return;
+    }
+
+    var tags = props.selected.concat([selected]);
+    props.onTagSelected(tags);
+  };
+
+  var onItemRemoved = function onItemRemoved(items) {
+    props.onTagSelected(items);
+  };
+
+  var getTagTitle = function getTagTitle(item) {
+    return "" + item.label;
+  };
+
+  var getTagTooltip = function getTagTooltip(item) {
+    return item.group + ":" + item.label;
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_4___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    className: "gf-form-inline gf-form-inline--xs-view-flex-column flex-grow-1"
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
+    className: "gf-form-label query-keyword pointer",
+    onClick: toggleSearch
+  }, "Tag Filter", react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+    name: !showSearch ? 'angle-right' : 'angle-down'
+  })), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    className: "gf-form gf-form--grow flex-shrink-1 min-width-15 gf-form-label",
+    style: {
+      alignItems: 'center'
+    }
+  }, props.selected.length > 0 ? react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(modules_common_components_tag_list_TagList__WEBPACK_IMPORTED_MODULE_3__["TagList"], {
+    tags: props.selected,
+    onRemove: onItemRemoved,
+    getTooltip: getTagTooltip,
+    getTitle: getTagTitle
+  }) : react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+    readOnly: true,
+    placeholder: "No filter selected"
+  }))), showSearch && react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
+    style: {
+      marginTop: '12px',
+      marginBottom: '12px',
+      backgroundColor: theme.colors.background.secondary,
+      padding: '8px'
+    }
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(modules_common_components_search_result_SearchResult__WEBPACK_IMPORTED_MODULE_2__["SearchResult"], {
+    resultItems: props.resultItems,
+    onSearch: props.onSearch,
+    config: searchConfig,
+    searchInputWidth: 40,
+    width: "100%",
+    loading: props.loading,
+    onItemSelected: onTagSelected
+  })));
+};
+
+/***/ }),
+
+/***/ "./modules/datamarts/utilities/datamartTypes.ts":
+/*!******************************************************!*\
+  !*** ./modules/datamarts/utilities/datamartTypes.ts ***!
+  \******************************************************/
+/*! exports provided: DatamartTimeFilterType */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartTimeFilterType", function() { return DatamartTimeFilterType; });
+var DatamartTimeFilterType;
+
+(function (DatamartTimeFilterType) {
+  DatamartTimeFilterType["LAST_X_DAYS"] = "lastxdays-time-filter";
+  DatamartTimeFilterType["FIXED"] = "time-filter-fixed";
+})(DatamartTimeFilterType || (DatamartTimeFilterType = {}));
 
 /***/ }),
 
@@ -34475,17 +36124,17 @@ var templateObject_1;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IconButton", function() { return IconButton; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
 
-var SROnly = Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n  clip: rect(0 0 0 0);\n  clip-path: inset(50%);\n  height: 1px;\n  overflow: hidden;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n"], ["\n  clip: rect(0 0 0 0);\n  clip-path: inset(50%);\n  height: 1px;\n  overflow: hidden;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n"])));
+var SROnly = Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n  clip: rect(0 0 0 0);\n  clip-path: inset(50%);\n  height: 1px;\n  overflow: hidden;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n"], ["\n  clip: rect(0 0 0 0);\n  clip-path: inset(50%);\n  height: 1px;\n  overflow: hidden;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n"])));
 var IconButton = function IconButton(_a) {
   var iconName = _a.iconName,
       onClick = _a.onClick,
@@ -34493,12 +36142,12 @@ var IconButton = function IconButton(_a) {
       label = _a.label,
       buttonProps = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__rest"])(_a, ["iconName", "onClick", "className", "label"]);
 
-  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])('gf-form-label gf-form-label--btn query-part', className),
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])('gf-form-label gf-form-label--btn query-part', className),
     onClick: onClick
-  }, buttonProps), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
+  }, buttonProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", {
     className: SROnly
-  }, label), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+  }, label), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Icon"], {
     name: iconName,
     "aria-hidden": "true"
   }));
@@ -34518,10 +36167,10 @@ var templateObject_1;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MetricPicker", function() { return MetricPicker; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _utilities_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utilities/utils */ "./modules/event/utilities/utils.ts");
@@ -34530,7 +36179,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var noWrap = Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n  white-space: nowrap;\n"], ["\n  white-space: nowrap;\n"])));
+var noWrap = Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n  white-space: nowrap;\n"], ["\n  white-space: nowrap;\n"])));
 
 var toOption = function toOption(metric) {
   return {
@@ -34551,8 +36200,8 @@ var MetricPicker = function MetricPicker(_a) {
   var selectedOption = options.find(function (option) {
     return option.id === value;
   });
-  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Segment"], {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(className, noWrap),
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Segment"], {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])(className, noWrap),
     options: toOptions(options),
     onChange: onChange,
     placeholder: "Select Metric",
@@ -34574,15 +36223,15 @@ var templateObject_1;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BucketAggregationEditor", function() { return BucketAggregationEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _hooks_useFields__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../hooks/useFields */ "./modules/event/hooks/useFields.ts");
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
 /* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../styles */ "./modules/event/components/QueryEditor/styles.ts");
-/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/aggregations.ts");
-/* harmony import */ var _SettingsEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./SettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
+/* harmony import */ var _SettingsEditor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
+/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/aggregations.ts");
 /* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
 
@@ -34616,7 +36265,7 @@ var BucketAggregationEditor = function BucketAggregationEditor(_a) {
   var value = _a.value;
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
   var getFields = Object(_hooks_useFields__WEBPACK_IMPORTED_MODULE_3__["useFields"])(value.type);
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Segment"], {
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
     className: _styles__WEBPACK_IMPORTED_MODULE_5__["segmentStyles"],
     options: bucketAggOptions,
     onChange: function onChange(e) {
@@ -34626,7 +36275,7 @@ var BucketAggregationEditor = function BucketAggregationEditor(_a) {
       }));
     },
     value: toOption(value)
-  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isBucketAggregationWithField"])(value) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["SegmentAsync"], {
+  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_7__["isBucketAggregationWithField"])(value) && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentAsync"], {
     className: _styles__WEBPACK_IMPORTED_MODULE_5__["segmentStyles"],
     loadOptions: getFields,
     onChange: function onChange(e) {
@@ -34637,7 +36286,7 @@ var BucketAggregationEditor = function BucketAggregationEditor(_a) {
     },
     placeholder: "Select Field",
     value: value.field
-  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditor__WEBPACK_IMPORTED_MODULE_7__["SettingsEditor"], {
+  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_SettingsEditor__WEBPACK_IMPORTED_MODULE_6__["SettingsEditor"], {
     bucketAgg: value
   }));
 };
@@ -34655,19 +36304,19 @@ var BucketAggregationEditor = function BucketAggregationEditor(_a) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DateHistogramSettingsEditor", function() { return DateHistogramSettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! . */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../hooks/useCreatableSelectPersistedBehaviour */ "./modules/event/components/hooks/useCreatableSelectPersistedBehaviour.ts");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../hooks/useCreatableSelectPersistedBehaviour */ "./modules/event/components/hooks/useCreatableSelectPersistedBehaviour.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! . */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
 
 
 
@@ -34729,76 +36378,75 @@ var DateHistogramSettingsEditor = function DateHistogramSettingsEditor(_a) {
   var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 
   var bucketAgg = _a.bucketAgg;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_8__["uniqueId"])('es-date_histogram-')).current;
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useDispatch"])();
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-date_histogram-')).current;
 
   var handleIntervalChange = function handleIntervalChange(_a) {
     var value = _a.value;
-    return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+    return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
       bucketAgg: bucketAgg,
       settingName: 'interval',
       newValue: value
     }));
   };
 
-  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Interval"
-  }, ___WEBPACK_IMPORTED_MODULE_7__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Select"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
-    menuShouldPortal: true,
-    inputId: Object(lodash__WEBPACK_IMPORTED_MODULE_8__["uniqueId"])('es-date_histogram-interval'),
+  }, ___WEBPACK_IMPORTED_MODULE_9__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Select"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    inputId: Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-date_histogram-interval'),
     isValidNewOption: isValidNewOption,
     filterOption: optionStartsWithValue
-  }, Object(_hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_9__["useCreatableSelectPersistedBehaviour"])({
+  }, Object(_hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_6__["useCreatableSelectPersistedBehaviour"])({
     options: defaultIntervalOptions,
-    value: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.interval) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_3__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _c === void 0 ? void 0 : _c.interval),
+    value: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.interval) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_8__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _c === void 0 ? void 0 : _c.interval),
     onChange: handleIntervalChange
-  })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Min Doc Count"
-  }, ___WEBPACK_IMPORTED_MODULE_7__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }, ___WEBPACK_IMPORTED_MODULE_9__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
     id: baseId + "-min_doc_count",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'min_doc_count',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.min_doc_count) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_3__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _e === void 0 ? void 0 : _e.min_doc_count)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.min_doc_count) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_8__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _e === void 0 ? void 0 : _e.min_doc_count)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Trim Edges"
-  }, ___WEBPACK_IMPORTED_MODULE_7__["inlineFieldProps"], {
+  }, ___WEBPACK_IMPORTED_MODULE_9__["inlineFieldProps"], {
     tooltip: "Trim the edges on the timeseries datapoints"
-  }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
     id: baseId + "-trime_edges",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'trimEdges',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.trimEdges) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_3__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _g === void 0 ? void 0 : _g.trimEdges)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.trimEdges) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_8__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _g === void 0 ? void 0 : _g.trimEdges)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Offset"
-  }, ___WEBPACK_IMPORTED_MODULE_7__["inlineFieldProps"], {
+  }, ___WEBPACK_IMPORTED_MODULE_9__["inlineFieldProps"], {
     tooltip: "Change the start value of each bucket by the specified positive (+) or negative offset (-) duration, such as 1h for an hour, or 1d for a day"
-  }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
     id: baseId + "-offset",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'offset',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_h = bucketAgg.settings) === null || _h === void 0 ? void 0 : _h.offset) || ((_j = _utils__WEBPACK_IMPORTED_MODULE_3__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _j === void 0 ? void 0 : _j.offset)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_h = bucketAgg.settings) === null || _h === void 0 ? void 0 : _h.offset) || ((_j = _utils__WEBPACK_IMPORTED_MODULE_8__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _j === void 0 ? void 0 : _j.offset)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Timezone"
-  }, ___WEBPACK_IMPORTED_MODULE_7__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["TimeZonePicker"], {
-    value: ((_k = bucketAgg.settings) === null || _k === void 0 ? void 0 : _k.timeZone) || ((_l = _utils__WEBPACK_IMPORTED_MODULE_3__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _l === void 0 ? void 0 : _l.timeZone),
-    includeInternal: [_grafana_data__WEBPACK_IMPORTED_MODULE_5__["InternalTimeZones"].utc],
+  }, ___WEBPACK_IMPORTED_MODULE_9__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["TimeZonePicker"], {
+    value: ((_k = bucketAgg.settings) === null || _k === void 0 ? void 0 : _k.timeZone) || ((_l = _utils__WEBPACK_IMPORTED_MODULE_8__["bucketAggregationConfig"].date_histogram.defaultSettings) === null || _l === void 0 ? void 0 : _l.timeZone),
+    includeInternal: [_grafana_data__WEBPACK_IMPORTED_MODULE_3__["InternalTimeZones"].utc],
     onChange: function onChange(timeZone) {
-      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'timeZone',
         newValue: timeZone
@@ -34820,19 +36468,19 @@ var DateHistogramSettingsEditor = function DateHistogramSettingsEditor(_a) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FiltersSettingsEditor", function() { return FiltersSettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _AddRemove__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../AddRemove */ "./modules/event/components/AddRemove.tsx");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/actions.ts");
-/* harmony import */ var _state_reducer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/reducer */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/reducer.ts");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _AddRemove__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../AddRemove */ "./modules/event/components/AddRemove.tsx");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/actions.ts");
+/* harmony import */ var _state_reducer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./state/reducer */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/reducer.ts");
 
 
 
@@ -34847,43 +36495,43 @@ var FiltersSettingsEditor = function FiltersSettingsEditor(_a) {
   var _b, _c, _d, _e;
 
   var bucketAgg = _a.bucketAgg;
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_9__["uniqueId"])('es-filters-')).current;
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_2__["uniqueId"])('es-filters-')).current;
   var upperStateDispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useDispatch"])();
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useStatelessReducer"])(function (newValue) {
-    return upperStateDispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
+    return upperStateDispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
       bucketAgg: bucketAgg,
       settingName: 'filters',
       newValue: newValue
     }));
-  }, (_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.filters, _state_reducer__WEBPACK_IMPORTED_MODULE_8__["reducer"]); // The model might not have filters (or an empty array of filters) in it because of the way it was built in previous versions of the datasource.
+  }, (_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.filters, _state_reducer__WEBPACK_IMPORTED_MODULE_9__["reducer"]); // The model might not have filters (or an empty array of filters) in it because of the way it was built in previous versions of the datasource.
   // If this is the case we add a default one.
 
   Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
     var _a, _b;
 
     if (!((_b = (_a = bucketAgg.settings) === null || _a === void 0 ? void 0 : _a.filters) === null || _b === void 0 ? void 0 : _b.length)) {
-      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["addFilter"])());
+      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["addFilter"])());
     }
   }, [dispatch, (_d = (_c = bucketAgg.settings) === null || _c === void 0 ? void 0 : _c.filters) === null || _d === void 0 ? void 0 : _d.length]);
   return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          display: flex;\n          flex-direction: column;\n        "], ["\n          display: flex;\n          flex-direction: column;\n        "])))
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          display: flex;\n          flex-direction: column;\n        "], ["\n          display: flex;\n          flex-direction: column;\n        "])))
   }, (_e = bucketAgg.settings) === null || _e === void 0 ? void 0 : _e.filters.map(function (filter, index) {
     var _a;
 
     return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       key: index,
-      className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n              display: flex;\n            "], ["\n              display: flex;\n            "])))
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-      className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n                width: 250px;\n              "], ["\n                width: 250px;\n              "])))
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+      className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n              display: flex;\n            "], ["\n              display: flex;\n            "])))
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], {
       label: "Query",
-      labelWidth: 10
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["QueryField"], {
+      labelWidth: 8
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n                  width: 150px;\n                "], ["\n                  width: 150px;\n                "])))
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["QueryField"], {
       placeholder: "Lucene Query",
       portalOrigin: "elasticsearch",
       onBlur: function onBlur() {},
       onChange: function onChange(query) {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeFilter"])({
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["changeFilter"])({
           index: index,
           filter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, filter), {
             query: query
@@ -34891,14 +36539,15 @@ var FiltersSettingsEditor = function FiltersSettingsEditor(_a) {
         }));
       },
       query: filter.query
-    }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+    }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], {
       label: "Label",
-      labelWidth: 10
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+      labelWidth: 8
+    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
+      width: 16,
       id: baseId + "-label-" + index,
       placeholder: "Label",
       onBlur: function onBlur(e) {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeFilter"])({
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["changeFilter"])({
           index: index,
           filter: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, filter), {
             label: e.target.value
@@ -34906,14 +36555,14 @@ var FiltersSettingsEditor = function FiltersSettingsEditor(_a) {
         }));
       },
       defaultValue: filter.label
-    })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_AddRemove__WEBPACK_IMPORTED_MODULE_4__["AddRemove"], {
+    })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_AddRemove__WEBPACK_IMPORTED_MODULE_6__["AddRemove"], {
       index: index,
       elements: ((_a = bucketAgg.settings) === null || _a === void 0 ? void 0 : _a.filters) || [],
       onAdd: function onAdd() {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["addFilter"])());
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["addFilter"])());
       },
       onRemove: function onRemove() {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["removeFilter"])(index));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["removeFilter"])(index));
       }
     }));
   })));
@@ -35017,20 +36666,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TermsSettingsEditor", function() { return TermsSettingsEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createOrderByOptions", function() { return createOrderByOptions; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! . */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _utilities_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../utilities/utils */ "./modules/event/utilities/utils.ts");
 /* harmony import */ var _hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../hooks/useCreatableSelectPersistedBehaviour */ "./modules/event/components/hooks/useCreatableSelectPersistedBehaviour.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
-/* harmony import */ var _utilities_utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../utilities/utils */ "./modules/event/utilities/utils.ts");
-/* harmony import */ var _MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../MetricAggregationsEditor/aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../MetricAggregationsEditor/aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! . */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/index.tsx");
 
 
 
@@ -35047,78 +36696,75 @@ var TermsSettingsEditor = function TermsSettingsEditor(_a) {
   var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
 
   var bucketAgg = _a.bucketAgg;
-  var metrics = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_8__["useQuery"])().metrics;
+  var metrics = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_7__["useQuery"])().metrics;
   var orderBy = createOrderByOptions(metrics);
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_11__["uniqueId"])('es-terms-')).current;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__["useDispatch"])();
-  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-terms-')).current;
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Order"
-  }, ___WEBPACK_IMPORTED_MODULE_4__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Select"], {
+  }, ___WEBPACK_IMPORTED_MODULE_11__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     inputId: baseId + "-order",
-    menuShouldPortal: true,
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'order',
         newValue: e.value
       }));
     },
-    options: _utils__WEBPACK_IMPORTED_MODULE_5__["orderOptions"],
-    value: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.order) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_5__["bucketAggregationConfig"].terms.defaultSettings) === null || _c === void 0 ? void 0 : _c.order)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    options: _utils__WEBPACK_IMPORTED_MODULE_10__["orderOptions"],
+    value: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.order) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_10__["bucketAggregationConfig"].terms.defaultSettings) === null || _c === void 0 ? void 0 : _c.order)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Size"
-  }, ___WEBPACK_IMPORTED_MODULE_4__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Select"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
-    inputId: baseId + "-size",
-    menuShouldPortal: true
+  }, ___WEBPACK_IMPORTED_MODULE_11__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    inputId: baseId + "-size"
   }, Object(_hooks_useCreatableSelectPersistedBehaviour__WEBPACK_IMPORTED_MODULE_6__["useCreatableSelectPersistedBehaviour"])({
-    options: _utils__WEBPACK_IMPORTED_MODULE_5__["sizeOptions"],
-    value: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.size) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_5__["bucketAggregationConfig"].terms.defaultSettings) === null || _e === void 0 ? void 0 : _e.size),
+    options: _utils__WEBPACK_IMPORTED_MODULE_10__["sizeOptions"],
+    value: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.size) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_10__["bucketAggregationConfig"].terms.defaultSettings) === null || _e === void 0 ? void 0 : _e.size),
     onChange: function onChange(_a) {
       var value = _a.value;
-      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
+      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'size',
         newValue: value
       }));
     }
-  })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Min Doc Count"
-  }, ___WEBPACK_IMPORTED_MODULE_4__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }, ___WEBPACK_IMPORTED_MODULE_11__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-min_doc_count",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'min_doc_count',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.min_doc_count) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_5__["bucketAggregationConfig"].terms.defaultSettings) === null || _g === void 0 ? void 0 : _g.min_doc_count)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.min_doc_count) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_10__["bucketAggregationConfig"].terms.defaultSettings) === null || _g === void 0 ? void 0 : _g.min_doc_count)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Order By"
-  }, ___WEBPACK_IMPORTED_MODULE_4__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Select"], {
+  }, ___WEBPACK_IMPORTED_MODULE_11__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     inputId: baseId + "-order_by",
-    menuShouldPortal: true,
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'orderBy',
         newValue: e.value
       }));
     },
     options: orderBy,
-    value: ((_h = bucketAgg.settings) === null || _h === void 0 ? void 0 : _h.orderBy) || ((_j = _utils__WEBPACK_IMPORTED_MODULE_5__["bucketAggregationConfig"].terms.defaultSettings) === null || _j === void 0 ? void 0 : _j.orderBy)
-  })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    value: ((_h = bucketAgg.settings) === null || _h === void 0 ? void 0 : _h.orderBy) || ((_j = _utils__WEBPACK_IMPORTED_MODULE_10__["bucketAggregationConfig"].terms.defaultSettings) === null || _j === void 0 ? void 0 : _j.orderBy)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Missing"
-  }, ___WEBPACK_IMPORTED_MODULE_4__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }, ___WEBPACK_IMPORTED_MODULE_11__["inlineFieldProps"]), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-missing",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'missing',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_k = bucketAgg.settings) === null || _k === void 0 ? void 0 : _k.missing) || ((_l = _utils__WEBPACK_IMPORTED_MODULE_5__["bucketAggregationConfig"].terms.defaultSettings) === null || _l === void 0 ? void 0 : _l.missing)
+    defaultValue: ((_k = bucketAgg.settings) === null || _k === void 0 ? void 0 : _k.missing) || ((_l = _utils__WEBPACK_IMPORTED_MODULE_10__["bucketAggregationConfig"].terms.defaultSettings) === null || _l === void 0 ? void 0 : _l.missing)
   })));
 };
 /**
@@ -35148,7 +36794,7 @@ function createOrderByOptionsForExtendedStats(metric) {
     }
 
     return {
-      label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_9__["describeMetric"])(metric) + " (" + method + ")",
+      label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_5__["describeMetric"])(metric) + " (" + method + ")",
       value: metric.id + "[" + method + "]"
     };
   });
@@ -35170,7 +36816,7 @@ function createOrderByOptionsForPercentiles(metric) {
     // otherwise you have to use the actual value.
     var percentString = /^\d+\.\d+/.test("" + percent) ? percent : percent + ".0";
     return {
-      label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_9__["describeMetric"])(metric) + " (" + percent + ")",
+      label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_5__["describeMetric"])(metric) + " (" + percent + ")",
       value: metric.id + "[" + percentString + "]"
     };
   });
@@ -35179,7 +36825,7 @@ function createOrderByOptionsForPercentiles(metric) {
 function isValidOrderTarget(metric) {
   return (// top metrics can't be used for ordering
     metric.type !== 'top_metrics' && // pipeline aggregations can't be used for ordering: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#search-aggregations-bucket-terms-aggregation-order
-    !Object(_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_10__["isPipelineAggregation"])(metric)
+    !Object(_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_8__["isPipelineAggregation"])(metric)
   );
 }
 /**
@@ -35199,12 +36845,12 @@ var createOrderByOptions = function createOrderByOptions(metrics) {
       return createOrderByOptionsForPercentiles(metric);
     } else {
       return {
-        label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_9__["describeMetric"])(metric),
+        label: Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_5__["describeMetric"])(metric),
         value: metric.id
       };
     }
   });
-  return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_utils__WEBPACK_IMPORTED_MODULE_5__["orderByOptions"])), Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(metricOptions));
+  return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_utils__WEBPACK_IMPORTED_MODULE_10__["orderByOptions"])), Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(metricOptions));
 };
 
 /***/ }),
@@ -35221,20 +36867,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inlineFieldProps", function() { return inlineFieldProps; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsEditor", function() { return SettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../SettingsEditorContainer */ "./modules/event/components/QueryEditor/SettingsEditorContainer.tsx");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
-/* harmony import */ var _FiltersSettingsEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FiltersSettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/index.tsx");
-/* harmony import */ var _useDescription__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./useDescription */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/useDescription.ts");
-/* harmony import */ var _DateHistogramSettingsEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./DateHistogramSettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/DateHistogramSettingsEditor.tsx");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../SettingsEditorContainer */ "./modules/event/components/QueryEditor/SettingsEditorContainer.tsx");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
+/* harmony import */ var _DateHistogramSettingsEditor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./DateHistogramSettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/DateHistogramSettingsEditor.tsx");
+/* harmony import */ var _FiltersSettingsEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./FiltersSettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/index.tsx");
 /* harmony import */ var _TermsSettingsEditor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./TermsSettingsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/TermsSettingsEditor.tsx");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _useDescription__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./useDescription */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/useDescription.ts");
 
 
 
@@ -35254,53 +36900,53 @@ var SettingsEditor = function SettingsEditor(_a) {
   var _b, _c, _d, _e, _f, _g;
 
   var bucketAgg = _a.bucketAgg;
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_11__["uniqueId"])('es-setting-')).current;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__["useDispatch"])();
-  var settingsDescription = Object(_useDescription__WEBPACK_IMPORTED_MODULE_8__["useDescription"])(bucketAgg);
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_4__["SettingsEditorContainer"], {
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-setting-')).current;
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
+  var settingsDescription = Object(_useDescription__WEBPACK_IMPORTED_MODULE_11__["useDescription"])(bucketAgg);
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_5__["SettingsEditorContainer"], {
     label: settingsDescription
   }, bucketAgg.type === 'terms' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_TermsSettingsEditor__WEBPACK_IMPORTED_MODULE_10__["TermsSettingsEditor"], {
     bucketAgg: bucketAgg
-  }), bucketAgg.type === 'date_histogram' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_DateHistogramSettingsEditor__WEBPACK_IMPORTED_MODULE_9__["DateHistogramSettingsEditor"], {
+  }), bucketAgg.type === 'date_histogram' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_DateHistogramSettingsEditor__WEBPACK_IMPORTED_MODULE_8__["DateHistogramSettingsEditor"], {
     bucketAgg: bucketAgg
-  }), bucketAgg.type === 'filters' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_FiltersSettingsEditor__WEBPACK_IMPORTED_MODULE_7__["FiltersSettingsEditor"], {
+  }), bucketAgg.type === 'filters' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_FiltersSettingsEditor__WEBPACK_IMPORTED_MODULE_9__["FiltersSettingsEditor"], {
     bucketAgg: bucketAgg
-  }), bucketAgg.type === 'geohash_grid' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  }), bucketAgg.type === 'geohash_grid' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Precision"
-  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-geohash_grid-precision",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'precision',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.precision) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_6__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _c === void 0 ? void 0 : _c.precision)
-  })), bucketAgg.type === 'histogram' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_b = bucketAgg.settings) === null || _b === void 0 ? void 0 : _b.precision) || ((_c = _utils__WEBPACK_IMPORTED_MODULE_7__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _c === void 0 ? void 0 : _c.precision)
+  })), bucketAgg.type === 'histogram' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Interval"
-  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-histogram-interval",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'interval',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.interval) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_6__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _e === void 0 ? void 0 : _e.interval)
-  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+    defaultValue: ((_d = bucketAgg.settings) === null || _d === void 0 ? void 0 : _d.interval) || ((_e = _utils__WEBPACK_IMPORTED_MODULE_7__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _e === void 0 ? void 0 : _e.interval)
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Min Doc Count"
-  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-histogram-min_doc_count",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeBucketAggregationSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["changeBucketAggregationSetting"])({
         bucketAgg: bucketAgg,
         settingName: 'min_doc_count',
         newValue: e.target.value
       }));
     },
-    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.min_doc_count) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_6__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _g === void 0 ? void 0 : _g.min_doc_count)
+    defaultValue: ((_f = bucketAgg.settings) === null || _f === void 0 ? void 0 : _f.min_doc_count) || ((_g = _utils__WEBPACK_IMPORTED_MODULE_7__["bucketAggregationConfig"][bucketAgg.type].defaultSettings) === null || _g === void 0 ? void 0 : _g.min_doc_count)
   }))));
 };
 
@@ -35460,12 +37106,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BucketAggregationsEditor", function() { return BucketAggregationsEditor; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _BucketAggregationEditor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BucketAggregationEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/BucketAggregationEditor.tsx");
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
-/* harmony import */ var _QueryEditorRow__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../QueryEditorRow */ "./modules/event/components/QueryEditor/QueryEditorRow.tsx");
-/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../IconButton */ "./modules/event/components/IconButton.tsx");
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../IconButton */ "./modules/event/components/IconButton.tsx");
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _QueryEditorRow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../QueryEditorRow */ "./modules/event/components/QueryEditor/QueryEditorRow.tsx");
+/* harmony import */ var _BucketAggregationEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BucketAggregationEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/BucketAggregationEditor.tsx");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/actions.ts");
 
 
 
@@ -35475,22 +37121,22 @@ __webpack_require__.r(__webpack_exports__);
 
 var BucketAggregationsEditor = function BucketAggregationsEditor(_a) {
   var nextId = _a.nextId;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__["useDispatch"])();
-  var bucketAggs = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_4__["useQuery"])().bucketAggs;
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_1__["useDispatch"])();
+  var bucketAggs = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_3__["useQuery"])().bucketAggs;
   var totalBucketAggs = (bucketAggs === null || bucketAggs === void 0 ? void 0 : bucketAggs.length) || 0;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, bucketAggs.map(function (bucketAgg, index) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QueryEditorRow__WEBPACK_IMPORTED_MODULE_5__["QueryEditorRow"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QueryEditorRow__WEBPACK_IMPORTED_MODULE_4__["QueryEditorRow"], {
       key: bucketAgg.type + "-" + bucketAgg.id,
       label: index === 0 ? 'Group By' : 'Then By',
       onRemoveClick: totalBucketAggs > 1 && function () {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_3__["removeBucketAggregation"])(bucketAgg.id));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["removeBucketAggregation"])(bucketAgg.id));
       }
-    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BucketAggregationEditor__WEBPACK_IMPORTED_MODULE_1__["BucketAggregationEditor"], {
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BucketAggregationEditor__WEBPACK_IMPORTED_MODULE_5__["BucketAggregationEditor"], {
       value: bucketAgg
-    }), index === 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_6__["IconButton"], {
+    }), index === 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_2__["IconButton"], {
       iconName: "plus",
       onClick: function onClick() {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_3__["addBucketAggregation"])(nextId));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["addBucketAggregation"])(nextId));
       },
       label: "add"
     }));
@@ -35667,10 +37313,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "orderByOptions", function() { return orderByOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "orderOptions", function() { return orderOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sizeOptions", function() { return sizeOptions; });
-/* harmony import */ var _SettingsEditor_FiltersSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SettingsEditor/FiltersSettingsEditor/utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/utils.ts");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_1__);
-// import { BucketsConfiguration } from '../../../../../query-modules/event/eventTypes';
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _SettingsEditor_FiltersSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SettingsEditor/FiltersSettingsEditor/utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/utils.ts");
+ // import { BucketsConfiguration } from '../../../../../query-modules/event/eventTypes';
 
 
 var bucketAggregationConfig = {
@@ -35688,7 +37334,7 @@ var bucketAggregationConfig = {
     label: 'Filters',
     requiresField: false,
     defaultSettings: {
-      filters: [Object(_SettingsEditor_FiltersSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_0__["defaultFilter"])()]
+      filters: [Object(_SettingsEditor_FiltersSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_1__["defaultFilter"])()]
     }
   },
   geohash_grid: {
@@ -35705,7 +37351,7 @@ var bucketAggregationConfig = {
       interval: 'auto',
       min_doc_count: '0',
       trimEdges: '0',
-      timeZone: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["InternalTimeZones"].utc
+      timeZone: _grafana_data__WEBPACK_IMPORTED_MODULE_0__["InternalTimeZones"].utc
     }
   },
   histogram: {
@@ -35776,8 +37422,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _MetricAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MetricAggregationsEditor/state/reducer */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/reducer.ts");
-/* harmony import */ var _BucketAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BucketAggregationsEditor/state/reducer */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/reducer.ts");
+/* harmony import */ var _BucketAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BucketAggregationsEditor/state/reducer */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/state/reducer.ts");
+/* harmony import */ var _MetricAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MetricAggregationsEditor/state/reducer */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/reducer.ts");
 /* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./state */ "./modules/event/components/QueryEditor/state.ts");
 
 
@@ -35800,8 +37446,8 @@ var ElasticsearchProvider = function ElasticsearchProvider(_a) {
   var reducer = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__["combineReducers"])({
     query: _state__WEBPACK_IMPORTED_MODULE_5__["queryReducer"],
     alias: _state__WEBPACK_IMPORTED_MODULE_5__["aliasPatternReducer"],
-    metrics: _MetricAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_3__["reducer"],
-    bucketAggs: Object(_BucketAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_4__["createReducer"])(datasource.timeField)
+    metrics: _MetricAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_4__["reducer"],
+    bucketAggs: Object(_BucketAggregationsEditor_state_reducer__WEBPACK_IMPORTED_MODULE_3__["createReducer"])(datasource.timeField)
   });
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__["useStatelessReducer"])( // timeField is part of the query model, but its value is always set to be the one from datasource settings.
   function (newState) {
@@ -35811,12 +37457,12 @@ var ElasticsearchProvider = function ElasticsearchProvider(_a) {
   }, query, reducer); // This initializes the query by dispatching an init action to each reducer.
   // useStatelessReducer will then call `onChange` with the newly generated query
 
-  react__WEBPACK_IMPORTED_MODULE_1___default.a.useEffect(function () {
-    if (!query.metrics || !query.bucketAggs || query.query === undefined) {
-      dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_5__["initQuery"])());
-    }
-  }, []);
-  return !(!query.metrics || !query.bucketAggs || query.query === undefined) ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(DatasourceContext.Provider, {
+  if (!query.metrics || !query.bucketAggs || query.query === undefined) {
+    dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_5__["initQuery"])());
+    return null;
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(DatasourceContext.Provider, {
     value: datasource
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(QueryContext.Provider, {
     value: query
@@ -35824,7 +37470,7 @@ var ElasticsearchProvider = function ElasticsearchProvider(_a) {
     value: range
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__["DispatchContext"].Provider, {
     value: dispatch
-  }, children)))) : null;
+  }, children))));
 };
 
 var getHook = function getHook(c) {
@@ -35856,22 +37502,22 @@ var useRange = getHook(RangeContext);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MetricEditor", function() { return MetricEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _hooks_useFields__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../hooks/useFields */ "./modules/event/hooks/useFields.ts");
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./styles */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/styles.ts");
-/* harmony import */ var _SettingsEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./SettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/index.tsx");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
-/* harmony import */ var _MetricPicker__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../MetricPicker */ "./modules/event/components/MetricPicker.tsx");
-/* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../styles */ "./modules/event/components/QueryEditor/styles.ts");
-/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
-/* harmony import */ var _hooks_useFields__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../hooks/useFields */ "./modules/event/hooks/useFields.ts");
+/* harmony import */ var _MetricPicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../MetricPicker */ "./modules/event/components/MetricPicker.tsx");
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../styles */ "./modules/event/components/QueryEditor/styles.ts");
+/* harmony import */ var _SettingsEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./SettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/index.tsx");
+/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
+/* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./styles */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/styles.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
 
 
 
@@ -35885,11 +37531,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // import { satisfies } from 'semver';
+
 
 var toOption = function toOption(metric) {
   return {
-    label: _utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"][metric.type].label,
+    label: _utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"][metric.type].label,
     value: metric.type
   };
 }; // If a metric is a Pipeline Aggregation (https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline.html)
@@ -35899,7 +37545,7 @@ var toOption = function toOption(metric) {
 
 
 var isBasicAggregation = function isBasicAggregation(metric) {
-  return !_utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"][metric.type].isPipelineAgg;
+  return !_utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"][metric.type].isPipelineAgg;
 };
 
 var getTypeOptions = function getTypeOptions(previousMetrics, // esVersion: string,
@@ -35910,7 +37556,7 @@ xpack) {
 
 
   var includePipelineAggregations = previousMetrics.some(isBasicAggregation);
-  return Object.entries(_utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"]) // Only showing metrics type supported by the configured version of ES
+  return Object.entries(_utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"]) // Only showing metrics type supported by the configured version of ES
   // .filter(([_, { versionRange = '*' }]) => satisfies(esVersion, versionRange))
   // Filtering out Pipeline Aggregations if there's no basic metric selected before
   .filter(function (_a) {
@@ -35919,7 +37565,7 @@ xpack) {
     var _d = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_a, 1),
         key = _d[0];
 
-    return includePipelineAggregations || !((_c = (_b = _utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"][key]) === null || _b === void 0 ? void 0 : _b.config) === null || _c === void 0 ? void 0 : _c.isPipelineAgg);
+    return includePipelineAggregations || !((_c = (_b = _utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"][key]) === null || _b === void 0 ? void 0 : _b.config) === null || _c === void 0 ? void 0 : _c.isPipelineAgg);
   }) // Filtering out X-Pack plugins if X-Pack is disabled
   .filter(function (_a) {
     var _b, _c;
@@ -35927,13 +37573,13 @@ xpack) {
     var _d = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_a, 1),
         key = _d[0];
 
-    return ((_c = (_b = _utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"][key]) === null || _b === void 0 ? void 0 : _b.config) === null || _c === void 0 ? void 0 : _c.xpack) ? xpack : true;
+    return ((_c = (_b = _utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"][key]) === null || _b === void 0 ? void 0 : _b.config) === null || _c === void 0 ? void 0 : _c.xpack) ? xpack : true;
   }).map(function (_a) {
     var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_a, 1),
         key = _b[0];
 
     return {
-      label: _utils__WEBPACK_IMPORTED_MODULE_8__["metricAggregationConfig"][key].label,
+      label: _utils__WEBPACK_IMPORTED_MODULE_13__["metricAggregationConfig"][key].label,
       value: key
     };
   });
@@ -35941,12 +37587,12 @@ xpack) {
 
 var MetricEditor = function MetricEditor(_a) {
   var value = _a.value;
-  var styles = Object(_styles__WEBPACK_IMPORTED_MODULE_6__["getStyles"])(Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])(), !!value.hide); // const datasource = useDatasource();
+  var styles = Object(_styles__WEBPACK_IMPORTED_MODULE_12__["getStyles"])(Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["useTheme2"])(), !!value.hide); // const datasource = useDatasource();
 
-  var query = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_4__["useQuery"])();
+  var query = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_7__["useQuery"])();
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useDispatch"])();
-  var getFields = Object(_hooks_useFields__WEBPACK_IMPORTED_MODULE_13__["useFields"])(value.type);
-  var loadOptions = Object(react__WEBPACK_IMPORTED_MODULE_3__["useCallback"])(function () {
+  var getFields = Object(_hooks_useFields__WEBPACK_IMPORTED_MODULE_4__["useFields"])(value.type);
+  var loadOptions = Object(react__WEBPACK_IMPORTED_MODULE_2__["useCallback"])(function () {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(void 0, void 0, void 0, function () {
       var remoteFields;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
@@ -35959,7 +37605,7 @@ var MetricEditor = function MetricEditor(_a) {
           case 1:
             remoteFields = _a.sent(); // Metric aggregations that have inline script support don't require a field to be set.
 
-            if (Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isMetricAggregationWithInlineScript"])(value)) {
+            if (Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isMetricAggregationWithInlineScript"])(value)) {
               return [2
               /*return*/
               , Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([{
@@ -35977,40 +37623,40 @@ var MetricEditor = function MetricEditor(_a) {
   var previousMetrics = query.metrics.slice(0, query.metrics.findIndex(function (m) {
     return m.id === value.id;
   }));
-  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Segment"], {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_11__["segmentStyles"]),
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Segment"], {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_8__["segmentStyles"]),
     options: getTypeOptions(previousMetrics),
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricType"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_11__["changeMetricType"])({
         id: value.id,
         type: e.value
       }));
     },
     value: toOption(value)
-  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isMetricAggregationWithField"])(value) && !Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isPipelineAggregation"])(value) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["SegmentAsync"], {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_11__["segmentStyles"]),
+  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isMetricAggregationWithField"])(value) && !Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isPipelineAggregation"])(value) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["SegmentAsync"], {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_8__["segmentStyles"]),
     loadOptions: loadOptions,
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricField"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_11__["changeMetricField"])({
         id: value.id,
         field: e.value
       }));
     },
     placeholder: "Select Field",
     value: value.field
-  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isPipelineAggregation"])(value) && !Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isPipelineAggregationWithMultipleBucketPaths"])(value) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_MetricPicker__WEBPACK_IMPORTED_MODULE_10__["MetricPicker"], {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_11__["segmentStyles"]),
+  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isPipelineAggregation"])(value) && !Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isPipelineAggregationWithMultipleBucketPaths"])(value) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_MetricPicker__WEBPACK_IMPORTED_MODULE_6__["MetricPicker"], {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])(styles.color, _styles__WEBPACK_IMPORTED_MODULE_8__["segmentStyles"]),
     onChange: function onChange(e) {
       var _a;
 
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricField"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_11__["changeMetricField"])({
         id: value.id,
         field: (_a = e.value) === null || _a === void 0 ? void 0 : _a.id
       }));
     },
     options: previousMetrics,
     value: value.field
-  })), Object(_aggregations__WEBPACK_IMPORTED_MODULE_12__["isMetricAggregationWithSettings"])(value) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_SettingsEditor__WEBPACK_IMPORTED_MODULE_7__["SettingsEditor"], {
+  })), Object(_aggregations__WEBPACK_IMPORTED_MODULE_10__["isMetricAggregationWithSettings"])(value) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditor__WEBPACK_IMPORTED_MODULE_9__["SettingsEditor"], {
     metric: value,
     previousMetrics: previousMetrics
   }));
@@ -36029,21 +37675,21 @@ var MetricEditor = function MetricEditor(_a) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BucketScriptSettingsEditor", function() { return BucketScriptSettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _AddRemove__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../AddRemove */ "./modules/event/components/AddRemove.tsx");
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _AddRemove__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../AddRemove */ "./modules/event/components/AddRemove.tsx");
 /* harmony import */ var _MetricPicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../MetricPicker */ "./modules/event/components/MetricPicker.tsx");
-/* harmony import */ var _state_reducer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/reducer */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/reducer.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/actions.ts");
-/* harmony import */ var _SettingField__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../SettingField */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/SettingField.tsx");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
+/* harmony import */ var _SettingField__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../SettingField */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/SettingField.tsx");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/actions.ts");
+/* harmony import */ var _state_reducer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./state/reducer */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/reducer.ts");
 
 
 
@@ -36061,29 +37707,29 @@ var BucketScriptSettingsEditor = function BucketScriptSettingsEditor(_a) {
 
   var value = _a.value,
       previousMetrics = _a.previousMetrics;
-  var upperStateDispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_6__["useDispatch"])();
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_6__["useStatelessReducer"])(function (newValue) {
-    return upperStateDispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_3__["changeMetricAttribute"])({
+  var upperStateDispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useDispatch"])();
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useStatelessReducer"])(function (newValue) {
+    return upperStateDispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_8__["changeMetricAttribute"])({
       metric: value,
       attribute: 'pipelineVariables',
       newValue: newValue
     }));
-  }, value.pipelineVariables, _state_reducer__WEBPACK_IMPORTED_MODULE_8__["reducer"]); // The model might not have pipeline variables (or an empty array of pipeline vars) in it because of the way it was built in previous versions of the datasource.
+  }, value.pipelineVariables, _state_reducer__WEBPACK_IMPORTED_MODULE_11__["reducer"]); // The model might not have pipeline variables (or an empty array of pipeline vars) in it because of the way it was built in previous versions of the datasource.
   // If this is the case we add a default one.
 
-  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
     var _a;
 
     if (!((_a = value.pipelineVariables) === null || _a === void 0 ? void 0 : _a.length)) {
-      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["addPipelineVariable"])());
+      dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_10__["addPipelineVariable"])());
     }
   }, [dispatch, (_b = value.pipelineVariables) === null || _b === void 0 ? void 0 : _b.length]);
-  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_4__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          display: flex;\n        "], ["\n          display: flex;\n        "])))
-  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineLabel"], {
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          display: flex;\n        "], ["\n          display: flex;\n        "])))
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineLabel"], {
     width: 16
-  }, "Variables"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_4__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n            display: grid;\n            grid-template-columns: 1fr auto;\n            row-gap: 4px;\n            margin-bottom: 4px;\n          "], ["\n            display: grid;\n            grid-template-columns: 1fr auto;\n            row-gap: 4px;\n            margin-bottom: 4px;\n          "])))
+  }, "Variables"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n            display: grid;\n            grid-template-columns: 1fr auto;\n            row-gap: 4px;\n            margin-bottom: 4px;\n          "], ["\n            display: grid;\n            grid-template-columns: 1fr auto;\n            row-gap: 4px;\n            margin-bottom: 4px;\n          "])))
   }, value.pipelineVariables.map(function (pipelineVar, index) {
     return (// index as a key doesn't work here since removing an element
       // in the middle of the list, will cause the next element to obtain the same key as the removed one.
@@ -36092,41 +37738,41 @@ var BucketScriptSettingsEditor = function BucketScriptSettingsEditor(_a) {
       // using pipelineVar.name is not an option since it might be duplicated by the user.
       // generating a unique key on every render, while is probably not the best solution in terms of performance
       // ensures the UI is in a correct state. We might want to optimize this if we see perf issue in the future.
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1__["Fragment"], {
-        key: Object(lodash__WEBPACK_IMPORTED_MODULE_11__["uniqueId"])('es-bs-')
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_4__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n                  display: grid;\n                  column-gap: 4px;\n                  grid-template-columns: auto auto;\n                "], ["\n                  display: grid;\n                  column-gap: 4px;\n                  grid-template-columns: auto auto;\n                "])))
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+      react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3__["Fragment"], {
+        key: Object(lodash__WEBPACK_IMPORTED_MODULE_2__["uniqueId"])('es-bs-')
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n                  display: grid;\n                  column-gap: 4px;\n                  grid-template-columns: auto auto;\n                "], ["\n                  display: grid;\n                  column-gap: 4px;\n                  grid-template-columns: auto auto;\n                "])))
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
         "aria-label": "Variable name",
         defaultValue: pipelineVar.name,
         placeholder: "Variable Name",
         onBlur: function onBlur(e) {
-          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["renamePipelineVariable"])({
+          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_10__["renamePipelineVariable"])({
             newName: e.target.value,
             index: index
           }));
         }
-      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_MetricPicker__WEBPACK_IMPORTED_MODULE_7__["MetricPicker"], {
+      }), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_MetricPicker__WEBPACK_IMPORTED_MODULE_7__["MetricPicker"], {
         onChange: function onChange(e) {
-          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changePipelineVariableMetric"])({
+          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_10__["changePipelineVariableMetric"])({
             newMetric: e.value.id,
             index: index
           }));
         },
         options: previousMetrics,
         value: pipelineVar.pipelineAgg
-      })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_AddRemove__WEBPACK_IMPORTED_MODULE_5__["AddRemove"], {
+      })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_AddRemove__WEBPACK_IMPORTED_MODULE_6__["AddRemove"], {
         index: index,
         elements: value.pipelineVariables || [],
         onAdd: function onAdd() {
-          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["addPipelineVariable"])());
+          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_10__["addPipelineVariable"])());
         },
         onRemove: function onRemove() {
-          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["removePipelineVariable"])(index));
+          return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_10__["removePipelineVariable"])(index));
         }
       }))
     );
-  }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_10__["SettingField"], {
+  }))), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_9__["SettingField"], {
     label: "Script",
     metric: value,
     settingName: "script",
@@ -36263,12 +37909,12 @@ var generatePipelineVariableName = function generatePipelineVariableName(pipelin
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MovingAverageSettingsEditor", function() { return MovingAverageSettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
 /* harmony import */ var query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! query-modules/event/event_query_def */ "./query-modules/event/event_query_def.ts");
 /* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
@@ -36291,13 +37937,12 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
 
   var metric = _a.metric;
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_2__["uniqueId"])('es-moving-avg-')).current;
-  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-moving-avg-')).current;
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Model",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Select"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     inputId: baseId + "-model",
-    menuShouldPortal: true,
     onChange: function onChange(value) {
       return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeMetricSetting"])({
         metric: metric,
@@ -36307,19 +37952,19 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
     },
     options: query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_5__["movingAvgModelOptions"],
     value: (_b = metric.settings) === null || _b === void 0 ? void 0 : _b.model
-  })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
     label: "Window",
     settingName: "window",
     metric: metric,
     placeholder: "5"
-  }), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
     label: "Predict",
     settingName: "predict",
     metric: metric
-  }), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isEWMAMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  }), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isEWMAMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Alpha",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-alpha",
     onBlur: function onBlur(e) {
       var _a;
@@ -36333,10 +37978,10 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
       }));
     },
     defaultValue: (_d = (_c = metric.settings) === null || _c === void 0 ? void 0 : _c.settings) === null || _d === void 0 ? void 0 : _d.alpha
-  })), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Beta",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-beta",
     onBlur: function onBlur(e) {
       var _a;
@@ -36350,10 +37995,10 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
       }));
     },
     defaultValue: (_f = (_e = metric.settings) === null || _e === void 0 ? void 0 : _e.settings) === null || _f === void 0 ? void 0 : _f.beta
-  })), Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_3___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Gamma",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-gamma",
     onBlur: function onBlur(e) {
       var _a;
@@ -36367,10 +38012,10 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
       }));
     },
     defaultValue: (_h = (_g = metric.settings) === null || _g === void 0 ? void 0 : _g.settings) === null || _h === void 0 ? void 0 : _h.gamma
-  })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Period",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-period",
     onBlur: function onBlur(e) {
       var _a;
@@ -36384,10 +38029,10 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
       }));
     },
     defaultValue: (_k = (_j = metric.settings) === null || _j === void 0 ? void 0 : _j.settings) === null || _k === void 0 ? void 0 : _k.period
-  })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Pad",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSwitch"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineSwitch"], {
     id: baseId + "-pad",
     onChange: function onChange(e) {
       var _a;
@@ -36401,10 +38046,10 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
       }));
     },
     checked: !!((_m = (_l = metric.settings) === null || _l === void 0 ? void 0 : _l.settings) === null || _m === void 0 ? void 0 : _m.pad)
-  }))), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isEWMAMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  }))), (Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isEWMAMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltMovingAverage"])(metric) || Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isHoltWintersMovingAverage"])(metric)) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Minimize",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSwitch"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineSwitch"], {
     id: baseId + "-minimize",
     onChange: function onChange(e) {
       return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeMetricSetting"])({
@@ -36430,14 +38075,14 @@ var MovingAverageSettingsEditor = function MovingAverageSettingsEditor(_a) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingField", function() { return SettingField; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
 /* harmony import */ var _utilities_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../utilities/utils */ "./modules/event/utilities/utils.ts");
 
 
@@ -36452,9 +38097,9 @@ function SettingField(_a) {
       metric = _a.metric,
       placeholder = _a.placeholder,
       tooltip = _a.tooltip;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__["useDispatch"])();
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
 
-  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(Object(lodash__WEBPACK_IMPORTED_MODULE_5__["uniqueId"])("es-field-id-")), 1),
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])("es-field-id-")), 1),
       id = _b[0];
 
   var settings = metric.settings;
@@ -36464,15 +38109,15 @@ function SettingField(_a) {
     defaultValue = Object(_utilities_utils__WEBPACK_IMPORTED_MODULE_6__["getScriptValue"])(metric);
   }
 
-  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], {
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: label,
     labelWidth: 16,
     tooltip: tooltip
-  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: id,
     placeholder: placeholder,
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_4__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
         metric: metric,
         settingName: settingName,
         newValue: e.target.value
@@ -36495,16 +38140,16 @@ function SettingField(_a) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TopMetricsSettingsEditor", function() { return TopMetricsSettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _hooks_useFields__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useFields */ "./modules/event/hooks/useFields.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
 /* harmony import */ var _BucketAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../BucketAggregationsEditor/utils */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/utils.ts");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
 
 
 
@@ -36525,16 +38170,15 @@ var TopMetricsSettingsEditor = function TopMetricsSettingsEditor(_a) {
   var _b, _c, _d, _e;
 
   var metric = _a.metric;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_3__["useDispatch"])();
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_5__["useDispatch"])();
   var getOrderByOptions = Object(_hooks_useFields__WEBPACK_IMPORTED_MODULE_4__["useFields"])(['number', 'date']);
   var getMetricsOptions = Object(_hooks_useFields__WEBPACK_IMPORTED_MODULE_4__["useFields"])(metric.type);
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Metrics",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["AsyncMultiSelect"], {
-    menuShouldPortal: true,
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["AsyncMultiSelect"], {
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeMetricSetting"])({
         metric: metric,
         settingName: 'metrics',
         newValue: e.map(function (v) {
@@ -36546,13 +38190,12 @@ var TopMetricsSettingsEditor = function TopMetricsSettingsEditor(_a) {
     value: (_c = (_b = metric.settings) === null || _b === void 0 ? void 0 : _b.metrics) === null || _c === void 0 ? void 0 : _c.map(toMultiSelectValue),
     closeMenuOnSelect: false,
     defaultOptions: true
-  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Order",
     labelWidth: 16
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Select"], {
-    menuShouldPortal: true,
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeMetricSetting"])({
         metric: metric,
         settingName: 'order',
         newValue: e.value
@@ -36560,15 +38203,15 @@ var TopMetricsSettingsEditor = function TopMetricsSettingsEditor(_a) {
     },
     options: _BucketAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_6__["orderOptions"],
     value: (_d = metric.settings) === null || _d === void 0 ? void 0 : _d.order
-  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
     label: "Order By",
     labelWidth: 16,
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_7__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          & > div {\n            width: 100%;\n          }\n        "], ["\n          & > div {\n            width: 100%;\n          }\n        "])))
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["SegmentAsync"], {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_7__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n            margin-right: 0;\n          "], ["\n            margin-right: 0;\n          "]))),
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n          & > div {\n            width: 100%;\n          }\n        "], ["\n          & > div {\n            width: 100%;\n          }\n        "])))
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["SegmentAsync"], {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n            margin-right: 0;\n          "], ["\n            margin-right: 0;\n          "]))),
     loadOptions: getOrderByOptions,
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_7__["changeMetricSetting"])({
         metric: metric,
         settingName: 'orderBy',
         newValue: e.value
@@ -36593,24 +38236,24 @@ var templateObject_1, templateObject_2;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsEditor", function() { return SettingsEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../query-modules/event/event_query_def */ "./query-modules/event/event_query_def.ts");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
-/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
-/* harmony import */ var _BucketScriptSettingsEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./BucketScriptSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/index.tsx");
-/* harmony import */ var _SettingField__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./SettingField */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/SettingField.tsx");
-/* harmony import */ var _SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../SettingsEditorContainer */ "./modules/event/components/QueryEditor/SettingsEditorContainer.tsx");
-/* harmony import */ var _useDescription__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./useDescription */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/useDescription.ts");
-/* harmony import */ var _MovingAverageSettingsEditor__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./MovingAverageSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/MovingAverageSettingsEditor.tsx");
-/* harmony import */ var _TopMetricsSettingsEditor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./TopMetricsSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/TopMetricsSettingsEditor.tsx");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../../query-modules/event/event_query_def */ "./query-modules/event/event_query_def.ts");
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../SettingsEditorContainer */ "./modules/event/components/QueryEditor/SettingsEditorContainer.tsx");
+/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
+/* harmony import */ var _BucketScriptSettingsEditor__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./BucketScriptSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/index.tsx");
+/* harmony import */ var _MovingAverageSettingsEditor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./MovingAverageSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/MovingAverageSettingsEditor.tsx");
+/* harmony import */ var _SettingField__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./SettingField */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/SettingField.tsx");
+/* harmony import */ var _TopMetricsSettingsEditor__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./TopMetricsSettingsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/TopMetricsSettingsEditor.tsx");
+/* harmony import */ var _useDescription__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./useDescription */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/useDescription.ts");
 
 
 
@@ -36636,10 +38279,10 @@ var SettingsEditor = function SettingsEditor(_a) {
 
   var metric = _a.metric,
       previousMetrics = _a.previousMetrics;
-  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_13__["uniqueId"])('es-setting-')).current;
+  var baseId = Object(react__WEBPACK_IMPORTED_MODULE_2__["useRef"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])('es-setting-')).current;
   var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_4__["useDispatch"])();
-  var description = Object(_useDescription__WEBPACK_IMPORTED_MODULE_10__["useDescription"])(metric);
-  var query = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_15__["useQuery"])();
+  var description = Object(_useDescription__WEBPACK_IMPORTED_MODULE_15__["useDescription"])(metric);
+  var query = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_6__["useQuery"])();
   var rateAggUnitOptions = [{
     value: 'second',
     label: 'Second'
@@ -36672,104 +38315,103 @@ var SettingsEditor = function SettingsEditor(_a) {
     value: 'value_count',
     label: 'Value count'
   }];
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_9__["SettingsEditorContainer"], {
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingsEditorContainer__WEBPACK_IMPORTED_MODULE_7__["SettingsEditorContainer"], {
     label: description,
     hidden: metric.hide
-  }, metric.type === 'derivative' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }, metric.type === 'derivative' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Unit",
     metric: metric,
     settingName: "unit"
-  }), metric.type === 'serial_diff' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), metric.type === 'serial_diff' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Lag",
     metric: metric,
     settingName: "lag",
     placeholder: "1"
-  }), metric.type === 'cumulative_sum' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), metric.type === 'cumulative_sum' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Format",
     metric: metric,
     settingName: "format"
-  }), metric.type === 'moving_avg' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_MovingAverageSettingsEditor__WEBPACK_IMPORTED_MODULE_11__["MovingAverageSettingsEditor"], {
+  }), metric.type === 'moving_avg' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_MovingAverageSettingsEditor__WEBPACK_IMPORTED_MODULE_12__["MovingAverageSettingsEditor"], {
     metric: metric
-  }), metric.type === 'moving_fn' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), metric.type === 'moving_fn' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Window",
     metric: metric,
     settingName: "window"
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Script",
     metric: metric,
     settingName: "script"
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Shift",
     metric: metric,
     settingName: "shift"
-  })), metric.type === 'top_metrics' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_TopMetricsSettingsEditor__WEBPACK_IMPORTED_MODULE_12__["TopMetricsSettingsEditor"], {
+  })), metric.type === 'top_metrics' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_TopMetricsSettingsEditor__WEBPACK_IMPORTED_MODULE_14__["TopMetricsSettingsEditor"], {
     metric: metric
-  }), metric.type === 'bucket_script' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_BucketScriptSettingsEditor__WEBPACK_IMPORTED_MODULE_7__["BucketScriptSettingsEditor"], {
+  }), metric.type === 'bucket_script' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_BucketScriptSettingsEditor__WEBPACK_IMPORTED_MODULE_11__["BucketScriptSettingsEditor"], {
     value: metric,
     previousMetrics: previousMetrics
-  }), (metric.type === 'raw_data' || metric.type === 'raw_document') && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  }), (metric.type === 'raw_data' || metric.type === 'raw_document') && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Size"
-  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: "ES-query-" + query.refId + "_metric-" + metric.id + "-size",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricSetting"])({
         metric: metric,
         settingName: 'size',
         newValue: e.target.value
       }));
     },
-    defaultValue: (_c = (_b = metric.settings) === null || _b === void 0 ? void 0 : _b.size) !== null && _c !== void 0 ? _c : (_d = _utils__WEBPACK_IMPORTED_MODULE_14__["metricAggregationConfig"]['raw_data'].defaults.settings) === null || _d === void 0 ? void 0 : _d.size
-  })), metric.type === 'logs' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+    defaultValue: (_c = (_b = metric.settings) === null || _b === void 0 ? void 0 : _b.size) !== null && _c !== void 0 ? _c : (_d = _utils__WEBPACK_IMPORTED_MODULE_10__["metricAggregationConfig"]['raw_data'].defaults.settings) === null || _d === void 0 ? void 0 : _d.size
+  })), metric.type === 'logs' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Limit",
     metric: metric,
     settingName: "limit",
     placeholder: "500"
-  }), metric.type === 'cardinality' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), metric.type === 'cardinality' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Precision Threshold",
     metric: metric,
     settingName: "precision_threshold"
-  }), metric.type === 'extended_stats' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, _query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_3__["extendedStats"].map(function (stat) {
+  }), metric.type === 'extended_stats' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, _query_modules_event_event_query_def__WEBPACK_IMPORTED_MODULE_5__["extendedStats"].map(function (stat) {
     var _a, _b, _c;
 
     return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(ExtendedStatSetting, {
       key: stat.value,
       stat: stat,
       onChange: function onChange(newValue) {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricMeta"])({
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricMeta"])({
           metric: metric,
           meta: stat.value,
           newValue: newValue
         }));
       },
-      value: ((_a = metric.meta) === null || _a === void 0 ? void 0 : _a[stat.value]) !== undefined ? !!((_b = metric.meta) === null || _b === void 0 ? void 0 : _b[stat.value]) : !!((_c = _utils__WEBPACK_IMPORTED_MODULE_14__["metricAggregationConfig"]['extended_stats'].defaults.meta) === null || _c === void 0 ? void 0 : _c[stat.value])
+      value: ((_a = metric.meta) === null || _a === void 0 ? void 0 : _a[stat.value]) !== undefined ? !!((_b = metric.meta) === null || _b === void 0 ? void 0 : _b[stat.value]) : !!((_c = _utils__WEBPACK_IMPORTED_MODULE_10__["metricAggregationConfig"]['extended_stats'].defaults.meta) === null || _c === void 0 ? void 0 : _c[stat.value])
     });
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Sigma",
     metric: metric,
     settingName: "sigma",
     placeholder: "3"
-  })), metric.type === 'percentiles' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  })), metric.type === 'percentiles' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Percentiles"
-  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Input"], {
+  }, inlineFieldProps), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
     id: baseId + "-percentiles-percents",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricSetting"])({
         metric: metric,
         settingName: 'percents',
         newValue: e.target.value.split(',').filter(Boolean)
       }));
     },
-    defaultValue: ((_e = metric.settings) === null || _e === void 0 ? void 0 : _e.percents) || ((_f = _utils__WEBPACK_IMPORTED_MODULE_14__["metricAggregationConfig"]['percentiles'].defaults.settings) === null || _f === void 0 ? void 0 : _f.percents),
+    defaultValue: ((_e = metric.settings) === null || _e === void 0 ? void 0 : _e.percents) || ((_f = _utils__WEBPACK_IMPORTED_MODULE_10__["metricAggregationConfig"]['percentiles'].defaults.settings) === null || _f === void 0 ? void 0 : _f.percents),
     placeholder: "1,5,25,50,75,95,99"
-  })), metric.type === 'rate' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  })), metric.type === 'rate' && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Unit"
   }, inlineFieldProps, {
     "data-testid": "unit-select"
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Select"], {
-    menuShouldPortal: true,
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     id: "ES-query-" + query.refId + "_metric-" + metric.id + "-unit",
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricSetting"])({
         metric: metric,
         settingName: 'unit',
         newValue: e.value
@@ -36777,15 +38419,14 @@ var SettingsEditor = function SettingsEditor(_a) {
     },
     options: rateAggUnitOptions,
     value: (_g = metric.settings) === null || _g === void 0 ? void 0 : _g.unit
-  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: "Mode"
   }, inlineFieldProps, {
     "data-testid": "mode-select"
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Select"], {
-    menuShouldPortal: true,
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
     id: "ES-query-" + query.refId + "_metric-" + metric.id + "-mode",
     onChange: function onChange(e) {
-      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_5__["changeMetricSetting"])({
+      return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_9__["changeMetricSetting"])({
         metric: metric,
         settingName: 'mode',
         newValue: e.value
@@ -36793,12 +38434,12 @@ var SettingsEditor = function SettingsEditor(_a) {
     },
     options: rateAggModeOptions,
     value: (_h = metric.settings) === null || _h === void 0 ? void 0 : _h.unit
-  }))), Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isMetricAggregationWithInlineScript"])(metric) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }))), Object(_aggregations__WEBPACK_IMPORTED_MODULE_8__["isMetricAggregationWithInlineScript"])(metric) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Script",
     metric: metric,
     settingName: "script",
     placeholder: "_value * 1"
-  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_6__["isMetricAggregationWithMissingSupport"])(metric) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_8__["SettingField"], {
+  }), Object(_aggregations__WEBPACK_IMPORTED_MODULE_8__["isMetricAggregationWithMissingSupport"])(metric) && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_SettingField__WEBPACK_IMPORTED_MODULE_13__["SettingField"], {
     label: "Missing",
     metric: metric,
     settingName: "missing",
@@ -36811,14 +38452,14 @@ var ExtendedStatSetting = function ExtendedStatSetting(_a) {
       _onChange = _a.onChange,
       value = _a.value; // this is needed for the htmlFor prop in the label so that clicking the label will toggle the switch state.
 
-  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(Object(lodash__WEBPACK_IMPORTED_MODULE_13__["uniqueId"])("es-field-id-")), 1),
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(Object(lodash__WEBPACK_IMPORTED_MODULE_1__["uniqueId"])("es-field-id-")), 1),
       id = _b[0];
 
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
     label: stat.label
   }, inlineFieldProps, {
     key: stat.value
-  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSwitch"], {
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineSwitch"], {
     id: id,
     onChange: function onChange(e) {
       return _onChange(e.target.checked);
@@ -36991,13 +38632,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MetricAggregationsEditor", function() { return MetricAggregationsEditor; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MetricEditor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MetricEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/MetricEditor.tsx");
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
-/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
-/* harmony import */ var _QueryEditorRow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../QueryEditorRow */ "./modules/event/components/QueryEditor/QueryEditorRow.tsx");
-/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../IconButton */ "./modules/event/components/IconButton.tsx");
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _IconButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../IconButton */ "./modules/event/components/IconButton.tsx");
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _QueryEditorRow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../QueryEditorRow */ "./modules/event/components/QueryEditor/QueryEditorRow.tsx");
+/* harmony import */ var _MetricEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./MetricEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/MetricEditor.tsx");
+/* harmony import */ var _state_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./state/actions */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/state/actions.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
 
 
 
@@ -37008,26 +38649,26 @@ __webpack_require__.r(__webpack_exports__);
 
 var MetricAggregationsEditor = function MetricAggregationsEditor(_a) {
   var nextId = _a.nextId;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_2__["useDispatch"])();
-  var metrics = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_5__["useQuery"])().metrics;
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_1__["useDispatch"])();
+  var metrics = Object(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_3__["useQuery"])().metrics;
   var totalMetrics = (metrics === null || metrics === void 0 ? void 0 : metrics.length) || 0;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, metrics === null || metrics === void 0 ? void 0 : metrics.map(function (metric, index) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QueryEditorRow__WEBPACK_IMPORTED_MODULE_6__["QueryEditorRow"], {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QueryEditorRow__WEBPACK_IMPORTED_MODULE_4__["QueryEditorRow"], {
       key: metric.type + "-" + metric.id,
       label: "Metric (" + metric.id + ")",
       hidden: metric.hide,
       onHideClick: function onHideClick() {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_4__["toggleMetricVisibility"])(metric.id));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["toggleMetricVisibility"])(metric.id));
       },
       onRemoveClick: totalMetrics > 1 && function () {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_4__["removeMetric"])(metric.id));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["removeMetric"])(metric.id));
       }
-    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MetricEditor__WEBPACK_IMPORTED_MODULE_1__["MetricEditor"], {
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MetricEditor__WEBPACK_IMPORTED_MODULE_5__["MetricEditor"], {
       value: metric
-    }), !_utils__WEBPACK_IMPORTED_MODULE_3__["metricAggregationConfig"][metric.type].isSingleMetric && index === 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_7__["IconButton"], {
+    }), !_utils__WEBPACK_IMPORTED_MODULE_7__["metricAggregationConfig"][metric.type].isSingleMetric && index === 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IconButton__WEBPACK_IMPORTED_MODULE_2__["IconButton"], {
       iconName: "plus",
       onClick: function onClick() {
-        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_4__["addMetric"])(nextId));
+        return dispatch(Object(_state_actions__WEBPACK_IMPORTED_MODULE_6__["addMetric"])(nextId));
       },
       label: "add"
     }));
@@ -37274,8 +38915,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pipelineOptions", function() { return pipelineOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getChildren", function() { return getChildren; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
-/* harmony import */ var _SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SettingsEditor/BucketScriptSettingsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/utils.ts");
+/* harmony import */ var _SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SettingsEditor/BucketScriptSettingsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/utils.ts");
+/* harmony import */ var _aggregations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
 
 
 
@@ -37458,7 +39099,7 @@ var metricAggregationConfig = {
     supportsInlineScript: false,
     hasMeta: false,
     defaults: {
-      pipelineVariables: [Object(_SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_2__["defaultPipelineVariable"])(Object(_SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_2__["generatePipelineVariableName"])([]))]
+      pipelineVariables: [Object(_SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_1__["defaultPipelineVariable"])(Object(_SettingsEditor_BucketScriptSettingsEditor_utils__WEBPACK_IMPORTED_MODULE_1__["generatePipelineVariableName"])([]))]
     }
   },
   raw_document: {
@@ -37583,13 +39224,13 @@ var getChildren = function getChildren(metric, metrics) {
     var _a; // TODO: Check this.
 
 
-    if (Object(_aggregations__WEBPACK_IMPORTED_MODULE_1__["isPipelineAggregationWithMultipleBucketPaths"])(m)) {
+    if (Object(_aggregations__WEBPACK_IMPORTED_MODULE_2__["isPipelineAggregationWithMultipleBucketPaths"])(m)) {
       return (_a = m.pipelineVariables) === null || _a === void 0 ? void 0 : _a.some(function (pv) {
         return pv.pipelineAgg === metric.id;
       });
     }
 
-    return Object(_aggregations__WEBPACK_IMPORTED_MODULE_1__["isMetricAggregationWithField"])(m) && metric.id === m.field;
+    return Object(_aggregations__WEBPACK_IMPORTED_MODULE_2__["isMetricAggregationWithField"])(m) && metric.id === m.field;
   });
   return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(children)), Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(children.flatMap(function (child) {
     return getChildren(child, metrics);
@@ -37609,14 +39250,14 @@ var getChildren = function getChildren(metric, metrics) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryEditorRow", function() { return QueryEditorRow; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
@@ -37629,26 +39270,24 @@ var QueryEditorRow = function QueryEditorRow(_a) {
       onHideClick = _a.onHideClick,
       _b = _a.hidden,
       hidden = _b === void 0 ? false : _b;
-  var styles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useStyles2"])(getStyles);
-  return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineLabel"], {
+  var styles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["useStyles2"])(getStyles);
+  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineLabel"], {
     width: 17,
     as: "div"
-  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("span", null, label), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("span", {
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", null, label), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("span", {
     className: styles.iconWrapper
-  }, onHideClick && react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["IconButton"], {
+  }, onHideClick && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["IconButton"], {
     name: hidden ? 'eye-slash' : 'eye',
     onClick: onHideClick,
-    surface: "header",
     size: "sm",
     "aria-pressed": hidden,
     "aria-label": "hide metric",
     className: styles.icon
-  }), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["IconButton"], {
+  }), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["IconButton"], {
     name: "trash-alt",
-    surface: "header",
     size: "sm",
     className: styles.icon,
-    onClick: onRemoveClick || lodash__WEBPACK_IMPORTED_MODULE_3__["noop"],
+    onClick: onRemoveClick || lodash__WEBPACK_IMPORTED_MODULE_2__["noop"],
     disabled: !onRemoveClick,
     "aria-label": "remove metric"
   })))), children);
@@ -37656,8 +39295,8 @@ var QueryEditorRow = function QueryEditorRow(_a) {
 
 var getStyles = function getStyles(theme) {
   return {
-    iconWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      display: flex;\n    "], ["\n      display: flex;\n    "]))),
-    icon: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      color: ", ";\n      margin-left: ", ";\n    "], ["\n      color: ", ";\n      margin-left: ", ";\n    "])), theme.colors.text.secondary, theme.spacing(0.25))
+    iconWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      display: flex;\n    "], ["\n      display: flex;\n    "]))),
+    icon: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      color: ", ";\n      margin-left: ", ";\n    "], ["\n      color: ", ";\n      margin-left: ", ";\n    "])), theme.colors.text.secondary, theme.spacing(0.25))
   };
 };
 
@@ -37676,12 +39315,12 @@ var templateObject_1, templateObject_2;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsEditorContainer", function() { return SettingsEditorContainer; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
-/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./styles */ "./modules/event/components/QueryEditor/styles.ts");
 
 
@@ -37691,10 +39330,10 @@ __webpack_require__.r(__webpack_exports__);
 
 var getStyles = function getStyles(theme, hidden) {
   return {
-    wrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      max-width: 500px;\n      display: flex;\n      flex-direction: column;\n    "], ["\n      max-width: 500px;\n      display: flex;\n      flex-direction: column;\n    "]))),
-    settingsWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      padding-top: ", ";\n    "], ["\n      padding-top: ", ";\n    "])), theme.spacing(0.5)),
-    icon: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      margin-right: ", ";\n    "], ["\n      margin-right: ", ";\n    "])), theme.spacing(0.5)),
-    button: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_5 || (templateObject_5 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      justify-content: start;\n      ", "\n    "], ["\n      justify-content: start;\n      ", "\n    "])), hidden && Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["css"])(templateObject_4 || (templateObject_4 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.text.disabled))
+    wrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      max-width: 500px;\n      display: flex;\n      flex-direction: column;\n    "], ["\n      max-width: 500px;\n      display: flex;\n      flex-direction: column;\n    "]))),
+    settingsWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      padding-top: ", ";\n    "], ["\n      padding-top: ", ";\n    "])), theme.spacing(0.5)),
+    icon: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_3 || (templateObject_3 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      margin-right: ", ";\n    "], ["\n      margin-right: ", ";\n    "])), theme.spacing(0.5)),
+    button: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_5 || (templateObject_5 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n      justify-content: start;\n      ", "\n    "], ["\n      justify-content: start;\n      ", "\n    "])), hidden && Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_4 || (templateObject_4 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n        color: ", ";\n      "], ["\n        color: ", ";\n      "])), theme.colors.text.disabled))
   };
 };
 
@@ -37704,25 +39343,25 @@ var SettingsEditorContainer = function SettingsEditorContainer(_a) {
       _b = _a.hidden,
       hidden = _b === void 0 ? false : _b;
 
-  var _c = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false), 2),
+  var _c = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false), 2),
       open = _c[0],
       setOpen = _c[1];
 
-  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["useTheme2"])();
+  var theme = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["useTheme2"])();
   var styles = getStyles(theme, hidden);
-  return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])(styles.wrapper)
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
-    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_2__["cx"])('gf-form-label query-part', styles.button, _styles__WEBPACK_IMPORTED_MODULE_4__["segmentStyles"]),
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineSegmentGroup"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])(styles.wrapper)
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+    className: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["cx"])('gf-form-label query-part', styles.button, _styles__WEBPACK_IMPORTED_MODULE_4__["segmentStyles"]),
     onClick: function onClick() {
       return setOpen(!open);
     },
     "aria-expanded": open
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["Icon"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Icon"], {
     name: open ? 'angle-down' : 'angle-right',
     "aria-hidden": "true",
     className: styles.icon
-  }), label), open && react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+  }), label), open && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
     className: styles.settingsWrapper
   }, children)));
 };
@@ -37740,20 +39379,25 @@ var templateObject_1, templateObject_2, templateObject_3, templateObject_4, temp
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryEditor", function() { return QueryEditor; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./state */ "./modules/event/components/QueryEditor/state.ts");
-/* harmony import */ var _MetricAggregationsEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./MetricAggregationsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/index.tsx");
-/* harmony import */ var _BucketAggregationsEditor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./BucketAggregationsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/index.tsx");
-/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
-/* harmony import */ var _hooks_useNextId__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../hooks/useNextId */ "./modules/event/hooks/useNextId.ts");
-/* harmony import */ var _MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MetricAggregationsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
-/* harmony import */ var _hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../hooks/useTypeahead */ "./modules/event/hooks/useTypeahead.ts");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/css */ "@emotion/css");
+/* harmony import */ var _emotion_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _hooks_useNextId__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../hooks/useNextId */ "./modules/event/hooks/useNextId.ts");
+/* harmony import */ var _hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../hooks/useStatelessReducer */ "./modules/event/hooks/useStatelessReducer.ts");
+/* harmony import */ var _BucketAggregationsEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./BucketAggregationsEditor */ "./modules/event/components/QueryEditor/BucketAggregationsEditor/index.tsx");
+/* harmony import */ var _ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ElasticsearchQueryContext */ "./modules/event/components/QueryEditor/ElasticsearchQueryContext.tsx");
+/* harmony import */ var _MetricAggregationsEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MetricAggregationsEditor */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/index.tsx");
+/* harmony import */ var _MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MetricAggregationsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./state */ "./modules/event/components/QueryEditor/state.ts");
+/* harmony import */ var _hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../hooks/useTypeahead */ "./modules/event/hooks/useTypeahead.ts");
+
+
 
 
 
@@ -37777,62 +39421,74 @@ var QueryEditor = function QueryEditor(_a) {
     }, true);
   };
 
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_2__["ElasticsearchProvider"], {
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_ElasticsearchQueryContext__WEBPACK_IMPORTED_MODULE_8__["ElasticsearchProvider"], {
     datasource: datasource,
     onChange: onChange,
     query: query,
-    range: range || Object(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["getDefaultTimeRange"])()
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(QueryEditorForm, {
+    range: range || Object(_grafana_data__WEBPACK_IMPORTED_MODULE_3__["getDefaultTimeRange"])()
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(QueryEditorForm, {
     value: query
   }));
+};
+
+var getStyles = function getStyles(theme) {
+  return {
+    root: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_1 || (templateObject_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    display: flex;\n  "], ["\n    display: flex;\n  "]))),
+    queryFieldWrapper: Object(_emotion_css__WEBPACK_IMPORTED_MODULE_1__["css"])(templateObject_2 || (templateObject_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__makeTemplateObject"])(["\n    flex-grow: 1;\n    margin: 0 ", " ", " 0;\n  "], ["\n    flex-grow: 1;\n    margin: 0 ", " ", " 0;\n  "])), theme.spacing(0.5), theme.spacing(0.5))
+  };
 };
 
 var QueryEditorForm = function QueryEditorForm(_a) {
   var _b, _c, _d;
 
   var value = _a.value;
-  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_7__["useDispatch"])();
-  var nextId = Object(_hooks_useNextId__WEBPACK_IMPORTED_MODULE_8__["useNextId"])();
-  var onTypeAhead = Object(_hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_10__["useTypeahead"])().onTypeAhead; // To be considered a time series query, the last bucked aggregation must be a Date Histogram
+  var dispatch = Object(_hooks_useStatelessReducer__WEBPACK_IMPORTED_MODULE_6__["useDispatch"])();
+  var nextId = Object(_hooks_useNextId__WEBPACK_IMPORTED_MODULE_5__["useNextId"])();
+  var styles = Object(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["useStyles2"])(getStyles);
+  var onTypeAhead = Object(_hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_12__["useTypeahead"])().onTypeAhead; // To be considered a time series query, the last bucked aggregation must be a Date Histogram
 
   var isTimeSeriesQuery = ((_c = (_b = value.bucketAggs) === null || _b === void 0 ? void 0 : _b.slice(-1)[0]) === null || _c === void 0 ? void 0 : _c.type) === 'date_histogram';
   var showBucketAggregationsEditor = (_d = value.metrics) === null || _d === void 0 ? void 0 : _d.every(function (metric) {
-    return !_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_9__["metricAggregationConfig"][metric.type].isSingleMetric;
+    return !_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_10__["metricAggregationConfig"][metric.type].isSingleMetric;
   });
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-    label: "Query",
-    labelWidth: 17,
-    grow: true
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["QueryField"], {
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    className: styles.root
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineLabel"], {
+    width: 17
+  }, "Query"), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    className: styles.queryFieldWrapper
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["QueryField"], {
     query: value.query,
     // By default QueryField calls onChange if onBlur is not defined, this will trigger a rerender
     // And slate will claim the focus, making it impossible to leave the field.
     onBlur: function onBlur() {},
     onChange: function onChange(query) {
-      return dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_4__["changeQuery"])(query));
+      return dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_11__["changeQuery"])(query));
     },
     placeholder: "Lucene Query",
     portalOrigin: "elasticsearch",
     onTypeahead: onTypeAhead,
-    cleanText: _hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_10__["cleanText"]
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    cleanText: _hooks_useTypeahead__WEBPACK_IMPORTED_MODULE_12__["cleanText"]
+  })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["InlineField"], {
     label: "Alias",
     labelWidth: 15,
     disabled: !isTimeSeriesQuery,
     tooltip: "Aliasing only works for timeseries queries (when the last group is 'Date Histogram'). For all other query types this field is ignored."
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_4__["Input"], {
     id: "ES-query-" + value.refId + "_alias",
     placeholder: "Alias Pattern",
     onBlur: function onBlur(e) {
-      return dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_4__["changeAliasPattern"])(e.currentTarget.value));
+      return dispatch(Object(_state__WEBPACK_IMPORTED_MODULE_11__["changeAliasPattern"])(e.currentTarget.value));
     },
     defaultValue: value.alias
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MetricAggregationsEditor__WEBPACK_IMPORTED_MODULE_5__["MetricAggregationsEditor"], {
+  }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_MetricAggregationsEditor__WEBPACK_IMPORTED_MODULE_9__["MetricAggregationsEditor"], {
     nextId: nextId
-  }), showBucketAggregationsEditor && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BucketAggregationsEditor__WEBPACK_IMPORTED_MODULE_6__["BucketAggregationsEditor"], {
+  }), showBucketAggregationsEditor && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_BucketAggregationsEditor__WEBPACK_IMPORTED_MODULE_7__["BucketAggregationsEditor"], {
     nextId: nextId
   }));
 };
+
+var templateObject_1, templateObject_2;
 
 /***/ }),
 
@@ -38246,7 +39902,7 @@ var useTypeahead = function useTypeahead() {
 /*!******************************************!*\
   !*** ./modules/event/utilities/utils.ts ***!
   \******************************************/
-/*! exports provided: describeMetric, removeEmpty, convertOrderByToMetricId, getScriptValue, coerceESVersion */
+/*! exports provided: describeMetric, removeEmpty, convertOrderByToMetricId, getScriptValue, coerceESVersion, isSupportedVersion */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38256,11 +39912,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "convertOrderByToMetricId", function() { return convertOrderByToMetricId; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getScriptValue", function() { return getScriptValue; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coerceESVersion", function() { return coerceESVersion; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSupportedVersion", function() { return isSupportedVersion; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _components_QueryEditor_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/QueryEditor/MetricAggregationsEditor/aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
-/* harmony import */ var _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/QueryEditor/MetricAggregationsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
-/* harmony import */ var semver__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! semver */ "../node_modules/semver/semver.js");
-/* harmony import */ var semver__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(semver__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var semver__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! semver */ "../node_modules/semver/semver.js");
+/* harmony import */ var semver__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(semver__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_QueryEditor_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/QueryEditor/MetricAggregationsEditor/aggregations */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/aggregations.ts");
+/* harmony import */ var _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/QueryEditor/MetricAggregationsEditor/utils */ "./modules/event/components/QueryEditor/MetricAggregationsEditor/utils.ts");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 
@@ -38268,12 +39925,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 
 
 var describeMetric = function describeMetric(metric) {
-  if (!Object(_components_QueryEditor_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_1__["isMetricAggregationWithField"])(metric)) {
-    return _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_2__["metricAggregationConfig"][metric.type].label;
+  if (!Object(_components_QueryEditor_MetricAggregationsEditor_aggregations__WEBPACK_IMPORTED_MODULE_2__["isMetricAggregationWithField"])(metric)) {
+    return _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_3__["metricAggregationConfig"][metric.type].label;
   } // TODO: field might be undefined
 
 
-  return _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_2__["metricAggregationConfig"][metric.type].label + " " + metric.field;
+  return _components_QueryEditor_MetricAggregationsEditor_utils__WEBPACK_IMPORTED_MODULE_3__["metricAggregationConfig"][metric.type].label + " " + metric.field;
 };
 /**
  * Utility function to clean up aggregations settings objects.
@@ -38368,7 +40025,7 @@ var getScriptValue = function getScriptValue(metric) {
 
 var coerceESVersion = function coerceESVersion(version) {
   if (typeof version === 'string') {
-    return Object(semver__WEBPACK_IMPORTED_MODULE_3__["valid"])(version) || '5.0.0';
+    return Object(semver__WEBPACK_IMPORTED_MODULE_1__["valid"])(version) || '5.0.0';
   }
 
   switch (version) {
@@ -38388,6 +40045,13 @@ var coerceESVersion = function coerceESVersion(version) {
     default:
       return '5.0.0';
   }
+};
+var isSupportedVersion = function isSupportedVersion(version) {
+  if (Object(semver__WEBPACK_IMPORTED_MODULE_1__["gte"])(version, '7.10.0')) {
+    return true;
+  }
+
+  return false;
 };
 
 /***/ }),
@@ -41138,7 +42802,7 @@ var RenderSourceList = function RenderSourceList(_a) {
       });
     }
   }), sourceList.sourceHideClause ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(modules_common_InlineIconButton__WEBPACK_IMPORTED_MODULE_12__["InlineIconButton"], {
-    label: "Join Cluase",
+    label: "Join Clause",
     onClick: function onClick() {
       setShowClause(!showClause);
     },
@@ -41236,7 +42900,7 @@ var RenderSourceList = function RenderSourceList(_a) {
 };
 
 var getDefaultJoinClause = function getDefaultJoinClause() {
-  var defaultJoinClauseLeftOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["LeftOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
+  var defaultJoinClauseLeftOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["LeftOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], false);
   var defaulJoinClauseRightOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["RightOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CHAR"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
   var defaultJoinClauseQualification = [new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["Qualification"](false, 1, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["DEFAULT_GROUP"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["RELATIONAL"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["OPERATOR_EQUAL"], null, null, defaultJoinClauseLeftOperand, defaulJoinClauseRightOperand)];
   return defaultJoinClauseQualification;
@@ -41300,7 +42964,7 @@ function (_super) {
       var inputSelectionList = _this.props.target.form.selectionList;
       var inputCalculatedFieldList = _this.props.target.form.calculatedFieldList;
       var showGroupBy = !((_a = _this.props.target.form.calculatedFieldList) === null || _a === void 0 ? void 0 : _a.find(function (calculatedField) {
-        return calculatedField.selectionAggregation;
+        return calculatedField.selectionAggregation || !calculatedField.selectionAggregation && !_this.props.target.form.hideGroupBy;
       }));
       var metaGroupNames = [];
 
@@ -41315,7 +42979,7 @@ function (_super) {
 
         if (inputCalculatedFieldList !== undefined) {
           Object(lodash__WEBPACK_IMPORTED_MODULE_9__["each"])(inputCalculatedFieldList, function (field) {
-            if (field.selectionCalculatedFields !== _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CALCULATED_FIELD"]) {
+            if (field.selectionCalculatedFields !== _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CALCULATED_FIELD"] && !field.hideCalculatedField) {
               var form_1 = inputSourceList[0];
 
               Object(lodash__WEBPACK_IMPORTED_MODULE_9__["find"])(inputSourceList, function (f) {
@@ -41324,9 +42988,18 @@ function (_super) {
                 }
               });
 
+              var tempColumnName_1 = Object(_utilities_utility__WEBPACK_IMPORTED_MODULE_5__["replaceSpaceWithUnderscore"])(field.selectionAlias);
+
               if (!field.selectionAggregation) {
-                var tempColumnName = Object(_utilities_utility__WEBPACK_IMPORTED_MODULE_5__["replaceSpaceWithUnderscore"])(field.selectionAlias);
-                metaGroupNames.push(new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["SelectionList"]('Field', tempColumnName, 'Calculated Field', form_1.sourceAlias));
+                metaGroupNames.push(new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["SelectionList"]('Field', tempColumnName_1, 'Calculated Field', form_1.sourceAlias));
+              } else {
+                var spliceIndex = Object(lodash__WEBPACK_IMPORTED_MODULE_9__["findIndex"])(inputGroupList, function (val) {
+                  return val.selectionSrcAlias === 'Calculated Field' && val.selectionColumnName.indexOf(tempColumnName_1) > -1;
+                });
+
+                if (spliceIndex > -1) {
+                  inputGroupList.splice(spliceIndex, 1);
+                }
               }
             }
           });
@@ -41341,8 +43014,12 @@ function (_super) {
         });
 
         if (metaGroupNames.length > inputGroupList.length) {
-          var defaultGroupByField = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["SelectionList"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
-          inputGroupList.push.apply(inputGroupList, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(lodash__WEBPACK_IMPORTED_MODULE_9__["fill"])(Array(metaGroupNames.length - inputGroupList.length), defaultGroupByField))));
+          var requiredLength = metaGroupNames.length - inputGroupList.length;
+
+          for (var i = 0; i < requiredLength; i++) {
+            var defaultGroupByField = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["SelectionList"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
+            inputGroupList.push(defaultGroupByField);
+          }
         }
 
         metaGroupNames.forEach(function (column, index) {
@@ -41527,7 +43204,8 @@ var GroupQuery = function GroupQuery(_a) {
     },
     onChange: function onChange(selectedVal) {
       updateGroupList(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, group), {
-        selectionColumnName: selectedVal.value.columnName
+        selectionColumnName: selectedVal.value.columnName,
+        selectionType: selectedVal.value.selectionType
       }), keyIndex, true);
     }
   }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineLabel"], {
@@ -42097,12 +43775,12 @@ var WithContext = function WithContext(Component) {
 WithContext.displayName = 'WithContext';
 var RemedyHavingQuery = WithContext(RemedyHavingQueryWrap);
 
-var RemedyWhereQuery =
+var RemedyWhereQueryWrap =
 /** @class */
 function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RemedyWhereQuery, _super);
+  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RemedyWhereQueryWrap, _super);
 
-  function RemedyWhereQuery(props) {
+  function RemedyWhereQueryWrap(props) {
     var _this = _super.call(this, props) || this;
 
     _this.toggleHideQual = function () {
@@ -42144,7 +43822,33 @@ function (_super) {
     return _this;
   }
 
-  RemedyWhereQuery.prototype.render = function () {
+  RemedyWhereQueryWrap.getDerivedStateFromProps = function (props, state) {
+    var _a, _b, _c;
+
+    console.log(props, 'props\n', state, 'state\n');
+    var derivedState = {
+      inputSourceList: props.target.form.sourceList,
+      inputCalculatedFieldList: props.target.form.calculatedFieldList,
+      columnNames: ((_c = (_b = (_a = props.autoCompleteContext) === null || _a === void 0 ? void 0 : _a.inputAutoComplete) === null || _b === void 0 ? void 0 : _b[props.target.guid]) === null || _c === void 0 ? void 0 : _c.metaColumnNames) || []
+    };
+
+    if (!Object(lodash__WEBPACK_IMPORTED_MODULE_9__["isEqual"])(derivedState, state.derivedState)) {
+      var metaWhereNames = Object(_utilities_utility__WEBPACK_IMPORTED_MODULE_8__["getMetaWhereNames"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, derivedState));
+      props.autoCompleteContext.dispatch({
+        type: _common_AutoCompleteContext__WEBPACK_IMPORTED_MODULE_4__["UPDATE_InputAutoComplete"],
+        guid: props.target.guid,
+        value: {
+          metaWhereNames: metaWhereNames
+        }
+      });
+    }
+
+    return {
+      derivedState: derivedState
+    };
+  };
+
+  RemedyWhereQueryWrap.prototype.render = function () {
     var _this = this;
 
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, this.props.target.form.qualification.map(function (qualification, index) {
@@ -42171,10 +43875,10 @@ function (_super) {
     }));
   };
 
-  return RemedyWhereQuery;
+  return RemedyWhereQueryWrap;
 }(react__WEBPACK_IMPORTED_MODULE_1__["Component"]);
 
-
+var RemedyWhereQuery = WithContext(RemedyWhereQueryWrap);
 
 var RemedyQualQuery = function RemedyQualQuery(_a) {
   var _b, _c, _d, _e;
@@ -42208,8 +43912,8 @@ var RemedyQualQuery = function RemedyQualQuery(_a) {
     return qualType === 'Where' ? Object(_utilities_remedy_query_def__WEBPACK_IMPORTED_MODULE_5__["getWhereTypes"])() : Object(_utilities_remedy_query_def__WEBPACK_IMPORTED_MODULE_5__["getHavingTypes"])();
   }, [qualType]);
   var columnFullNameOptions = Object(react__WEBPACK_IMPORTED_MODULE_1__["useMemo"])(function () {
-    return qualType === 'Where' ? autoCompleteContext.inputAutoComplete[guid].metaColumnNames : autoCompleteContext.inputAutoComplete[guid].metaHavingNames;
-  }, [(_d = autoCompleteContext.inputAutoComplete[guid]) === null || _d === void 0 ? void 0 : _d.metaColumnNames, (_e = autoCompleteContext.inputAutoComplete[guid]) === null || _e === void 0 ? void 0 : _e.metaHavingNames]);
+    return qualType === 'Where' ? autoCompleteContext.inputAutoComplete[guid].metaWhereNames : autoCompleteContext.inputAutoComplete[guid].metaHavingNames;
+  }, [(_d = autoCompleteContext.inputAutoComplete[guid]) === null || _d === void 0 ? void 0 : _d.metaWhereNames, (_e = autoCompleteContext.inputAutoComplete[guid]) === null || _e === void 0 ? void 0 : _e.metaHavingNames]);
 
   var shiftLeftQualification = function shiftLeftQualification() {
     if (hideQual || qualification.groupCounter === 1) return;
@@ -42256,7 +43960,7 @@ var RemedyQualQuery = function RemedyQualQuery(_a) {
 
     qualificationClone.logicalOperator = _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["OPERATOR_AND"];
     var addIndex = keyIndex + 1;
-    var leftOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["LeftOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
+    var leftOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["LeftOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_FIELD"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], false);
     var rightOperand = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["RightOperand"](_utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["VALUE"], null, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["CHAR"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["EMPTY"]);
     var relationalQualification = new _utilities_RemedyTypes__WEBPACK_IMPORTED_MODULE_7__["Qualification"](true, qualificationClone.groupCounter, qualificationClone.groupHierarchy, _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["RELATIONAL"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["OPERATOR_AND"], _utilities_remedy_literal_string__WEBPACK_IMPORTED_MODULE_6__["OPERATOR_EQUAL"], null, null, leftOperand, rightOperand);
 
@@ -42307,7 +44011,7 @@ var RemedyQualQuery = function RemedyQualQuery(_a) {
       color: qualification.splitGroup ? '#ff851b' : 'inherit'
     }
   }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(modules_common_Seg__WEBPACK_IMPORTED_MODULE_3__["Seg"], {
-    disabled: hideQual,
+    disabled: hideQual || qualification.leftOperand.isCalcField,
     value: "+",
     loadOptions: function loadOptions() {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(void 0, void 0, void 0, function () {
@@ -42347,8 +44051,9 @@ var RemedyQualQuery = function RemedyQualQuery(_a) {
       var qualificationClone = Object(lodash__WEBPACK_IMPORTED_MODULE_9__["cloneDeep"])(qualification);
 
       if (qualificationClone.leftOperand) {
-        if (qualificationClone.leftOperand.fieldName.isCalculatedField === true) {
+        if (selectedVal.value.isCalculatedField === true) {
           qualificationClone.leftOperand.fieldName = selectedVal.value.columnName;
+          qualificationClone.leftOperand.isCalcField = true;
         } else {
           qualificationClone.leftOperand.fieldName = selectedVal.text;
         }
@@ -42608,7 +44313,10 @@ function (_super) {
     targetClone.sourceQuery.rawQuery = targetClone.sourceQuery.rawQuery || ((_d = _this["default"].sourceQuery) === null || _d === void 0 ? void 0 : _d.rawQuery);
     targetClone.sourceQuery.form = targetClone.sourceQuery.form || ((_e = _this["default"].sourceQuery) === null || _e === void 0 ? void 0 : _e.form);
     targetClone.sourceQuery.header = targetClone.sourceQuery.header || ((_f = _this["default"].sourceQuery) === null || _f === void 0 ? void 0 : _f.header);
-    targetClone.sourceQuery.guid = targetClone.sourceQuery.guid || ((_g = _this["default"].sourceQuery) === null || _g === void 0 ? void 0 : _g.guid);
+    targetClone.sourceQuery.guid = targetClone.sourceQuery.guid || ((_g = _this["default"].sourceQuery) === null || _g === void 0 ? void 0 : _g.guid); // next line is a workaround for defect DRJ71-3795
+
+    _this.generate(targetClone);
+
     onQueryUpdate(targetClone, true);
     return _this;
   }
@@ -43619,11 +45327,12 @@ function () {
 var LeftOperand =
 /** @class */
 function () {
-  function LeftOperand($fieldType, $fieldAlias, $fieldName, $fieldSourceAlias) {
+  function LeftOperand($fieldType, $fieldAlias, $fieldName, $fieldSourceAlias, $isCalcField) {
     this.fieldType = $fieldType;
     this.fieldAlias = $fieldAlias;
     this.fieldName = $fieldName;
     this.fieldSourceAlias = $fieldSourceAlias;
+    this.isCalcField = $isCalcField;
   }
 
   return LeftOperand;
@@ -44315,7 +46024,7 @@ function () {
     var sql = _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["EMPTY"];
     sql += this.buildColumnSql(inputForm.selectionList, inputForm.useDistinct, inputForm.calculatedFieldList);
 
-    if (inputForm.calculatedFieldList !== undefined) {
+    if (inputForm.calculatedFieldList instanceof Array) {
       sql += this.buildCalculatedFieldSql(inputForm.calculatedFieldList);
     }
 
@@ -44376,7 +46085,7 @@ function () {
 
       if (index !== inputList.length - 1) {
         sql += _remedy_literal_string__WEBPACK_IMPORTED_MODULE_4__["COMMA"];
-      } else if (calculatedFieldList !== undefined) {
+      } else if (calculatedFieldList instanceof Array) {
         var addComma_1 = false;
         calculatedFieldList.forEach(function (item) {
           if (!item.hideCalculatedField) {
@@ -45343,7 +47052,7 @@ function getGroupByField() {
 } // Having
 
 function getHavingLeftOperand() {
-  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], false);
 }
 function getHavingRightOperand() {
   return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
@@ -45353,7 +47062,7 @@ function getHavingQualification() {
 } // Where
 
 function getWhereLeftOperand() {
-  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], false);
 }
 function getWhereRightOperand() {
   return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["VALUE"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
@@ -45371,7 +47080,7 @@ function getNewCalculatedFieldList() {
 // JoinClause
 
 function getJoinClauseLeftOperand() {
-  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
+  return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["LeftOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], false);
 }
 function getJoinClauseRightOperand() {
   return new _RemedyTypes__WEBPACK_IMPORTED_MODULE_2__["RightOperand"](_remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_FIELD"], null, _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CHAR"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["COLUMN_TYPE_SELECT_COLUMN_NAME"], _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["EMPTY"]);
@@ -45694,7 +47403,7 @@ function getSortOrder() {
 /*!*********************************************!*\
   !*** ./modules/remedy/utilities/utility.ts ***!
   \*********************************************/
-/*! exports provided: replaceSpaceWithUnderscore, getMetaOrderNames, getMetaHavingNames, getMetaGroupNames, getMetaColumnNames, getDistinctFormNames */
+/*! exports provided: replaceSpaceWithUnderscore, getMetaOrderNames, getMetaHavingNames, getMetaGroupNames, getMetaColumnNames, getDistinctFormNames, getMetaWhereNames */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45705,6 +47414,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMetaGroupNames", function() { return getMetaGroupNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMetaColumnNames", function() { return getMetaColumnNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDistinctFormNames", function() { return getDistinctFormNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMetaWhereNames", function() { return getMetaWhereNames; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _remedy_query_def__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./remedy_query_def */ "./modules/remedy/utilities/remedy_query_def.ts");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
@@ -45805,7 +47515,7 @@ var getMetaHavingNames = function getMetaHavingNames(_a) {
 
   if (inputCalculatedFieldList !== undefined) {
     Object(lodash__WEBPACK_IMPORTED_MODULE_2__["each"])(inputCalculatedFieldList, function (field) {
-      if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CALCULATED_FIELD"]) {
+      if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CALCULATED_FIELD"] && field.selectionAggregation) {
         var form_4 = inputSourceList[0];
 
         Object(lodash__WEBPACK_IMPORTED_MODULE_2__["find"])(inputSourceList, function (f) {
@@ -45852,7 +47562,8 @@ var getMetaGroupNames = function getMetaGroupNames(_a) {
         value: {
           formName: form_5.sourceFormName,
           formAlias: form_5.sourceAlias,
-          columnName: column.selectionType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["ARROW"] + column.selectionColumnName
+          columnName: column.selectionType + _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["ARROW"] + column.selectionColumnName,
+          selectionType: column.selectionType
         }
       });
     }
@@ -45892,6 +47603,41 @@ var getDistinctFormNames = function getDistinctFormNames(sourceList) {
 
   return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(distinctSourceList));
 };
+var getMetaWhereNames = function getMetaWhereNames(_a) {
+  var columnNames = _a.columnNames,
+      inputSourceList = _a.inputSourceList,
+      inputCalculatedFieldList = _a.inputCalculatedFieldList;
+
+  var metaWhereNames = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spreadArray"])([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(columnNames));
+
+  if (inputCalculatedFieldList !== undefined) {
+    Object(lodash__WEBPACK_IMPORTED_MODULE_2__["each"])(inputCalculatedFieldList, function (field) {
+      if (field.selectionCalculatedFields !== _remedy_literal_string__WEBPACK_IMPORTED_MODULE_3__["CALCULATED_FIELD"] && !field.selectionAggregation) {
+        var form_6 = inputSourceList[0];
+
+        Object(lodash__WEBPACK_IMPORTED_MODULE_2__["find"])(inputSourceList, function (f) {
+          if (field.selectionAlias.includes(f.sourceFormName)) {
+            form_6 = f;
+          }
+        });
+
+        var tempColumnName = replaceSpaceWithUnderscore(field.selectionAlias);
+        metaWhereNames.push({
+          text: field.selectionAlias,
+          label: field.selectionAlias,
+          value: {
+            formName: form_6.sourceFormName,
+            formAlias: form_6.sourceAlias,
+            columnName: tempColumnName,
+            isCalculatedField: true
+          }
+        });
+      }
+    });
+  }
+
+  return metaWhereNames;
+};
 
 /***/ }),
 
@@ -45910,7 +47656,7 @@ var AuditConstants =
 function () {
   function AuditConstants() {}
 
-  AuditConstants.AUDIT_SEARCH_URL = 'audit/api/internal/v1/audit_records/search';
+  AuditConstants.AUDIT_SEARCH_URL = 'audit/api/v1/audit_records/search';
   return AuditConstants;
 }();
 
@@ -45938,10 +47684,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _datasource__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../datasource */ "./datasource.ts");
 /* harmony import */ var _table_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./table_model */ "./query-modules/audit/table_model.ts");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ "rxjs");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ "../node_modules/rxjs/_esm5/operators/index.js");
-
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ "../node_modules/rxjs/_esm5/operators/index.js");
 
 
 
@@ -45983,7 +47726,7 @@ function (_super) {
           return v;
         });
 
-        return quotedValues.join(',');
+        return quotedValues.length ? quotedValues.join(',') : "''";
       } else {
         return value;
       }
@@ -46056,7 +47799,7 @@ function (_super) {
       activity_to_date_time: toTimeRange
     };
     var url = _AuditConstants__WEBPACK_IMPORTED_MODULE_2__["AuditConstants"].AUDIT_SEARCH_URL;
-    return this.post(url, payload).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["map"])(function (auditData) {
+    return this.post(url, payload).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])(function (auditData) {
       return _this.responseHandle(auditData);
     }));
   };
@@ -46165,14 +47908,14 @@ function (_super) {
   };
 
   AuditDatasource.prototype.post = function (url, data) {
-    return this.request('POST', url, data).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["catchError"])(function (err) {
+    return this.request('POST', url, data).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["catchError"])(function (err) {
       if (err.data && err.data.error) {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_7__["throwError"])({
+        throw {
           message: 'Error: ' + err.data.error.reason,
           error: err.data.error,
           status: err.status,
           statusText: err.statusText
-        });
+        };
       }
 
       throw err;
@@ -47809,23 +49552,23 @@ function (_super) {
     var rpRiskRequestObject = ds.queryBuilder.buildResourcePoolRiskQuery(options);
     var rpRiskRequest = JSON.stringify(rpRiskRequestObject);
     var resourcePoolAtRiskMap = new Map();
-    return this.post(ds, _CloudSecurityConstants__WEBPACK_IMPORTED_MODULE_1__["CSConstants"].RESOURCE_POOL_RISK_SEARCH_URL, rpRiskRequest).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["mergeMap"])(function (response) {
+    return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["from"])(this.post(ds, _CloudSecurityConstants__WEBPACK_IMPORTED_MODULE_1__["CSConstants"].RESOURCE_POOL_RISK_SEARCH_URL, rpRiskRequest).toPromise().then(function (response) {
       if (response && response.data && response.data.data.length !== 0) {
         resourcePoolAtRiskMap = _this.getResourcePoolAtRiskMap(response.data.data);
 
         if (resourcePoolAtRiskMap.size === 0) {
-          return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])({
+          return {
             data: []
-          });
+          };
         }
 
         var resourcePoolRequestObject = ds.queryBuilder.buildResourcePoolQuery(options, resourcePoolAtRiskMap);
         var resourcePoolRequest = JSON.stringify(resourcePoolRequestObject);
-        return _this.post(ds, _CloudSecurityConstants__WEBPACK_IMPORTED_MODULE_1__["CSConstants"].RESOURCE_POOL_SEARCH_URL, resourcePoolRequest);
+        return _this.post(ds, _CloudSecurityConstants__WEBPACK_IMPORTED_MODULE_1__["CSConstants"].RESOURCE_POOL_SEARCH_URL, resourcePoolRequest).toPromise();
       } else {
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])({
+        return {
           data: []
-        });
+        };
       }
     })).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["map"])(function (response) {
       try {
@@ -47909,6 +49652,416 @@ function (_super) {
 
   return RiskAccountRequestHandler;
 }(_AbstCSRequestHandler__WEBPACK_IMPORTED_MODULE_1__["AbstCSRequestHandler"]);
+
+
+
+/***/ }),
+
+/***/ "./query-modules/datamarts/DataMartsDatasource.ts":
+/*!********************************************************!*\
+  !*** ./query-modules/datamarts/DataMartsDatasource.ts ***!
+  \********************************************************/
+/*! exports provided: DatamartsDatasource, handleErrors */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartsDatasource", function() { return DatamartsDatasource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleErrors", function() { return handleErrors; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
+/* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var datasource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! datasource */ "./datasource.ts");
+/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/defaults */ "../node_modules/lodash/defaults.js");
+/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash_defaults__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ "rxjs");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "../node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./DatamartsConstants */ "./query-modules/datamarts/DatamartsConstants.ts");
+
+
+
+
+
+
+
+
+
+var DatamartsDatasource =
+/** @class */
+function (_super) {
+  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DatamartsDatasource, _super);
+
+  function DatamartsDatasource(instanceSettings, templateSrv) {
+    var _this = _super.call(this, instanceSettings) || this;
+
+    _this.buildFilter = function (sourceFilter) {
+      var filter = {
+        name: sourceFilter.name,
+        condition: sourceFilter.condition
+      };
+
+      if (sourceFilter.value) {
+        filter.value = sourceFilter.value;
+      }
+
+      if (sourceFilter.values) {
+        filter.values = sourceFilter.values;
+      }
+
+      return filter;
+    };
+
+    _this.handleQueryFilters = function (query) {
+      var filters = [];
+
+      if (query.timeFilter) {
+        filters.push(_this.buildFilter(query.timeFilter));
+      }
+
+      if (query.tagFilter) {
+        filters.push(_this.buildFilter(query.tagFilter));
+      }
+
+      if (query.domainFilter) {
+        filters.push(_this.buildFilter(query.domainFilter));
+      }
+
+      return filters;
+    };
+
+    _this.refreshSettings(instanceSettings);
+
+    _this.templateSrv = templateSrv;
+    return _this;
+  }
+
+  DatamartsDatasource.prototype.testDatasource = function () {
+    throw new Error('Method not implemented.');
+  };
+
+  DatamartsDatasource.getInstance = function (instanceSettings, templateSrv) {
+    if (!DatamartsDatasource.instance) {
+      DatamartsDatasource.instance = new DatamartsDatasource(instanceSettings, templateSrv);
+    }
+
+    DatamartsDatasource.instance.refreshSettings(instanceSettings);
+    return DatamartsDatasource.instance;
+  };
+
+  DatamartsDatasource.prototype.query = function (options) {
+    var _this = this;
+
+    return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["from"])(options.targets).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["filter"])(function (target) {
+      return target.sourceQuery.erid !== undefined;
+    }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["tap"])(function (target) {
+      return target.sourceQuery.erid = _this.templateSrv.replace("" + target.sourceQuery.erid, {}, _this.interpolateQueryExpr);
+    }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["concatMap"])(function (target) {
+      return _this.getDatamartData(target.sourceQuery.erid, target.sourceQuery).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (response) {
+        return _this.transformData(response.data, target.sourceQuery.datamartName);
+      }), //transform data to DataQueryResponseData
+      Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (resArr) {
+        return {
+          data: [resArr]
+        }; // create DataQueryResponse
+      }));
+    }));
+  };
+
+  DatamartsDatasource.prototype.interpolateQueryExpr = function (value, variable) {
+    if (value === void 0) {
+      value = [];
+    }
+
+    return value;
+  };
+
+  DatamartsDatasource.prototype.metricFindQuery = function (query) {
+    if (query === 'all') {
+      return this._request(_DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_DATAMARTS_GET_ALL, null, {
+        method: 'GET',
+        headers: {}
+      }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (result) {
+        return result.data.datamarts || [];
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (datamarts) {
+        return datamarts.map(function (datamart) {
+          return {
+            text: datamart.name,
+            value: datamart.erid,
+            expandable: true
+          };
+        });
+      }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (e) {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["of"])([]);
+      })).toPromise();
+    }
+
+    return Promise.resolve([]);
+  };
+
+  DatamartsDatasource.prototype.transformData = function (data, name) {
+    var results = {
+      name: name,
+      fields: []
+    };
+
+    if (data === undefined) {
+      return results;
+    }
+
+    var length = data.length;
+    var fieldsResults = {};
+
+    for (var i = 0; i < length; i++) {
+      Object.keys(data[i]).forEach(function (key) {
+        if (!fieldsResults[key]) {
+          fieldsResults[key] = new Array(length);
+        }
+
+        fieldsResults[key][i] = data[i][key];
+      });
+    }
+
+    var tData = [];
+    Object.keys(fieldsResults).forEach(function (key) {
+      return tData.push({
+        name: key,
+        values: fieldsResults[key]
+      });
+    });
+    results.fields = tData;
+    return results;
+  };
+
+  DatamartsDatasource.prototype.refreshSettings = function (instSet) {
+    this.datamartsUrl = instSet.url;
+    this.lookupsDisabled = false;
+  };
+
+  DatamartsDatasource.prototype.getDatamarts = function () {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
+      var result;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            return [4
+            /*yield*/
+            , this._request(_DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_DATAMARTS_GET_ALL, null, {
+              method: 'GET',
+              headers: {}
+            }).toPromise()];
+
+          case 1:
+            result = _a.sent();
+            return [2
+            /*return*/
+            , {
+              loading: false,
+              values: result.data.datamarts.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+              })
+            }];
+        }
+      });
+    });
+  };
+
+  DatamartsDatasource.prototype.getTagTypes = function () {
+    return this._request(_DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_CATALOGPROXY_TAG_TYPES, {
+      entity_type_ids: []
+    }, {
+      method: 'POST',
+      headers: {}
+    }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (response) {
+      return response.data['tag.types'];
+    }));
+  };
+
+  DatamartsDatasource.prototype.searchTags = function (query) {
+    return this._request(_DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_CATALOGPROXY_TAGS_SEARCH, {
+      'search.string': query
+    }, {
+      method: 'POST',
+      headers: {}
+    }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (response) {
+      return response.data['tag.types'];
+    }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (types) {
+      return types.reduce(function (acc, curr) {
+        var tagsViewModel = curr.tags.map(function (tag) {
+          return {
+            tagId: tag.tagid,
+            tagName: tag.tag,
+            tagTypeId: curr.tagtypeid,
+            tagTypeName: curr.name
+          };
+        });
+        acc = acc.concat(tagsViewModel);
+        return acc;
+      }, []);
+    }));
+  };
+
+  DatamartsDatasource.prototype.searchDomains = function (query) {
+    return this._request(_DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_CATALOGPROXY_DOMAINS_SEARCH, {
+      filter: {
+        'search.string': query
+      },
+      pagination: {
+        page: 0,
+        size: 1000000
+      }
+    }, {
+      method: 'POST',
+      headers: {}
+    }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (response) {
+      return response.data['children'] ? response.data['children']['APP'] || [] : [];
+    }));
+  };
+
+  DatamartsDatasource.prototype.getDatamartMetadata = function (datamartId) {
+    var url = _DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_DATAMARTS_GET_DATAMART_METADATA;
+    url = url.replace('<erid>', datamartId);
+    return this._request(url, null, {
+      method: 'GET',
+      headers: {}
+    }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (res) {
+      return res.data;
+    }) //Get only response body (DatamartMetadataResponse)
+    );
+  };
+
+  DatamartsDatasource.prototype.getDatamartData = function (datamartId, query) {
+    var url = _DatamartsConstants__WEBPACK_IMPORTED_MODULE_7__["DatamartsConstants"].API_DATAMARTS_GET_DATAMART_DATA;
+    url = url.replace('<erid>', datamartId);
+    var options = {
+      pagesize: -1
+    };
+    var body = {
+      options: options
+    };
+    var filters = this.handleQueryFilters(query);
+
+    if (filters.length > 0) {
+      body.filters = filters;
+    }
+
+    return this._request(url, body, {
+      method: 'POST',
+      headers: {}
+    }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (res) {
+      return res.data;
+    }) //Get only response body (DatamartDataResponse)
+    );
+  };
+  /**
+   * Any request done from this data source should go through here as it contains some common processing for the
+   * request. Any processing done here needs to be also copied on the backend as this goes through data source proxy
+   * but not through the same code as alerting.
+   */
+
+
+  DatamartsDatasource.prototype._request = function (url, data, options) {
+    options = lodash_defaults__WEBPACK_IMPORTED_MODULE_4___default()(options || {}, {
+      url: this.datamartsUrl + '/' + url,
+      method: 'GET',
+      headers: {
+        Authorization: ''
+      }
+    });
+    var imsJWTToken = datasource__WEBPACK_IMPORTED_MODULE_3__["BMCDataSource"].tokenObj.adeJWTToken;
+
+    if (imsJWTToken !== undefined) {
+      options.headers['Authorization'] = 'Bearer ' + imsJWTToken;
+    }
+
+    if (options.method === 'GET') {
+      if (data && Object.keys(data).length) {
+        options.url = options.url + '?' + Object.entries(data).map(function (_a) {
+          var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(_a, 2),
+              k = _b[0],
+              v = _b[1];
+
+          return encodeURIComponent(k) + "=" + encodeURIComponent(v);
+        }).join('&');
+      }
+    } else {
+      options.headers['Content-Type'] = 'application/json';
+      options.data = data;
+    }
+
+    return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_2__["getBackendSrv"])().fetch(options);
+  };
+
+  return DatamartsDatasource;
+}(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["DataSourceApi"]);
+
+
+var handleErrors = function handleErrors(err, refId) {
+  var error = {
+    message: err && err.statusText || 'Unknown error during query transaction. Please check JS console logs.',
+    refId: refId
+  };
+
+  if (err.data) {
+    if (typeof err.data === 'string') {
+      error.message = err.data;
+    } else if (err.data.error) {
+      error.message = safeStringifyValue(err.data.error);
+    }
+  } else if (err.message) {
+    error.message = err.message;
+  } else if (typeof err === 'string') {
+    error.message = err;
+  }
+
+  error.status = err.status;
+  error.statusText = err.statusText;
+  return error;
+};
+
+var safeStringifyValue = function safeStringifyValue(value, space) {
+  if (!value) {
+    return '';
+  }
+
+  try {
+    return JSON.stringify(value, null, space);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return '';
+};
+
+/***/ }),
+
+/***/ "./query-modules/datamarts/DatamartsConstants.ts":
+/*!*******************************************************!*\
+  !*** ./query-modules/datamarts/DatamartsConstants.ts ***!
+  \*******************************************************/
+/*! exports provided: DatamartsConstants */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatamartsConstants", function() { return DatamartsConstants; });
+var DatamartsConstants =
+/** @class */
+function () {
+  function DatamartsConstants() {}
+
+  DatamartsConstants.API_DATAMARTS_SERVICE = 'opt/api/v1/datamartservice/';
+  DatamartsConstants.API_CATALOGPROXY = 'opt/api/v1/catalogproxy/';
+  DatamartsConstants.API_DATAMARTS_GET_ALL = DatamartsConstants.API_DATAMARTS_SERVICE + 'datamarts';
+  DatamartsConstants.API_DATAMARTS_GET_DATAMART_DATA = DatamartsConstants.API_DATAMARTS_GET_ALL + '/<erid>/data';
+  DatamartsConstants.API_DATAMARTS_GET_DATAMART_METADATA = DatamartsConstants.API_DATAMARTS_GET_ALL + '/<erid>/metadata';
+  DatamartsConstants.API_CATALOGPROXY_TAG_TYPES = DatamartsConstants.API_CATALOGPROXY + "tags/types";
+  DatamartsConstants.API_CATALOGPROXY_TAGS_SEARCH = DatamartsConstants.API_CATALOGPROXY + "tags/search";
+  DatamartsConstants.API_CATALOGPROXY_DOMAINS_SEARCH = DatamartsConstants.API_CATALOGPROXY + "entities/APP/0/flatsearch";
+  return DatamartsConstants;
+}();
 
 
 
@@ -49417,13 +51570,13 @@ function (_super) {
 
       if (err.data) {
         var message = ((_b = (_a = err.data.error) === null || _a === void 0 ? void 0 : _a.root_cause) === null || _b === void 0 ? void 0 : _b.reason) ? err.data.error.root_cause.reason : 'Unknown error';
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["throwError"])({
+        throw {
           message: 'Elasticsearch error: ' + message,
           error: err.data.error
-        });
+        };
       }
 
-      return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["throwError"])(err);
+      throw err;
     }));
   };
 
@@ -49562,7 +51715,7 @@ function (_super) {
   };
 
   EventDatasource.prototype.interpolateLuceneQuery = function (queryString, scopedVars) {
-    return this.templateSrv.replace(queryString, scopedVars, 'lucene');
+    return this.templateSrv.replace(queryString, scopedVars, 'lucene', '""');
   };
 
   EventDatasource.prototype.interpolateVariablesInQueries = function (queries, scopedVars) {
@@ -49882,7 +52035,7 @@ function (_super) {
         var key = _d.value;
 
         if (this.isPrimitive(obj[key])) {
-          if (this.templateSrv.variableExists(obj[key])) {
+          if (this.templateSrv.containsTemplate(obj[key])) {
             return true;
           }
         } else if (Array.isArray(obj[key])) {
@@ -50074,7 +52227,7 @@ function () {
     }
 
     var interval = settings.interval === 'auto' ? '$__interval' : settings.interval;
-    esAgg.interval = interval;
+    esAgg.fixed_interval = interval;
     return esAgg;
   };
 
@@ -52940,13 +55093,13 @@ function (_super) {
 
       if (err.data) {
         var message = (_d = (_c = (_b = (_a = err.data.error) === null || _a === void 0 ? void 0 : _a.root_cause) === null || _b === void 0 ? void 0 : _b.reason) !== null && _c !== void 0 ? _c : err.data.error.root_cause.reason) !== null && _d !== void 0 ? _d : 'Unknown error';
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["throwError"])({
+        throw {
           message: 'Elasticsearch error: ' + message,
           error: err.data.error
-        });
+        };
       }
 
-      return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["throwError"])(err);
+      throw err;
     }));
   };
 
@@ -53085,7 +55238,7 @@ function (_super) {
   };
 
   LogDatasource.prototype.interpolateLuceneQuery = function (queryString, scopedVars) {
-    return this.templateSrv.replace(queryString, scopedVars, 'lucene');
+    return this.templateSrv.replace(queryString, scopedVars, 'lucene', "''");
   };
 
   LogDatasource.prototype.interpolateVariablesInQueries = function (queries, scopedVars) {
@@ -55731,11 +57884,11 @@ function (_super) {
   MetricDatasource.prototype.interpolateQueryExpr = function (value, variable) {
     if (value === void 0) {
       value = [];
-    } // if no multi or include all do not regexEscape
+    } // For single select too we are doing special regex escape based on the discussion with SRE team. The backend expects escape sequence for special characters.
 
 
     if (!variable.multi && !variable.includeAll) {
-      return prometheusRegularEscape(value);
+      return prometheusSpecialRegexEscape(value);
     }
 
     if (typeof value === 'string') {
@@ -56129,7 +58282,7 @@ function (_super) {
     // }
 
     return this._request(url, data, {
-      method: 'GET',
+      method: 'POST',
       requestId: query.sourceQuery.requestId,
       headers: query.sourceQuery.headers
     }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
@@ -56137,7 +58290,7 @@ function (_super) {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["of"])(err);
       }
 
-      return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["throwError"])(_this.handleErrors(err, query));
+      throw _this.handleErrors(err, query);
     }));
   };
 
@@ -56166,7 +58319,7 @@ function (_super) {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["of"])(err);
       }
 
-      return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["throwError"])(_this.handleErrors(err, query));
+      throw _this.handleErrors(err, query);
     }));
   };
   /*-- End --*/
@@ -58730,6 +60883,7 @@ function () {
   RemedyConstants.REMEDY_METRIC_FORM_URL = 'api/arsys/v1.0/form';
   RemedyConstants.REMEDY_METRIC_COLUMN_URL = 'api/arsys/v1.0/fields/';
   RemedyConstants.REMEDY_METRIC_COLUMN_QUERY_PARAM = '?field_criteria=NAME,DATATYPE,OPTIONS&field_type=DATA';
+  RemedyConstants.REMEDY_SPECIFIC_QUALIFICATION_PARAM = 'ARJDBC6460AC66AB204CA7BE8869BB9AF532F9';
   return RemedyConstants;
 }();
 
@@ -58812,7 +60966,7 @@ function (_super) {
           return v;
         });
 
-        return quotedValues.join(',');
+        return quotedValues.length ? quotedValues.join(',') : "''";
       } else {
         return value;
       }
@@ -59047,7 +61201,7 @@ function (_super) {
         var expandedQuery = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
           datasource: _this.name,
           sourceQuery: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query.sourceQuery), {
-            rawQuery: _this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, _this.interpolateVariable)
+            rawQuery: _this.templateSrv.replace(query.sourceQuery.rawQuery, scopedVars, _this.interpolateVariable, "'" + _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_SPECIFIC_QUALIFICATION_PARAM + "'")
           })
         });
 
@@ -59149,7 +61303,7 @@ function (_super) {
 
   RemedyDatasource.prototype.variableSupport = function (esQuery, scopedVars) {
     // Support: Variables
-    var payload = this.templateSrv.replace(esQuery, scopedVars, this.interpolateVariable); // Support: Time Filter using regex match
+    var payload = this.templateSrv.replace(esQuery, scopedVars, this.interpolateVariable, "'" + _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_SPECIFIC_QUALIFICATION_PARAM + "'"); // Support: Time Filter using regex match
 
     payload = payload.replace(/\$__/g, '$$');
     payload = payload.replace(/\$_/g, '$$');
@@ -59223,7 +61377,7 @@ function (_super) {
         sql: sql
       }; // Support: Variables
 
-      var payload = this.templateSrv.replace(angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(queryObj), {}, this.interpolateVariable);
+      var payload = this.templateSrv.replace(angular__WEBPACK_IMPORTED_MODULE_1___default.a.toJson(queryObj), {}, this.interpolateVariable, "'" + _RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_SPECIFIC_QUALIFICATION_PARAM + "'");
       var returnData = this.post(_RemedyConstants__WEBPACK_IMPORTED_MODULE_9__["RemedyConstants"].REMEDY_QUERY_URL, payload).toPromise().then(function (response) {
         var res = new _remedy_response__WEBPACK_IMPORTED_MODULE_8__["RemedyResponse"](response);
         return res.getTableData('A');
@@ -59415,6 +61569,7 @@ function () {
   function SmartGraphConstants() {}
 
   SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL = 'smart-graph-api/api/v1.2/data/search?format=object&query=search BusinessService show ' + encodeURIComponent('#id') + ',name';
+  SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL_V1 = 'smart-graph-api/api/v1.2/data/search?limit=1000&format=object&query=';
   return SmartGraphConstants;
 }();
 
@@ -59457,8 +61612,7 @@ function () {
   }
 
   return ServiceDetails;
-}(); //import { Observable } from 'rxjs';
-
+}();
 
 var SmartGraphDatasource =
 /** @class */
@@ -59472,6 +61626,26 @@ function (_super) {
     _this.timeSrv = timeSrv;
     _this.serviceDetailsArray = [];
     _this.serviceDetailsArray1 = [];
+
+    _this.interpolateQueryExpr = function (value, variable) {
+      // if no multi or include all do not regexEscape
+      if (value === void 0) {
+        value = [];
+      }
+
+      if (typeof value === 'string') {
+        return value;
+      }
+
+      if (!variable.multi && !variable.includeAll) {
+        return _this.prometheusRegularEscape(value);
+      }
+
+      var escapedValues = value.map(function (val) {
+        return _this.prometheusSpecialRegexEscape(val);
+      });
+      return escapedValues.join('|');
+    };
 
     _this.refreshSettings(instanceSettings);
 
@@ -59624,9 +61798,34 @@ function (_super) {
     });
   };
 
+  SmartGraphDatasource.prototype.getServiceNamesV1 = function (query, displayName) {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        if (!query || !displayName) {
+          throw new Error('Mandatory param missing in the query.');
+        }
+
+        return [2
+        /*return*/
+        , this.get(_SmartGraphConstants__WEBPACK_IMPORTED_MODULE_4__["SmartGraphConstants"].SMARTGRAPH_SEARCH_SERVICE_URL_V1 + _grafana_data__WEBPACK_IMPORTED_MODULE_2__["textUtil"].sanitizeUrl(encodeURIComponent(query))).then(function (result) {
+          var finalArray = [];
+          result.forEach(function (service) {
+            var _a, _b;
+
+            (_b = (_a = service.results) === null || _a === void 0 ? void 0 : _a.forEach) === null || _b === void 0 ? void 0 : _b.call(_a, function (res) {
+              var obj = {
+                text: res[displayName]
+              };
+              finalArray.push(obj);
+            });
+          });
+          return finalArray;
+        })];
+      });
+    });
+  };
+
   SmartGraphDatasource.prototype.metricFindQuery = function (query) {
-    //query = angular.fromJson(query);
-    //this.getServiceDetails();
     var scopedVars = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
       __interval: {
         text: this.interval,
@@ -59639,10 +61838,20 @@ function (_super) {
     }, this.getRangeScopedVars(this.timeSrv.timeRange()));
 
     var interpolated = this.templateSrv.replace(query, scopedVars, this.interpolateQueryExpr);
+    var optionsJSON;
 
-    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
+    try {
+      optionsJSON = JSON.parse(interpolated);
+      console.log('optionsJSON', optionsJSON);
+    } catch (e) {}
+
+    if (optionsJSON && optionsJSON.hasOwnProperty('query')) {
+      console.log('new method');
+      return this.getServiceNamesV1(optionsJSON.query, optionsJSON.displayName);
+    } else if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
       return this.getServiceID(interpolated);
     } else {
+      console.log('old method');
       return this.getServiceNames();
     }
   };
@@ -59696,28 +61905,6 @@ function (_super) {
         value: sRange + 's'
       }
     };
-  };
-
-  SmartGraphDatasource.prototype.interpolateQueryExpr = function (value, variable) {
-    // if no multi or include all do not regexEscape
-    var _this = this;
-
-    if (value === void 0) {
-      value = [];
-    }
-
-    if (typeof value === 'string') {
-      return value;
-    }
-
-    if (!variable.multi && !variable.includeAll) {
-      return this.prometheusRegularEscape(value);
-    }
-
-    var escapedValues = value.map(function (val) {
-      return _this.prometheusSpecialRegexEscape(val);
-    });
-    return escapedValues.join('|');
   };
 
   SmartGraphDatasource.prototype.prometheusRegularEscape = function (value) {
@@ -59796,6 +61983,12 @@ if (_grafana_runtime__WEBPACK_IMPORTED_MODULE_0__["config"].bootData.settings.En
     label: 'Service Management'
   });
   queryTypeOptions.push({
+    sourceType: Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_DATAMART"],
+    text: 'Optimize Datamarts',
+    value: 'datamarts',
+    label: 'Optimize Datamarts'
+  });
+  queryTypeOptions.push({
     sourceType: Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_AUDIT"],
     text: 'Audit',
     value: 'audit',
@@ -59821,6 +62014,7 @@ function validQueryType(queryType) {
     case Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_AUDIT"]:
     case Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_ENTITY"]:
     case Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_ITSM_INSIGHTS"]:
+    case Constants__WEBPACK_IMPORTED_MODULE_1__["SOURCE_TYPE_DATAMART"]:
       return true;
 
     default:

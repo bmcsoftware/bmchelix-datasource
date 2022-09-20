@@ -1,6 +1,6 @@
+import { InternalTimeZones, SelectableValue } from '@grafana/data';
 // import { BucketsConfiguration } from '../../../../../query-modules/event/eventTypes';
 import { defaultFilter } from './SettingsEditor/FiltersSettingsEditor/utils';
-import { InternalTimeZones, SelectableValue } from '@grafana/data';
 
 export const bucketAggregationConfig: any = {
   terms: {

@@ -48,6 +48,8 @@ export class RemedyQueryEditor extends PureComponent<Props, any> {
     targetClone.sourceQuery.header = targetClone.sourceQuery.header || this.default.sourceQuery?.header;
     targetClone.sourceQuery.guid = targetClone.sourceQuery.guid || this.default.sourceQuery?.guid;
 
+    // next line is a workaround for defect DRJ71-3795
+    this.generate(targetClone);
     onQueryUpdate(targetClone, true);
   }
 

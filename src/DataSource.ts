@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { QueryHandlerFactory } from 'QueryHandlerFactory';
 import { Observable, forkJoin, of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ADEAuthHelper } from './auth/ADEAuthHelper';
 import { EntAuthHelper } from './auth/EntAuthHelper';
 import { BMCDataSourceOptions, BMCDataSourceQuery, InstancePlatform, validQueryType } from './types';
@@ -73,13 +73,13 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
           BMCDataSource.tokenObj = token;
           return token;
         })
-      );
+      ) || of({});
     }
-    return of([]);
+    return of({});
   }
 
-  query(options: DataQueryRequest<BMCDataSourceQuery>): Observable<DataQueryResponse> {
-    const tokenObservable = this.validateToken() || of([]);
+  async query(options: DataQueryRequest<BMCDataSourceQuery>): Promise<DataQueryResponse> {
+    await this.validateToken().toPromise();
 
     const targetsMapping: { [sourceType: string]: BMCDataSourceQuery[] } = groupBy(
       options.targets,
@@ -89,7 +89,7 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
     const mixed: BatchedQueries[] = [];
     for (const sourceType in targetsMapping) {
       if (sourceType === undefined || !validQueryType(sourceType)) {
-        return of({ data: [] });
+        return of({ data: [] }).toPromise();
       }
 
       const query_options = cloneDeep(options);
@@ -103,16 +103,12 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
       mixed.push(type);
     }
 
-    return tokenObservable.pipe(
-      mergeMap((tokenResponse: any) => {
-        const batchQueriesObservable = this.batchQueries(mixed);
-        return batchQueriesObservable.pipe(
-          map((response: any) => {
-            return response;
-          })
-        );
+    const batchQueriesObservable = this.batchQueries(mixed);
+    return batchQueriesObservable.pipe(
+      map((response: any) => {
+        return response;
       })
-    );
+    ).toPromise();
   }
 
   batchQueries(queries: BatchedQueries[]): Observable<DataQueryResponse> {

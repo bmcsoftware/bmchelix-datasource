@@ -302,7 +302,7 @@ export function getGroupByField() {
 }
 // Having
 export function getHavingLeftOperand() {
-  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
+  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY, false);
 }
 export function getHavingRightOperand() {
   return new RightOperand(VALUE, null, CHAR, EMPTY, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
@@ -325,7 +325,7 @@ export function getHavingQualification() {
 }
 // Where
 export function getWhereLeftOperand() {
-  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
+  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY, false);
 }
 export function getWhereRightOperand() {
   return new RightOperand(VALUE, null, CHAR, EMPTY, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
@@ -366,7 +366,7 @@ export function getNewCalculatedFieldList() {
 // Form
 // JoinClause
 export function getJoinClauseLeftOperand() {
-  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY);
+  return new LeftOperand(COLUMN_TYPE_FIELD, null, COLUMN_TYPE_SELECT_COLUMN_NAME, EMPTY, false);
 }
 
 export function getJoinClauseRightOperand() {

@@ -107,7 +107,7 @@ export class EventQueryBuilder {
 
     const interval = settings.interval === 'auto' ? '$__interval' : settings.interval;
 
-    esAgg.interval = interval;
+    esAgg.fixed_interval = interval;
 
     return esAgg;
   }

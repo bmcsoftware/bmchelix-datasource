@@ -19,7 +19,7 @@ import {
 
 import { FetchResponse, getBackendSrv } from '@grafana/runtime';
 import { forkJoin, from, merge, Observable, of, throwError } from 'rxjs';
-import { filter, map, tap, catchError } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { BMCDataSourceOptions } from 'types';
 import { MetricResultTransformer } from './MetricResultTransformer';
 import MetricLanguageProvider from './MetricQlLanguageProvider';
@@ -147,9 +147,9 @@ export class MetricDatasource extends DataSourceApi<MetricDataSourceQuery, BMCDa
   }
 
   interpolateQueryExpr(value: string | string[] = [], variable: any) {
-    // if no multi or include all do not regexEscape
+    // For single select too we are doing special regex escape based on the discussion with SRE team. The backend expects escape sequence for special characters.
     if (!variable.multi && !variable.includeAll) {
-      return prometheusRegularEscape(value);
+      return prometheusSpecialRegexEscape(value);
     }
 
     if (typeof value === 'string') {
@@ -579,7 +579,7 @@ export class MetricDatasource extends DataSourceApi<MetricDataSourceQuery, BMCDa
     // }
 
     return this._request(url, data, {
-      method: 'GET',
+      method: 'POST',
       requestId: query.sourceQuery.requestId,
       headers: query.sourceQuery.headers,
     }).pipe(
@@ -588,7 +588,7 @@ export class MetricDatasource extends DataSourceApi<MetricDataSourceQuery, BMCDa
           return of(err);
         }
 
-        return throwError(this.handleErrors(err, query));
+        throw this.handleErrors(err, query);
       })
     );
   }
@@ -620,7 +620,7 @@ export class MetricDatasource extends DataSourceApi<MetricDataSourceQuery, BMCDa
           return of(err);
         }
 
-        return throwError(this.handleErrors(err, query));
+        throw this.handleErrors(err, query);
       })
     );
   }

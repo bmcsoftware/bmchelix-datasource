@@ -1,10 +1,11 @@
+import { uniqueId } from 'lodash';
 import React, { ComponentProps, useState } from 'react';
+
 import { InlineField, Input } from '@grafana/ui';
 import { useDispatch } from '../../../../hooks/useStatelessReducer';
-import { changeMetricSetting } from '../state/actions';
 import { SettingKeyOf } from '../../../types';
 import { MetricAggregationWithInlineScript, MetricAggregationWithSettings } from '../aggregations';
-import { uniqueId } from 'lodash';
+import { changeMetricSetting } from '../state/actions';
 import { getScriptValue } from '../../../../utilities/utils';
 
 interface Props<T extends MetricAggregationWithSettings, K extends SettingKeyOf<T>> {

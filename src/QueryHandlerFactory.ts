@@ -1,3 +1,4 @@
+import * as CONSTANTS from 'Constants';
 import { BMCDataSourceOptions } from './types';
 import { DataSourceInstanceSettings } from '@grafana/data';
 import { EventDatasource } from 'query-modules/event/EventDatasource';
@@ -8,8 +9,9 @@ import { CloudSecurityDatasource } from 'query-modules/cloudsecurity/CloudSecuri
 import { ItsmInsightsDatasource } from 'query-modules/itsm-insights/ItsmInsightsDatasource';
 import { AuditDatasource } from 'query-modules/audit/AuditDatasource';
 import { RemedyDatasource } from 'query-modules/remedy/RemedyDatasource';
-import * as CONSTANTS from 'Constants';
 import { SmartGraphDatasource } from 'query-modules/smartgraph/SmartGraphDatasource';
+import { DatamartsDatasource } from 'query-modules/datamarts/DataMartsDatasource';
+
 
 export class QueryHandlerFactory {
   static getDatasource(
@@ -19,7 +21,6 @@ export class QueryHandlerFactory {
     timeSrv: any,
     backendSrv: any
   ): any {
-    console.log('query type', type);
     switch (type) {
       case CONSTANTS.SOURCE_TYPE_EVENT:
         return EventDatasource.getInstance(instanceSettings, templateSrv, timeSrv);
@@ -38,7 +39,9 @@ export class QueryHandlerFactory {
       case CONSTANTS.SOURCE_TYPE_ITSM_INSIGHTS:
         return ItsmInsightsDatasource.getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
       case CONSTANTS.SOURCE_TYPE_AUDIT:
-        return AuditDatasource.getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);
+        return AuditDatasource.getInstance(instanceSettings, templateSrv, timeSrv, backendSrv);      
+      case CONSTANTS.SOURCE_TYPE_DATAMART:
+        return DatamartsDatasource.getInstance(instanceSettings, templateSrv);
       default:
         return EventDatasource.getInstance(instanceSettings, templateSrv, timeSrv);
     }

@@ -18,6 +18,7 @@ export const SOURCE_TYPE_CLOUD_SECURITY = 'cloudsecurity';
 export const SOURCE_TYPE_SMARTGRAPH = 'smartgraph';
 export const SOURCE_TYPE_ITSM_INSIGHTS = 'itsm-insights';
 export const SOURCE_TYPE_AUDIT = 'audit';
+export const SOURCE_TYPE_DATAMART = 'datamarts';
 
 export const SOURCE_TYPE_REMEDY = 'remedy';
 export const SOURCE_TYPE_LOG = 'log';

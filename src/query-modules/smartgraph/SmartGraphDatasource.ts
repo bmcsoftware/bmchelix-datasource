@@ -7,6 +7,7 @@ import {
   DataSourceApi,
   rangeUtil,
   TimeRange,
+  textUtil,
 } from '@grafana/data';
 
 import { getBackendSrv } from '@grafana/runtime';
@@ -25,7 +26,7 @@ class ServiceDetails {
   }
 }
 
-//import { Observable } from 'rxjs';
+type variableOption = { text: string; selected?: boolean };
 
 export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuery, BMCDataSourceOptions> {
   // query(request: DataQueryRequest<SmartGraphDataSourceQuery>): Promise<DataQueryResponse> | Observable<DataQueryResponse> {
@@ -160,21 +161,48 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
       });
     });
   }
+
+  async getServiceNamesV1(query: string, displayName: string) {
+    if (!query || !displayName) {
+      throw new Error('Mandatory param missing in the query.');
+    }
+    return this.get(
+      SmartGraphConstants.SMARTGRAPH_SEARCH_SERVICE_URL_V1 + textUtil.sanitizeUrl(encodeURIComponent(query))
+    ).then((result: any) => {
+      const finalArray: variableOption[] = [];
+      result.forEach((service: any) => {
+        service.results?.forEach?.((res: any) => {
+          const obj: variableOption = { text: res[displayName] };
+          finalArray.push(obj);
+        });
+      });
+      return finalArray;
+    });
+  }
+
   metricFindQuery(query: string) {
-    //query = angular.fromJson(query);
-    //this.getServiceDetails();
     const scopedVars = {
       __interval: { text: this.interval, value: this.interval },
       __interval_ms: { text: rangeUtil.intervalToMs(this.interval), value: rangeUtil.intervalToMs(this.interval) },
       ...this.getRangeScopedVars(this.timeSrv.timeRange()),
     };
     const interpolated = this.templateSrv.replace(query, scopedVars, this.interpolateQueryExpr);
-    if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
+    let optionsJSON: any;
+    try {
+      optionsJSON = JSON.parse(interpolated);
+      console.log('optionsJSON', optionsJSON);
+    } catch (e) {}
+    if (optionsJSON && optionsJSON.hasOwnProperty('query')) {
+      console.log('new method');
+      return this.getServiceNamesV1(optionsJSON.query, optionsJSON.displayName);
+    } else if (typeof interpolated === 'string' && interpolated.length > 0 && interpolated.indexOf('servicename') > 0) {
       return this.getServiceID(interpolated);
     } else {
+      console.log('old method');
       return this.getServiceNames();
     }
   }
+
   async getServiceID(interpolated: string) {
     var servicename: string;
     servicename = interpolated.substring(interpolated.indexOf('servicename') + 13, interpolated.indexOf('}') - 1);
@@ -187,6 +215,7 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
       return { text: value.id };
     });
   }
+
   testDatasource(): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -201,7 +230,7 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
     };
   }
 
-  interpolateQueryExpr(value: string | string[] = [], variable: any) {
+  interpolateQueryExpr = (value: string | string[] = [], variable: any) => {
     // if no multi or include all do not regexEscape
 
     if (typeof value === 'string') {
@@ -213,7 +242,7 @@ export class SmartGraphDatasource extends DataSourceApi<SmartGraphDataSourceQuer
     }
     const escapedValues = value.map((val) => this.prometheusSpecialRegexEscape(val));
     return escapedValues.join('|');
-  }
+  };
 
   prometheusRegularEscape(value: any) {
     return typeof value === 'string' ? value : '';

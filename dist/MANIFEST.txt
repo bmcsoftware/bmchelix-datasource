@@ -9,7 +9,7 @@ Hash: SHA512
   "signedByOrgName": "BMC Software",
   "plugin": "bmchelix-ade-datasource",
   "version": "3.0.1",
-  "time": 1661418318709,
+  "time": 1664518294110,
   "keyId": "7e4d0c6a708866e7",
   "files": {
     "CHANGELOG.md": "7b89fd6ef36de897686bf587201e6ba87ec0a40c4c2365d705df71520927c3fa",
@@ -25,7 +25,7 @@ Hash: SHA512
     "module.js": "374c03adee4a27be6189cc131c42155b02b2e2b4bc55207abaee0fad12223022",
     "module.js.map": "02b8a03a562a5563ca4e3f20d4b67dc8a4841c2acfcd84e7582a64f15ef8cbe8",
     "partials/annotations.editor.html": "8ebf3cea46433c19bbe423364250890bdd59a15d405d443494dd70cb0c3354c2",
-    "plugin.json": "81b3bea61aef8a890625b1e80fc07df8c8c3a6865f6ae0a370bf48532b55c533",
+    "plugin.json": "46a8596173674b15c58b5920432138b186d9852a80140b36d1cf5cc97446c1cc",
     "README.md": "6753db0d1a7364210551ff7c34baa4a6fda362b634d3e43fda9e37c445c30038"
   }
 }
@@ -33,10 +33,10 @@ Hash: SHA512
 Version: OpenPGP.js v4.10.10
 Comment: https://openpgpjs.org
 
-wrcEARMKAAYFAmMHO04AIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
-cIhm56YtAgj+5l6qiyXepZk+I9SMaDhJL/ZgpYrfzVRZtHWaT60m4DemQxgk
-olMKDD4U8X8aLA3xDkgm4Zg/v+gGUBa0bGhzlQIHaUXCAvzEP590aK29eGIN
-TNvmsjPZqqlnbqMdh4x1qDBoyGSKt8WDpFHaoVqB6AGuW6OyHGjYVxyTyzyP
-DsCQuaM=
-=Ta9r
+wrcEARMKAAYFAmM2iJYAIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm5+K+AginFVxxpxqbD2AhbJZIxKlshnvwTtAG3EZFsC84cuLVJ4hZ8zJF
+VOaDPHyESaZUzC9L9kAbBAp2xn6ARG+nDMaVjAIHaFf+6723GVcqWx86k1l/
+MKhWOaGGwF6em1yEB7TZP7mVNdVnhgTXWs3mlKKfiwuSwPh/z+68KolmLvhz
+ei3Vct0=
+=m0cJ
 -----END PGP SIGNATURE-----

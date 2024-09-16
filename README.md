@@ -1,3 +1,5 @@
+THIS PLUGIN IS NOW DEPRECATED.
+
 # BMC Helix Datasource
 
 This is a Grafana datasource for fetching Metrics, Events & logs from Helix Monitor, Helix Remediate & Helix Optimize products

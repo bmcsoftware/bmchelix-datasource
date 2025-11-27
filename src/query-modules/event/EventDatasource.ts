@@ -21,7 +21,7 @@ import { EventDataSourceQuery, TermsQuery } from './eventTypes';
 import { EventQueryBuilder } from './event_query_builder';
 import { EventResponse } from './event_response';
 import { EventConstants } from './EventConstants';
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../DataSource';
 import { BucketAggregation } from 'modules/event/components/QueryEditor/BucketAggregationsEditor/aggregations';
 
 const FIELDS_WHITE_LIST = ['_arrival_time', '_lifecycle_time', '_modified_time'];
@@ -302,7 +302,7 @@ export class EventDatasource extends DataSourceApi<EventDataSourceQuery, BMCData
   }
 
   private interpolateLuceneQuery(queryString: string, scopedVars?: ScopedVars) {
-    return this.templateSrv.replace(queryString, scopedVars, 'lucene', '""');
+  return this.templateSrv.replace(queryString, scopedVars, 'lucene', undefined, '""');
   }
 
   interpolateVariablesInQueries(queries: EventDataSourceQuery[], scopedVars: ScopedVars): EventDataSourceQuery[] {

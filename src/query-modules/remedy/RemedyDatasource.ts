@@ -1,4 +1,3 @@
-import angular from 'angular';
 import * as queryDef from '../../modules/remedy/utilities/remedy_query_def';
 import _ from 'lodash';
 import {
@@ -29,7 +28,7 @@ import {
   NEWLINE,
   DEFAULT_DATE_TIME_FORMAT,
 } from '../../modules/remedy/utilities/remedy_literal_string';
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../DataSource';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -218,7 +217,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
       output_type: TABLE,
       sql: queryString,
     };
-    const esQuery = angular.toJson(query);
+    const esQuery = JSON.stringify(query);
     // Support: Variables
     let payload = this.variableSupport(esQuery, options);
 
@@ -333,7 +332,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
     // Backward compatibility: Support server w/o new api
     if (data.length === 1) {
       // Support: Variables
-      let payload = this.variableSupport(angular.toJson(data[0]), options.scopedVars);
+      let payload = this.variableSupport(JSON.stringify(data[0]), options.scopedVars);
       return this.post(RemedyConstants.REMEDY_QUERY_URL, payload, remedyHeaderFirst).pipe(
         map((response: any) => {
           const res = new RemedyResponse(response);
@@ -343,7 +342,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
       );
     } else if (data.length >= 2) {
       // Support: Variables
-      let payload = this.variableSupport(angular.toJson(data), options.scopedVars);
+      let payload = this.variableSupport(JSON.stringify(data), options.scopedVars);
       return this.post(RemedyConstants.REMEDY_QUERIES_URL, payload, remedyHeaderFirst).pipe(
         map((response: any) => {
           const res = new RemedyResponse(response);
@@ -432,7 +431,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
   }
 
   metricFindData(query: any) {
-    query = angular.fromJson(query);
+    query = JSON.parse(query);
     if (query) {
       if (query.find === KEYWORD_FORM) {
         return this.getForms(query);
@@ -474,7 +473,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
   }
 
   metricFindQuery(query: any) {
-    let sql = angular.fromJson(query).sql;
+    let sql = JSON.parse(query).sql;
     if (sql) {
       const data: any[] = [];
       let queryObj = {
@@ -484,7 +483,7 @@ export class RemedyDatasource extends DataSourceApi<RemedyDataSourceQuery, BMCDa
       };
       // Support: Variables
       let payload = this.templateSrv.replace(
-        angular.toJson(queryObj),
+        JSON.stringify(queryObj),
         {},
         this.interpolateVariable,
         `'${RemedyConstants.REMEDY_SPECIFIC_QUALIFICATION_PARAM}'`

@@ -4,8 +4,11 @@ import {
   DataSourceApi,
   DataSourceInstanceSettings,
   ScopedVars,
+  dateTime,
+  TimeRange,
+  getDefaultTimeRange,
 } from '@grafana/data';
-import { config, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
+import { config, getBackendSrv, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { QueryHandlerFactory } from 'QueryHandlerFactory';
@@ -14,6 +17,7 @@ import { map } from 'rxjs/operators';
 import { ADEAuthHelper } from './auth/ADEAuthHelper';
 import { EntAuthHelper } from './auth/EntAuthHelper';
 import { BMCDataSourceOptions, BMCDataSourceQuery, InstancePlatform, validQueryType } from './types';
+import { AnnotationQueryEditor } from 'annotations/AnnotationQueryEditor';
 
 export interface BatchedQueries {
   instance: any;
@@ -23,6 +27,9 @@ export interface BatchedQueries {
 export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSourceOptions> {
   queryHandler: any;
   instSet: DataSourceInstanceSettings<BMCDataSourceOptions>;
+  templateSrv: TemplateSrv;
+  timeSrv: any;
+  backendSrv: any;
   instPlatform: InstancePlatform;
   static tokenObj: any = { adeJWTToken: '', expiry: null };
   private static authHelper: ADEAuthHelper | EntAuthHelper;
@@ -35,18 +42,23 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
   private readonly CONST_SUCCESS = 'success';
   private readonly TEST_DS_SUCCESS_MSG = 'Success';
 
-  constructor(
-    instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>,
-    private templateSrv: TemplateSrv = getTemplateSrv(),
-    private timeSrv: any,
-    private backendSrv: any
-  ) {
+  constructor(instanceSettings: DataSourceInstanceSettings<BMCDataSourceOptions>) {
     super(instanceSettings);
     this.instSet = instanceSettings;
     this.queryHandler = {};
 
     this.instPlatform = config.bootData.settings.EnvType ? InstancePlatform.ADE : InstancePlatform.ENTERPRISE;
     this.initAuthHelper();
+    this.annotations = {
+      QueryEditor: AnnotationQueryEditor,
+    };
+    this.templateSrv = getTemplateSrv();
+    this.backendSrv = getBackendSrv();
+    this.timeSrv = {
+      timeRange: (): TimeRange => {
+        return getDefaultTimeRange();
+      }
+    };
   }
 
   initAuthHelper() {
@@ -80,7 +92,17 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
 
   async query(options: DataQueryRequest<BMCDataSourceQuery>): Promise<DataQueryResponse> {
     await this.validateToken().toPromise();
+    if (options.range) {
+      const range = options.range;
+      const from = dateTime(range.from);
+      const to = dateTime(range.to);
 
+      this.timeSrv.timeRange = (): TimeRange => ({
+        from,
+        to,
+        raw: range.raw
+      });
+    }
     const targetsMapping: { [sourceType: string]: BMCDataSourceQuery[] } = groupBy(
       options.targets,
       this.CONST_SOURCE_TYPE
@@ -141,7 +163,17 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
     return this.queryHandler[queryType];
   }
 
-  async metricFindQuery(query: any) {
+  async metricFindQuery(query: any, options?: any) {
+    if (options?.range) {
+      const range = options.range;
+      const from = dateTime(range.from);
+      const to = dateTime(range.to);
+      this.timeSrv.timeRange = (): TimeRange => ({
+        from, to, raw: range.raw
+      });
+    } else {
+      this.timeSrv.timeRange = (): TimeRange => getDefaultTimeRange();
+    }
     var index = query.indexOf(',');
     if (index === -1) {
       return Promise.reject({ status: this.CONST_FAIL, message: this.INVALID_QUERY });
@@ -160,7 +192,7 @@ export class BMCDataSource extends DataSourceApi<BMCDataSourceQuery, BMCDataSour
     await this.validateToken()?.toPromise();
 
     const queryHandlerInstance = this.getQueryHandlerInstance(queryType);
-    return queryHandlerInstance.metricFindQuery(queryString);
+    return queryHandlerInstance.metricFindQuery(queryString, options);
   }
 
   async annotationQuery(options: any): Promise<any> {

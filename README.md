@@ -31,37 +31,19 @@ Configure Retrived values as shown below
 - - - -
 ### Query Types
 The following query types are available:
-* CloudSecurity
 
-   Use this query type to fetch compliance data of the devices in your environment.
 * Events
 
   Use this query type to fetch event data on the devices in your environment.
 * Metric
 
   Use this query type to fetch the performance metrics data of the devices in your environment.
-* Log
-
-  Use this query type to fetch the log data from BMC Helix Log Analytics in your environment.
 
 ### Query Editor
 
 This section describes the each query editor.
 
-### **Cloud Security**
-
-The following image displays the CloudSecurity query type:
-
-![query type](https://raw.githubusercontent.com/bmcsoftware/bmchelix-datasource/main/screenshots/cloudSecurity_query.png)
-
-This query type requires the following data:
-
-| Field | Description |
-|------|-------|
-| **Query Type** | Use this field to select the query type |
-| **Query** | Use one of the following queries to build a panel. The options for each query type are different **Asset Compliance**, **Policy Compliance** , **Compliance Trend**, **Risk Account**, **Operations**, **Resource Pool** |
-
-### **Events** / **Log**
+### **Events**
 
 The following image displays the Events query type:
 

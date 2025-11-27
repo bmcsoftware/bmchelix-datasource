@@ -1,7 +1,7 @@
 import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSourceQuery } from '../../../types';
 import { DataQueryRequest, DataQueryResponse } from '@grafana/data';
-import { BMCDataSource } from '../../../datasource';
+import { BMCDataSource } from '../../../Datasource';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

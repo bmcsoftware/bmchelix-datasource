@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { BMCDataSourceQuery } from '../../../types';
-import { BMCDataSource } from '../../../datasource';
+import { BMCDataSource } from '../../../DataSource';
 import { InlineFieldWrapper } from '../../common/InlineFieldWrapper';
 import { clone as _clone } from 'lodash';
 import { InlineFieldRow, Input } from '@grafana/ui';

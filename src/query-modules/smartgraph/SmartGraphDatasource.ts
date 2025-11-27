@@ -14,7 +14,7 @@ import { getBackendSrv } from '@grafana/runtime';
 import { BMCDataSourceOptions } from 'types';
 import { SmartGraphConstants } from './SmartGraphConstants';
 import { SmartGraphDataSourceQuery } from './SmartGraphTypes';
-import { BMCDataSource } from 'datasource';
+import { BMCDataSource } from 'DataSource';
 
 class ServiceDetails {
   name: string;

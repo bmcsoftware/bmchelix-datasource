@@ -2,7 +2,7 @@ import defaults from 'lodash/defaults';
 import React, { PureComponent } from 'react';
 import { InlineFieldRow, Select } from '@grafana/ui';
 import { QueryEditorProps } from '@grafana/data';
-import { BMCDataSource } from './datasource';
+import { BMCDataSource } from './Datasource';
 import { defaultQuery, BMCDataSourceOptions, BMCDataSourceQuery, queryTypeOptions } from './types';
 import * as Constants from './Constants';
 import { InlineFieldWrapper } from './modules/common/InlineFieldWrapper';

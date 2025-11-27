@@ -28,7 +28,7 @@ import { MetricDataSourceQuery, MetricQueryRequest } from '../../modules/metric/
 import addLabelToQuery from './add_label_to_query';
 import TableModel from 'grafana/app/core/table_model';
 import { MetricConstants } from './MetricConstants';
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../DataSource';
 
 export const ANNOTATION_QUERY_STEP_DEFAULT = '60s';
 

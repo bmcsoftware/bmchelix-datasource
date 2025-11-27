@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { SelectableValue } from '@grafana/data';
 import { BMCDataSourceQuery } from '../../../types';
-import { BMCDataSource } from '../../../datasource';
+import { BMCDataSource } from '../../../Datasource';
 import { InlineFieldWrapper } from '../../common/InlineFieldWrapper';
 import { clone as _clone } from 'lodash';
 import { Select, InlineFieldRow, Input } from '@grafana/ui';

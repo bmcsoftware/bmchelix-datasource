@@ -41,17 +41,17 @@ export interface HelixSecureJsonData {
 const queryTypeOptions: any = [
   { sourceType: Constants.SOURCE_TYPE_EVENT, text: 'Events', value: 'event', label: 'Events' },
   { sourceType: Constants.SOURCE_TYPE_METRIC, text: 'Metric', value: 'metric', label: 'Metric' },
-  {
+  //add here
+];
+
+if (config.bootData.settings.EnvType) {
+  queryTypeOptions.push({
     sourceType: Constants.SOURCE_TYPE_CLOUD_SECURITY,
     text: 'CloudSecurity',
     value: 'cloudsecurity',
     label: 'CloudSecurity',
   },
-  { sourceType: Constants.SOURCE_TYPE_LOG, text: 'Log', value: 'log', label: 'Log' },
-  //add here
-];
-
-if (config.bootData.settings.EnvType) {
+  { sourceType: Constants.SOURCE_TYPE_LOG, text: 'Log', value: 'log', label: 'Log' })
   queryTypeOptions.splice(4, -1, {
     sourceType: Constants.SOURCE_TYPE_REMEDY,
     text: 'Service Management',
@@ -73,8 +73,6 @@ if (config.bootData.settings.EnvType) {
   });
 }
 
-export { queryTypeOptions };
-
 export function validQueryType(queryType: string): boolean {
   switch (queryType) {
     case Constants.SOURCE_TYPE_EVENT:
@@ -92,3 +90,12 @@ export function validQueryType(queryType: string): boolean {
       return false;
   }
 }
+
+const allowedTypesForAnnotation = [
+  Constants.SOURCE_TYPE_EVENT,
+  Constants.SOURCE_TYPE_LOG,
+  Constants.SOURCE_TYPE_METRIC,
+  Constants.SOURCE_TYPE_REMEDY,
+];
+
+export { queryTypeOptions, allowedTypesForAnnotation };

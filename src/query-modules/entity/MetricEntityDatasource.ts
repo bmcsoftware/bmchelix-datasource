@@ -18,7 +18,7 @@ import EntityLanguageProvider from './EntityQlLanguageProvider';
 import EntityQueryFind from './EntityQueryFind';
 import { EntityDataSourceQuery } from './entityTypes';
 
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../Datasource';
 
 export interface MetriDataQueryResponse {
   data: {

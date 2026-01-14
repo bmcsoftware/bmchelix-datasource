@@ -9,7 +9,7 @@ import MetricQlSyntax, { FUNCTIONS, RATE_RANGES } from '../metric//MetricQl';
 import { MetricEntityDatasource } from './MetricEntityDatasource';
 import { EntityDataSourceQuery, MetricsMetadata } from './entityTypes';
 
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../Datasource';
 
 const HISTORY_ITEM_COUNT = 5;
 const HISTORY_COUNT_CUTOFF = 1000 * 60 * 60 * 24; // 24h

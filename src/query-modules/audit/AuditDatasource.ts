@@ -4,7 +4,7 @@ import { AuditDataSourceQuery } from './AuditTypes';
 import { AuditConstants } from './AuditConstants';
 import { DataSourceInstanceSettings, DataQueryRequest, DataQueryResponse, DataSourceApi } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../Datasource';
 import TableModel from './table_model';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';

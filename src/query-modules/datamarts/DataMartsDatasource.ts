@@ -8,7 +8,7 @@ import {
   MetricFindValue,
 } from '@grafana/data';
 import { FetchResponse, getBackendSrv } from '@grafana/runtime';
-import { BMCDataSource } from 'datasource';
+import { BMCDataSource } from 'Datasource';
 import defaults from 'lodash/defaults';
 import {
   Datamart,

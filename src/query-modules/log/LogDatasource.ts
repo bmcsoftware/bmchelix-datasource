@@ -21,7 +21,7 @@ import { LogDataSourceQuery, TermsQuery } from './logTypes';
 import { LogQueryBuilder } from './log_query_builder';
 import { LogResponse } from './log_response';
 import { LogConstants } from './LogConstants';
-import { BMCDataSource } from '../../datasource';
+import { BMCDataSource } from '../../Datasource';
 import { BucketAggregation } from 'modules/event/components/QueryEditor/BucketAggregationsEditor/aggregations';
 
 export class LogDatasource extends DataSourceApi<LogDataSourceQuery, BMCDataSourceOptions> {

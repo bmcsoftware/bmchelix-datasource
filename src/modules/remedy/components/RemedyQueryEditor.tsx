@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { InlineFieldRow, InlineLabel, Select } from '@grafana/ui';
 import _ from 'lodash';
 import { BMCDataSourceQuery } from '../../../types';
-import { BMCDataSource } from '../../../datasource';
+import { BMCDataSource } from '../../../Datasource';
 import { AutoCompleteContextProvider, AutoCompleteContext } from '../../common/AutoCompleteContext';
 import { RemedyDataSourceQuery, RemedyForm } from '../utilities/RemedyTypes';
 import { RemedyQueryBuilder } from '../utilities/remedy_query_builder';

@@ -8,10 +8,10 @@
   "backend": true,
   "executable": "gpx_bmchelix-ade-datasource",
   "info": {
-    "description": "This is the BMC ADE datasource plugin that is used to connect to BMC Helix Applications.",
+    "description": "This is the BMC helix ADE datasource plugin that is used to connect to BMC Helix Applications.",
     "author": {
-      "name": "BMC Software",
-      "url": "https://www.bmc.com/"
+      "name": "BMC Helix",
+      "url": "https://www.helixops.ai/"
     },
     "keywords": ["bmc", "ade"],
     "logos": {
@@ -24,8 +24,8 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaDependency": ">=7.3.1",
-    "grafanaVersion": "7.3.x",
+    "grafanaDependency": ">=8.3.2",
+    "grafanaVersion": "8.3.x",
     "plugins": []
   }
 }

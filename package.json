@@ -1,7 +1,7 @@
 {
   "name": "bmc-bmc-ade",
   "version": "3.0.1",
-  "description": "Datasource plugin by BMC to support various query types.",
+  "description": "Datasource plugin by BMC Helix to support various query types.",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
@@ -10,7 +10,7 @@
     "sign": "grafana-toolkit plugin:sign",
     "start": "yarn watch"
   },
-  "author": "BMC",
+  "author": "BMC Helix",
   "license": "Apache-2.0",
   "dependencies": {
     "@emotion/css": "11.1.3",
